@@ -17,8 +17,18 @@ public final class R {
         public static final int main=0x7f030000;
     }
     public static final class raw {
-        public static final int robot=0x7f040000;
-        public static final int teapot=0x7f040001;
+        public static final int diffusefrag=0x7f040000;
+        public static final int diffusevert=0x7f040001;
+        public static final int phongfrag=0x7f040002;
+        public static final int phongvert=0x7f040003;
+        public static final int robot=0x7f040004;
+        public static final int simplefrag=0x7f040005;
+        public static final int simplevert=0x7f040006;
+        public static final int teapot=0x7f040007;
+        public static final int texture2dfrag=0x7f040008;
+        public static final int texture2dvert=0x7f040009;
+        public static final int texturesfrag=0x7f04000a;
+        public static final int texturesvert=0x7f04000b;
     }
     public static final class string {
         public static final int app_name=0x7f050001;

@@ -11,8 +11,8 @@ public class Material {
 	public Vector3f specular;
 	public Vector3f ambient;
 	public float shininess;
-	public Texture texture;
-	public Shader shader;
+	private Texture texture;
+	private Shader shader;
 	
 	public Material()
 	{
@@ -24,5 +24,17 @@ public class Material {
 	
 	public void setTexture(Texture tex) {
 		texture = tex;
+	}
+
+	public Texture getTexture() {
+		return texture;
+	}
+	
+	public void setShader(Shader shader) {
+		this.shader = shader;
+	}
+
+	public Shader getShader() {
+		return shader;
 	}
 }

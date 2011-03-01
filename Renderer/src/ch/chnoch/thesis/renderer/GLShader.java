@@ -1,5 +1,6 @@
 package ch.chnoch.thesis.renderer;
 
+import ch.chnoch.thesis.renderer.util.GLUtil;
 import android.opengl.GLES20;
 import android.util.Log;
 
@@ -79,5 +80,9 @@ public class GLShader implements Shader {
 	 */
 	public void disable() {
 		GLES20.glUseProgram(0);
+	}
+	
+	public int getProgram() {
+		return mProgram;
 	}
 }
