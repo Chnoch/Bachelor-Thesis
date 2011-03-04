@@ -1,17 +1,14 @@
 package ch.chnoch.thesis.renderer;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import javax.vecmath.Matrix4f;
 
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
@@ -21,7 +18,7 @@ import android.opengl.*;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class GLRenderer implements GLSurfaceView.Renderer {
+public class GLRenderer implements RenderContext {
 
 	private Context mContext;
 	private SceneManagerInterface mSceneManager;
@@ -41,13 +38,16 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 	private IntBuffer mIndexBuffer;
 	private FloatBuffer mVertexBuffer;
 	// private IntBuffer mTextureBuffer;
-	private FloatBuffer mColorBuffer;
+	private IntBuffer mColorBuffer;
 	// private IntBuffer mNormalBuffer;
 
 	private List<Float> mVertexArray;
-	private List<Float> mColorArray;
+	private List<Integer> mColorArray;
 
 	private final String TAG = "GLRenderer";
+	
+	private static final int FLOAT_SIZE_BYTES = 4;
+    private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
 
 	/**
 	 * This constructor is called by {@link GLRenderPanel}.
@@ -60,7 +60,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		mContext = context;
 
 		mVertexArray = new ArrayList<Float>();
-		mColorArray = new ArrayList<Float>();
+		mColorArray = new ArrayList<Integer>();
 	}
 
 	public void setSceneManager(SceneManagerInterface sceneManager) {
@@ -88,11 +88,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
 		// Set the modelview matrix by multiplying the camera matrix and the
 		// transformation matrix of the object
-		GLES20.glMatrixMode(GLES20.GL_MODELVIEW);
+		/*GLES20.glMatrixMode(GLES20.GL_MODELVIEW);
 		Matrix4f t = new Matrix4f();
 		t.set(mSceneManager.getCamera().getCameraMatrix());
 		t.mul(renderItem.getT());
-		GLES20.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
+		GLES20.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);*/
 
 		// Read geometry from the vertex element into array lists.
 		// These lists will be used to create the buffers.
@@ -142,14 +142,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 					// }
 				} else if (e.getSemantic() == VertexData.Semantic.COLOR) {
 					if (e.getNumberOfComponents() == 3) {
-						mColorArray.add(e.getData()[i * 3]);
-						mColorArray.add(e.getData()[i * 3 + 1]); 
-						mColorArray.add(e.getData()[i * 3 + 2]);
+						mColorArray.add((int) e.getData()[i * 3]);
+						mColorArray.add((int) e.getData()[i * 3 + 1]); 
+						mColorArray.add((int) e.getData()[i * 3 + 2]);
 					} else if (e.getNumberOfComponents() == 4) {
-						mColorArray.add(e.getData()[i * 4]);
-						mColorArray.add(e.getData()[i * 4 + 1]);
-						mColorArray.add(e.getData()[i * 4 + 2]);
-						mColorArray.add(e.getData()[i * 4 + 3]);
+						mColorArray.add((int) e.getData()[i * 4]);
+						mColorArray.add((int) e.getData()[i * 4 + 1]);
+						mColorArray.add((int) e.getData()[i * 4 + 2]);
+						mColorArray.add((int) e.getData()[i * 4 + 3]);
 					}
 				}
 
@@ -157,12 +157,18 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
 		}
 		
-		float[] vertices = Util.listToArray(mVertexArray);
-		float[] colors = Util.listToArray(mColorArray);
+		float[] vertices = Util.floatListToArray(mVertexArray);
+		int[] colors = Util.intListToArray(mColorArray);
 		
 		mVertexBuffer = FloatBuffer.wrap(vertices);
-		mColorBuffer = FloatBuffer.wrap(colors);
+		mVertexBuffer.position(0);
+		mColorBuffer = IntBuffer.wrap(colors);
+		mColorBuffer.position(0);
+		
+		
 //		cleanMaterial(renderItem.getShape().getMaterial());
+		
+		try {
 		// Ignore the passed-in GL10 interface, and use the GLES20
 		// class's static methods instead.
 		GLES20.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
@@ -173,15 +179,15 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureID);
 
-		mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
+//		mVertexBuffer.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
 		GLES20.glVertexAttribPointer(maPositionHandle, 3, GLES20.GL_FLOAT,
-				false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
+				false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mVertexBuffer);
 		GLUtil.checkGlError("glVertexAttribPointer maPosition", TAG);
-		mTriangleVertices.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
-		GLES20.glEnableVertexAttribArray(maPositionHandle);
-		GLUtil.checkGlError("glEnableVertexAttribArray maPositionHandle", TAG);
+//		mTriangleVertices.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
+//		GLES20.glEnableVertexAttribArray(maPositionHandle);
+//		GLUtil.checkGlError("glEnableVertexAttribArray maPositionHandle", TAG);
 		GLES20.glVertexAttribPointer(maTextureHandle, 2, GLES20.GL_FLOAT,
-				false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
+				false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mColorBuffer);
 		GLUtil.checkGlError("glVertexAttribPointer maTextureHandle", TAG);
 		GLES20.glEnableVertexAttribArray(maTextureHandle);
 		GLUtil.checkGlError("glEnableVertexAttribArray maTextureHandle", TAG);
@@ -195,7 +201,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
 		GLUtil.checkGlError("glDrawArrays", TAG);
-
+		} catch (Exception exc) {
+			Log.e(TAG, "Exception drawing item", exc);
+		}
 	}
 
 	/**
@@ -324,7 +332,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		return new GLTexture(mContext);
 	}
 
-	@Override
 	public void onDrawFrame(GL10 gl) {
 		try {
 			beginFrame();
@@ -341,12 +348,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 
-	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
-
+		GLES20.glViewport(0, 0, width, height);
+        float ratio = (float) width / height;
+        Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 	}
 
-	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		try {
 			mProgram = mShader.getProgram();

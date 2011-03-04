@@ -13,12 +13,12 @@ public class ObjReader {
 
 	/**
 	 * Read an .obj file and return vertex data.
-	 * @param fileName the file to read.
+	 * @param file the file to read.
 	 * @param scale scales the object to fit into a cube of the given size
 	 * @return
 	 * @throws IOException
 	 */
-	public static VertexData read(String fileName, float scale) throws IOException
+	public static VertexData read(InputStream file, float scale) throws IOException
 	{
 		BufferedReader reader;
 		ArrayList<float[]> vertices = new ArrayList<float[]>();
@@ -39,7 +39,8 @@ public class ObjReader {
 		zMin = Float.MAX_VALUE;
 		zMax = Float.MIN_VALUE;
 		
-		reader = new BufferedReader(new FileReader(fileName));
+		InputStreamReader inputStream = new InputStreamReader(file);
+		reader = new BufferedReader(inputStream);
 
 		String line = null;
 		while((line = reader.readLine()) != null)
