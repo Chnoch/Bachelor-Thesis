@@ -3,6 +3,7 @@ package ch.chnoch.thesis.renderer.util;
 import java.io.*;
 import java.util.ArrayList;
 
+import ch.chnoch.thesis.renderer.VertexBuffers;
 import ch.chnoch.thesis.renderer.VertexData;
 import ch.chnoch.thesis.renderer.VertexData.Semantic;
 
@@ -18,7 +19,7 @@ public class ObjReader {
 	 * @return
 	 * @throws IOException
 	 */
-	public static VertexData read(InputStream file, float scale) throws IOException
+	public static VertexBuffers read(InputStream file, float scale) throws IOException
 	{
 		BufferedReader reader;
 		ArrayList<float[]> vertices = new ArrayList<float[]>();
@@ -194,7 +195,35 @@ public class ObjReader {
 		if(texCoords.size()>0)
 			vertexData.addElement(texCoordsFinal, VertexData.Semantic.TEXCOORD, 2);
 		vertexData.addIndices(indices);
-		return vertexData;			
+//		
+//		// convert the indices to a byte array
+//		byte[] indicesBytes = new byte[indices.length*4];
+//		for (int i=0; i< indices.length; i++) {
+//			indicesBytes[4*i] =(byte)( indices[i] >> 24 );
+//			indicesBytes[4*i+1] =(byte)( (indices[i] << 8) >> 24 );
+//			indicesBytes[4*i+2] =(byte)( (indices[i] << 16) >> 24 );
+//			indicesBytes[4*i+3] =(byte)( (indices[i] << 24) >> 24 );
+//		}
+		
+		//try some vertex multiplications...
+		
+		for (int i=0; i<verticesFinal.length; i++) {
+			verticesFinal[i] *= 100000;
+		}
+		
+		int colors[] = new int[verticesFinal.length/3*4];
+		for (int i=0;i<colors.length;i++) {
+			colors[i]=1;
+			colors[i++]=1;
+			colors[i++]=0;
+			colors[i++]=1;
+		}
+		
+		
+		VertexBuffers vertexBuffer = new VertexBuffers();
+		vertexBuffer.setIndexBuffer(indices);
+		vertexBuffer.setVertexBuffer(verticesFinal);
+		vertexBuffer.setColorBuffer(colors);
+		return vertexBuffer;			
 	}
-}
- 
+} 

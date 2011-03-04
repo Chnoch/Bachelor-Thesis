@@ -4,12 +4,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 public class VertexBuffers {
 
 	private IntBuffer mVertexBuffer;
 	private IntBuffer mColorBuffer;
-	private ByteBuffer mIndexBuffer;
+	private ShortBuffer mIndexBuffer;
 
 	public VertexBuffers() {
 
@@ -25,11 +26,16 @@ public class VertexBuffers {
 		mVertexBuffer = vbb.asIntBuffer();
 		mVertexBuffer.put(vertices);
 		mVertexBuffer.position(0);
-		float[] vert = new float[mVertexBuffer.capacity()];
-		for (int i = 0; i< mVertexBuffer.capacity(); i++) {
-			vert[i] = mVertexBuffer.get();
+	}
+	
+	public void setVertexBuffer(float[] vertices) {
+		int[] vertexValues = new int[vertices.length];
+		
+		for (int i=0; i< vertices.length; i++) {
+			vertexValues[i] = (int) vertices[i];
 		}
-		mVertexBuffer.position(0);
+		
+		setVertexBuffer(vertexValues);
 	}
 
 	public IntBuffer getColorBuffer() {
@@ -44,13 +50,24 @@ public class VertexBuffers {
 		mColorBuffer.position(0);
 	}
 
-	public ByteBuffer getIndexBuffer() {
+	public ShortBuffer getIndexBuffer() {
 		return mIndexBuffer;
 	}
 
-	public void setIndexBuffer(byte[] indices) {
-		mIndexBuffer = ByteBuffer.allocateDirect(indices.length);
+	public void setIndexBuffer(short[] indices) {
+		ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 4);
+		ibb.order(ByteOrder.nativeOrder());
+		mIndexBuffer = ibb.asShortBuffer();
         mIndexBuffer.put(indices);
         mIndexBuffer.position(0);
+	}
+	
+	public void setIndexBuffer(int[] indices) {
+		short[] shortValues = new short[indices.length];
+		for (int i=0; i<indices.length; i++) {
+			shortValues[i] = Integer.valueOf(indices[i]).shortValue();
+		}
+		
+		setIndexBuffer(shortValues);
 	}
 }

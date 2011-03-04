@@ -38,20 +38,17 @@ public class GLViewerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		mSceneManager = new SimpleSceneManager();
-//		Shape shape = loadTeapot();
-		Shape shape = loadCube();
+		Shape shape = loadTeapot();
+//		Shape shape = loadCube();
 		mSceneManager.addShape(shape);
 
-		mViewer = new GLViewer(this);
-
-		if (detectOpenGLES20()) {
+		boolean openGlES20 = detectOpenGLES20(); 
+		if (openGlES20) {
 			// Tell the surface view we want to create an OpenGL ES
 			// 2.0-compatible
 			// context, and set an OpenGL ES 2.0-compatible renderer.
-			mViewer.setEGLContextClientVersion(2);
 
 			mRenderer = new GLRenderer(getApplication());
-			mViewer.setRenderer(mRenderer);
 
 			Shader shader = createShaders();
 			// exit if the shaders couldn't be loaded
@@ -64,12 +61,19 @@ public class GLViewerActivity extends Activity {
 			shape.setMaterial(material);
 		} else {
 			mRenderer = new GLRenderer10(getApplication());
-			mViewer.setRenderer(mRenderer);
 		}
 
+		mViewer = new GLViewer(this, mRenderer);
+		// Set the OpenGL Context to version 2.0
+		// Has to be done after the Viewer is initialized
+		if (openGlES20) {
+			mViewer.setEGLContextClientVersion(2);
+		}
 		mRenderer.setSceneManager(mSceneManager);
 
 		setContentView(mViewer);
+		mViewer.requestFocus();
+		mViewer.setFocusableInTouchMode(true);
 	}
 
 	private boolean detectOpenGLES20() {
@@ -110,16 +114,16 @@ public class GLViewerActivity extends Activity {
 	private Shape loadTeapot() {
 		// Construct a data structure that stores the vertices, their
 		// attributes, and the triangle mesh connectivity
-		VertexData vertexData = null;
+		VertexBuffers vertexBuffer = null;
 		try {
 			InputStream teapotSrc = getApplication().getResources()
 					.openRawResource(R.raw.teapot);
-			vertexData = ObjReader.read(teapotSrc, 1);
+			vertexBuffer = ObjReader.read(teapotSrc, 1);
 		} catch (IOException exc) {
 			Log.e(TAG, "Error loading Vertex data", exc);
 		}
 
-		return new Shape(vertexData);
+		return new Shape(vertexBuffer);
 	}
 
 	private Shape loadCube() {
@@ -184,7 +188,7 @@ public class GLViewerActivity extends Activity {
             0,  one,  one,  one,
     };
 
-    byte indices[] = {
+    short indices[] = {
             0, 4, 5,    0, 5, 1,
             1, 5, 6,    1, 6, 2,
             2, 6, 7,    2, 7, 3,

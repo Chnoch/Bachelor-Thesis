@@ -3,6 +3,7 @@ package ch.chnoch.thesis.renderer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.ListIterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.vecmath.Matrix4f;
 
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
@@ -26,11 +28,9 @@ public class GLRenderer10 implements RenderContext {
 
 	private float mAngle;
 	
-	private Cube mCube;
-
 	private int mProgram;
 
-	private ByteBuffer mIndexBuffer;
+	private ShortBuffer mIndexBuffer;
 	private IntBuffer mVertexBuffer;
 	// private IntBuffer mTextureBuffer;
 	private IntBuffer mColorBuffer;
@@ -38,6 +38,9 @@ public class GLRenderer10 implements RenderContext {
 
 	private List<Float> mVertexArray;
 	private List<Integer> mColorArray;
+	
+	public float mAngleX = 0;
+	public float mAngleY = 0;
 
 	private final String TAG = "GLRenderer10";
 
@@ -50,7 +53,6 @@ public class GLRenderer10 implements RenderContext {
 	 */
 	public GLRenderer10(Context context) {
 		mContext = context;
-		mCube = new Cube();
 
 		mVertexArray = new ArrayList<Float>();
 		mColorArray = new ArrayList<Integer>();
@@ -143,12 +145,24 @@ public class GLRenderer10 implements RenderContext {
 		mVertexBuffer = buffers.getVertexBuffer();
 		mColorBuffer = buffers.getColorBuffer();
 		mIndexBuffer = buffers.getIndexBuffer();
+		
+		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		gl.glLoadIdentity();
+		gl.glTranslatef(0, 0, -3.0f);
+		gl.glRotatef(mAngleX, 0, 1, 0);
+		gl.glRotatef(mAngleY, 1, 0, 0);
+		
+//		Matrix4f t = new Matrix4f();
+//		t.set(mSceneManager.getCamera().getCameraMatrix());
+//		t.mul(renderItem.getT());
+//		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 
 		try {
 			gl.glFrontFace(GL10.GL_CW);
 			gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
 			gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
-			gl.glDrawElements(GL10.GL_TRIANGLES, 36, GL10.GL_UNSIGNED_BYTE,
+//			gl.glColor4f(0.5f, 0.5f, 0f, 0.5f);
+			gl.glDrawElements(GL10.GL_TRIANGLES, mIndexBuffer.capacity(), GL10.GL_UNSIGNED_SHORT,
 					mIndexBuffer);
 		} catch (Exception exc) {
 			Log.e(TAG, "Exception drawing item", exc);
@@ -259,7 +273,6 @@ public class GLRenderer10 implements RenderContext {
 	}
 
 	public void onDrawFrame(GL10 gl) {
-		Log.d(TAG, "ondraw method called");
 		SceneManagerIterator it = mSceneManager.iterator();
 
 		/*
@@ -273,11 +286,7 @@ public class GLRenderer10 implements RenderContext {
 		 * Now we're ready to draw some 3D objects
 		 */
 
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
-		gl.glTranslatef(0, 0, -3.0f);
-		gl.glRotatef(mAngle, 0, 1, 0);
-		gl.glRotatef(mAngle * 0.25f, 1, 0, 0);
+		
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
@@ -288,10 +297,10 @@ public class GLRenderer10 implements RenderContext {
 		
 //		mCube.draw(gl);
 
-		gl.glRotatef(mAngle * 2.0f, 0, 1, 1);
-		gl.glTranslatef(0.5f, 0.5f, 0.5f);
+//		gl.glRotatef(mAngle * 2.0f, 0, 1, 1);
+//		gl.glTranslatef(0.5f, 0.5f, 0.5f);
 
-		mAngle += 1.2f;
+//		mAngle += 1.2f;
 	}
 
 	public void onSurfaceChanged(GL10 gl, int width, int height) {

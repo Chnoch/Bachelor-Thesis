@@ -22,7 +22,7 @@ public class Camera {
 	 * of world space, i.e., towards the negative z-axis.
 	 */
 	public Camera() {
-		centerOfProjection = new Vector3f(-5, 0, 20);
+		centerOfProjection = new Vector3f(-100000, 0,100000);
 		lookAtPoint = new Vector3f(0, 0, 0);
 		upVector = new Vector3f(0, 1, 0);
 		cameraMatrix = new Matrix4f();
