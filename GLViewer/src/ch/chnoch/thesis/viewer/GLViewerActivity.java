@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import javax.vecmath.Vector3f;
+
 import ch.chnoch.thesis.renderer.GLRenderer;
 import ch.chnoch.thesis.renderer.GLViewer;
 import ch.chnoch.thesis.renderer.util.ObjReader;
@@ -38,9 +40,13 @@ public class GLViewerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		mSceneManager = new SimpleSceneManager();
-		Shape shape = loadTeapot();
-//		Shape shape = loadCube();
+//		Shape shape = loadTeapot();
+		Shape shape = loadCube();
+		Shape shape2 = loadCube();
+		Vector3f trans = new Vector3f(2,2,2);
+		shape2.getTransformation().setTranslation(trans);
 		mSceneManager.addShape(shape);
+		mSceneManager.addShape(shape2);
 
 		boolean openGlES20 = detectOpenGLES20(); 
 		if (openGlES20) {
@@ -63,7 +69,7 @@ public class GLViewerActivity extends Activity {
 			mRenderer = new GLRenderer10(getApplication());
 		}
 
-		mViewer = new GLViewer(this, mRenderer);
+		mViewer = new GLViewer(this, mRenderer, mSceneManager);
 		// Set the OpenGL Context to version 2.0
 		// Has to be done after the Viewer is initialized
 		if (openGlES20) {
@@ -166,7 +172,7 @@ public class GLViewerActivity extends Activity {
 	
 	
 	int one = 0x10000;
-    int vertices[] = {
+    float vertices[] = {
             -one, -one, -one,
             one, -one, -one,
             one,  one, -one,
@@ -176,7 +182,7 @@ public class GLViewerActivity extends Activity {
             one,  one,  one,
             -one,  one,  one,
     };
-
+    
     int colors[] = {
             0,    0,    0,  one,
             one,    0,    0,  one,
