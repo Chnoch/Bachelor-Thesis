@@ -147,16 +147,16 @@ public class GLRenderer10 implements RenderContext {
 		mIndexBuffer = buffers.getIndexBuffer();
 		
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
-		gl.glTranslatef(0, 0, -3.0f);
-		gl.glRotatef(mAngleX, 0, 1, 0);
-		gl.glRotatef(mAngleY, 1, 0, 0);
+//		gl.glLoadIdentity();
+//		gl.glTranslatef(0, 0, -3.0f);
+//		gl.glRotatef(mAngleX, 0, 1, 0);
+//		gl.glRotatef(mAngleY, 1, 0, 0);
 		
-//		Matrix4f t = new Matrix4f();
-//		t.set(mSceneManager.getCamera().getCameraMatrix());
-//		t.mul(renderItem.getT());
-//		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
-
+		Matrix4f t = new Matrix4f();
+		t.set(mSceneManager.getCamera().getCameraMatrix());
+		t.mul(renderItem.getT());
+		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
+		
 		try {
 			gl.glFrontFace(GL10.GL_CW);
 			gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);

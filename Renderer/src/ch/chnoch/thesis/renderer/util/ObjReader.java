@@ -207,9 +207,11 @@ public class ObjReader {
 		
 		//try some vertex multiplications...
 		
-		for (int i=0; i<verticesFinal.length; i++) {
-			verticesFinal[i] *= 100000;
-		}
+		
+//		int verticesInt[] = new int[verticesFinal.length];
+//		for (int i=0; i<verticesFinal.length; i++) {
+//			verticesInt[i] = Float.floatToIntBits(verticesFinal[i]);
+//		}
 		
 		int colors[] = new int[verticesFinal.length/3*4];
 		for (int i=0;i<colors.length;i++) {
