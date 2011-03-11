@@ -8,17 +8,8 @@ import java.nio.ByteOrder;
 
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.GLRenderer;
-import ch.chnoch.thesis.renderer.GLViewer;
-import ch.chnoch.thesis.renderer.util.ObjReader;
-import ch.chnoch.thesis.renderer.GLRenderer10;
-import ch.chnoch.thesis.renderer.Material;
-import ch.chnoch.thesis.renderer.RenderContext;
-import ch.chnoch.thesis.renderer.Shader;
-import ch.chnoch.thesis.renderer.Shape;
-import ch.chnoch.thesis.renderer.SimpleSceneManager;
-import ch.chnoch.thesis.renderer.VertexBuffers;
-import ch.chnoch.thesis.renderer.VertexData;
+import ch.chnoch.thesis.renderer.*;
+import ch.chnoch.thesis.renderer.util.*;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -47,6 +38,8 @@ public class GLViewerActivity extends Activity {
 		shape2.getTransformation().setTranslation(trans);
 		mSceneManager.addShape(shape);
 		mSceneManager.addShape(shape2);
+		
+		Trackball trackball = new Trackball(shape);
 
 		boolean openGlES20 = detectOpenGLES20(); 
 		if (openGlES20) {
@@ -69,7 +62,7 @@ public class GLViewerActivity extends Activity {
 			mRenderer = new GLRenderer10(getApplication());
 		}
 
-		mViewer = new GLViewer(this, mRenderer, mSceneManager);
+		mViewer = new GLViewer(this, mRenderer, trackball);
 		// Set the OpenGL Context to version 2.0
 		// Has to be done after the Viewer is initialized
 		if (openGlES20) {

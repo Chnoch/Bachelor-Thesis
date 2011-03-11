@@ -24,11 +24,16 @@ public class GLRenderer10 implements RenderContext {
 
 	private Context mContext;
 	private SceneManagerInterface mSceneManager;
+	private Frustum mFrustum;
+	private Camera mCamera;
 	private Shader mShader;
+	private GLViewer mViewer;
 
 	private float mAngle;
 	
 	private int mProgram;
+	
+	Matrix4f t = new Matrix4f();
 
 	private ShortBuffer mIndexBuffer;
 	private IntBuffer mVertexBuffer;
@@ -60,6 +65,12 @@ public class GLRenderer10 implements RenderContext {
 
 	public void setSceneManager(SceneManagerInterface sceneManager) {
 		mSceneManager = sceneManager;
+		mCamera = mSceneManager.getCamera();
+		mFrustum = mSceneManager.getFrustum();
+	}
+	
+	public void setViewer(GLViewer viewer) {
+		mViewer = viewer;
 	}
 
 	/**
@@ -152,8 +163,8 @@ public class GLRenderer10 implements RenderContext {
 //		gl.glRotatef(mAngleX, 0, 1, 0);
 //		gl.glRotatef(mAngleY, 1, 0, 0);
 		
-		Matrix4f t = new Matrix4f();
-		t.set(mSceneManager.getCamera().getCameraMatrix());
+		
+		t.set(mCamera.getCameraMatrix());
 		t.mul(renderItem.getT());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 		
@@ -306,21 +317,20 @@ public class GLRenderer10 implements RenderContext {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
 		gl.glViewport(0, 0, width, height);
-
+		mViewer.surfaceHasChanged(width, height);
+//		mFrustum.setAspectRatio(height/width);
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
 		 * draw, but usually a new projection needs to be set when the viewport
 		 * is resized.
 		 */
-
-		float ratio = (float) width / height;
 		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
+		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		Log.d(TAG, "onsurfactecreated method called");
+		
 		/*
 		 * By default, OpenGL enables features that improve quality but reduce
 		 * performance. One might want to tweak that especially on software
@@ -338,5 +348,8 @@ public class GLRenderer10 implements RenderContext {
 		gl.glEnable(GL10.GL_CULL_FACE);
 		gl.glShadeModel(GL10.GL_SMOOTH);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
+		
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 	}
 }
