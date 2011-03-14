@@ -40,6 +40,7 @@ public class GLViewerActivity extends Activity {
 		mSceneManager.addShape(shape2);
 		
 		Trackball trackball = new Trackball(shape);
+//		trackball.setSize(2, 2);
 
 		boolean openGlES20 = detectOpenGLES20(); 
 		if (openGlES20) {

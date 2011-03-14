@@ -60,7 +60,7 @@ public class GLViewer extends GLSurfaceView {
 			float dx = (x - mPreviousX) * TOUCH_SCALE_FACTOR;
 			float dy = (y - mPreviousY) * TOUCH_SCALE_FACTOR;
 
-			mTrackball.simpleUpdate(x, y, mPreviousX, mPreviousY);
+			mTrackball.simpleUpdate(x, y, mPreviousX, mPreviousY, TOUCH_SCALE_FACTOR);
 
 			requestRender();
 		}
