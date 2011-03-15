@@ -2,6 +2,8 @@ package ch.chnoch.thesis.renderer.util;
 
 import java.util.List;
 
+import javax.vecmath.Matrix4f;
+
 public class Util {
 
 	/**
@@ -36,5 +38,13 @@ public class Util {
 		}
 
 		return floatArray;
+	}
+	
+	/**
+	 * Creates a new Identity Matrix.
+	 * @return an identity Matrix.
+	 */
+	public static Matrix4f getIdentityMatrix() {
+		return new Matrix4f(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 	}
 }

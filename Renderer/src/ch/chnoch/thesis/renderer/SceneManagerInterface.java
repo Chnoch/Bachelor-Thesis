@@ -17,11 +17,6 @@ public interface SceneManagerInterface {
 	 */
 	public SceneManagerIterator iterator();
 
-	/**
-	 * @return an iterator to access the lights in the scene.
-	 */
-	public Iterator<Light> lightIterator();
-	
 	public Camera getCamera();
 	
 	public Frustum getFrustum();

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.*;
@@ -21,25 +22,58 @@ import android.util.Log;
 public class GLViewerActivity extends Activity {
 
 	private GLSurfaceView mViewer;
-	private SimpleSceneManager mSceneManager;
+	private GraphSceneManager mSceneManager;
 	private RenderContext mRenderer;
 	private final String TAG = "GLViewerActivity";
+	
+	private Node mRoot, mSmallGroup, mShapeNodeBig, mShapeNodeSmallOne, mShapeNodeSmallTwo;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mSceneManager = new SimpleSceneManager();
+		mSceneManager = new GraphSceneManager();
 //		Shape shape = loadTeapot();
-		Shape shape = loadCube();
-		Shape shape2 = loadCube();
-		Vector3f trans = new Vector3f(2,2,2);
-		shape2.getTransformation().setTranslation(trans);
-		mSceneManager.addShape(shape);
-		mSceneManager.addShape(shape2);
+		Shape shapeBig = loadCube(1);
+		Shape shapeSmall = loadCube(0.25f);
+		Vector3f transY = new Vector3f(0,1,0);
+		Vector3f transLeft = new Vector3f(-0.5f,0,0);
+		Vector3f transRight = new Vector3f(0.5f,0,0);
 		
-		Trackball trackball = new Trackball(shape);
+		Matrix4f smallTrans = Util.getIdentityMatrix();
+		smallTrans.setTranslation(transY);
+		Matrix4f leftTrans = Util.getIdentityMatrix();
+		leftTrans.setTranslation(transLeft);
+		Matrix4f rightTrans = Util.getIdentityMatrix();
+		rightTrans.setTranslation(transRight);
+		
+		mRoot = new TransformGroup();
+		mRoot.setTransformationMatrix(Util.getIdentityMatrix());
+		mSceneManager.setRoot(mRoot);
+		
+		mShapeNodeBig = new ShapeNode();
+		mShapeNodeBig.setTransformationMatrix(Util.getIdentityMatrix());
+		mShapeNodeBig.setShape(shapeBig);
+		mRoot.addChild(mShapeNodeBig);
+		
+		mSmallGroup = new TransformGroup();
+		mSmallGroup.setTransformationMatrix(smallTrans);
+		mRoot.addChild(mSmallGroup);
+		
+		mShapeNodeSmallOne = new ShapeNode();
+		mShapeNodeSmallOne.setTransformationMatrix(leftTrans);
+		mShapeNodeSmallTwo = new ShapeNode();
+		mShapeNodeSmallTwo.setTransformationMatrix(rightTrans);
+		
+		mShapeNodeSmallOne.setShape(shapeSmall);
+		mShapeNodeSmallTwo.setShape(shapeSmall);
+		
+		mSmallGroup.addChild(mShapeNodeSmallOne);
+		mSmallGroup.addChild(mShapeNodeSmallTwo);
+		
+		
+		Trackball trackball = new Trackball(mRoot);
 //		trackball.setSize(2, 2);
 
 		boolean openGlES20 = detectOpenGLES20(); 
@@ -58,7 +92,7 @@ public class GLViewerActivity extends Activity {
 			Material material = new Material();
 			material.setShader(shader);
 
-			shape.setMaterial(material);
+//			shape.setMaterial(material);
 		} else {
 			mRenderer = new GLRenderer10(getApplication());
 		}
@@ -126,7 +160,7 @@ public class GLViewerActivity extends Activity {
 		return new Shape(vertexBuffer);
 	}
 
-	private Shape loadCube() {
+	private Shape loadCube(float scale) {
 		// Construct a data structure that stores the vertices, their
         // attributes, and the triangle mesh connectivity
 //        VertexData vertexData = new VertexData(vertices.length / 3);
@@ -138,6 +172,11 @@ public class GLViewerActivity extends Activity {
         VertexBuffers vertexBuffer = new VertexBuffers();
         vertexBuffer.setColorBuffer(colors);
         vertexBuffer.setIndexBuffer(indices);
+        
+        for (int i=0;i<vertices.length;i++) {
+        	vertices[i] *= scale;
+        }
+        
         vertexBuffer.setVertexBuffer(vertices);
 
         // Make a shape and add the object
