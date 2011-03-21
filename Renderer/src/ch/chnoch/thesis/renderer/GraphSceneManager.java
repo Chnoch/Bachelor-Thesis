@@ -58,10 +58,8 @@ public class GraphSceneManager implements SceneManagerInterface {
 				List<Node> children = node.getChildren();
 
 				for (Node child : children) {
-//					Matrix4f t = new Matrix4f(node.getTransformationMatrix());
 					Matrix4f mat = new Matrix4f(t);
 					mat.mul(child.getTransformationMatrix());
-//					child.setTransformationMatrix(t);
 
 					init(child, mat);
 				}

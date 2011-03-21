@@ -1,5 +1,7 @@
 package ch.chnoch.thesis.renderer;
 
+import javax.vecmath.Matrix4f;
+
 import android.opengl.GLSurfaceView;
 
 /**
@@ -26,5 +28,7 @@ public interface RenderContext extends GLSurfaceView.Renderer {
 	 * @return the texture
 	 */
 	Texture makeTexture();
+	
+	public Matrix4f getViewportMatrix();
 
 }

@@ -8,38 +8,25 @@ import javax.vecmath.*;
  */
 public class Shape {
 
-	private Material material;
-	private VertexData vertexData;
-	private VertexBuffers vertexBuffers;
+	private Material mMaterial;
+	private VertexBuffers mVertexBuffers;
 	private Matrix4f t;
+	private BoundingBox mBox;
 
-	/**
-	 * Make a shape from {@link VertexData}.
-	 * 
-	 * @param vertexData
-	 *            the vertices of the shape.
-	 */
-	public Shape(VertexData vertexData) {
-		this.vertexData = vertexData;
-		setMatrices();
+	public Shape(VertexBuffers vertexBuffers) {
+		mVertexBuffers = vertexBuffers;
+		init();
 	}
 	
-	public Shape(VertexBuffers vertexBuffers) {
-		this.vertexBuffers = vertexBuffers;
-		setMatrices();
-	}
-
-	private void setMatrices() {
+	private void init() {
+		mBox = new BoundingBox(mVertexBuffers.getVertexBuffer());
+//		mTrackball = new Trackball(this);
 		t = new Matrix4f();
 		t.setIdentity();
 	}
 
-	public VertexData getVertexData() {
-		return vertexData;
-	}
-	
 	public VertexBuffers getVertexBuffers() {
-		return vertexBuffers;
+		return mVertexBuffers;
 	}
 
 	public void setTransformation(Matrix4f t) {
@@ -49,19 +36,23 @@ public class Shape {
 	public Matrix4f getTransformation() {
 		return t;
 	}
+	
+	public BoundingBox getBoundingBox() {
+		return mBox;
+	}
 
 	/**
 	 * To be implemented in the "Textures and Shading" project.
 	 */
 	public void setMaterial(Material material) {
-		this.material = material;
+		this.mMaterial = material;
 	}
 
 	/**
 	 * To be implemented in the "Textures and Shading" project.
 	 */
 	public Material getMaterial() {
-		return this.material;
+		return this.mMaterial;
 	}
 
 }

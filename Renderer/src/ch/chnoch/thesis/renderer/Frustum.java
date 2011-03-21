@@ -26,7 +26,7 @@ public class Frustum {
         // Aspect Ratio is 1 on init
         this.aspectRatio = 1;
         // some calculations done on the formula
-        this.vertFOV = 60;
+        this.vertFOV = 90;
         // some calcs as well
         this.nearPlane = 1;
         this.farPlane = 100;

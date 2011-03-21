@@ -45,7 +45,7 @@ public class Trackball {
 		return mapped;
 	}
 
-	public Quat4f createQuaternion(float x, float y, float oldX, float oldY, final float factor) {
+	/*public Quat4f createQuaternion(float x, float y, float oldX, float oldY, final float factor) {
 
 		Vector3f oldVector = this.trackBallMapping(oldX, oldY);
 
@@ -80,6 +80,25 @@ public class Trackball {
 //		mShape.getTransformation().mul(trans);
 //		AxisAngle4f trans = new AxisAngle4f();
 //		trans.set(mShape.getTransformation());
+		 Quat4f q = new Quat4f();
+			mShape.getTransformationMatrix().get(q);
+			quat.mul(q);
+			mShape.getTransformationMatrix().set(quat);
+	}*/
+
+	public void update(Vector3f cur, Vector3f prev, float factor) {
+		Vector3f axisVector = new Vector3f();
+		axisVector.cross(prev, cur);
+		// axisVector.normalize();
+		// newVector.negate();
+		float angle = prev.angle(cur)*factor;
+
+		// AxisAngle:
+		AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
+		Quat4f quat = new Quat4f();
+		quat.set(axisAngle);
+		quat.normalize();
+		
 		Quat4f q = new Quat4f();
 		mShape.getTransformationMatrix().get(q);
 		quat.mul(q);

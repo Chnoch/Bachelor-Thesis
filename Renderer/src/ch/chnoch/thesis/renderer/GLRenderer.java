@@ -9,6 +9,7 @@ import java.util.ListIterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.vecmath.Matrix4f;
 
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
@@ -66,6 +67,11 @@ public class GLRenderer implements RenderContext {
 	public void setSceneManager(SceneManagerInterface sceneManager) {
 		mSceneManager = sceneManager;
 	}
+	
+	//TODO: return viewport matrix
+	public Matrix4f getViewportMatrix() {
+		return null;
+	}
 
 	/**
 	 * The main rendering method.
@@ -74,7 +80,7 @@ public class GLRenderer implements RenderContext {
 	 *            the object that needs to be drawn
 	 */
 	private void draw(RenderItem renderItem) {
-		VertexData vertexData = renderItem.getShape().getVertexData();
+		VertexData vertexData = null;
 		LinkedList<VertexData.VertexElement> vertexElements = vertexData
 				.getElements();
 		int indices[] = vertexData.getIndices();

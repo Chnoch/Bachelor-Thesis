@@ -25,13 +25,6 @@ public abstract class Group implements Node {
     public void setShape(Shape shape) {
     }
     
-    public Light getLight() {
-        return null;
-    }
-    
-    public void setLight(Light light){
-    }
-
     public Matrix4f getTransformationMatrix() {
         return null;
     }

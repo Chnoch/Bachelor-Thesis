@@ -13,6 +13,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
@@ -28,10 +30,8 @@ public class GLRenderer10 implements RenderContext {
 	private Frustum mFrustum;
 	private Camera mCamera;
 	private Shader mShader;
+	private Matrix4f mViewportMatrix;
 	private GLViewer mViewer;
-	private GL10 mGl;
-
-	private float mAngle;
 
 	private int mProgram;
 
@@ -63,6 +63,7 @@ public class GLRenderer10 implements RenderContext {
 
 		mVertexArray = new ArrayList<Float>();
 		mColorArray = new ArrayList<Integer>();
+		mViewportMatrix = new Matrix4f();
 	}
 
 	public void setSceneManager(SceneManagerInterface sceneManager) {
@@ -73,6 +74,10 @@ public class GLRenderer10 implements RenderContext {
 
 	public void setViewer(GLViewer viewer) {
 		mViewer = viewer;
+	}
+	
+	public Matrix4f getViewportMatrix() {
+		return mViewportMatrix;
 	}
 
 	/**
@@ -152,7 +157,6 @@ public class GLRenderer10 implements RenderContext {
 		 * mIndexBuffer.position(0);
 		 */
 		// cleanMaterial(renderItem.getShape().getMaterial());
-		mGl = gl;
 		Shape shape = renderItem.getShape();
 		VertexBuffers buffers = shape.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
@@ -319,17 +323,17 @@ public class GLRenderer10 implements RenderContext {
 
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
-		gl.glViewport(0, 0, width, height);
+		 gl.glViewport(0, 0, width, height);
 		mViewer.surfaceHasChanged(width, height);
 		// mFrustum.setAspectRatio(height/width);
 		// reset the viewport matrix
-		Matrix4f matVP = new Matrix4f();
-		matVP.setM00(width / 2);
-		matVP.setM03((width - 1) / 2);
-		matVP.setM11(height / 2);
-		matVP.setM13((height - 1) / 2);
-		matVP.setM22(1);
-		matVP.setM33(1);
+
+		mViewportMatrix.setM00(width / 2);
+		mViewportMatrix.setM03((width - 1) / 2);
+		mViewportMatrix.setM11(height / 2);
+		mViewportMatrix.setM13((height - 1) / 2);
+		mViewportMatrix.setM22(1);
+		mViewportMatrix.setM33(1);
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
 		 * draw, but usually a new projection needs to be set when the viewport
@@ -339,7 +343,7 @@ public class GLRenderer10 implements RenderContext {
 		gl.glLoadMatrixf(
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 //		gl.glMatrixMode(GL11.GL_VIEWPORT);
-//		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(matVP), 0);
+//		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(mViewportMatrix), 0);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -368,27 +372,24 @@ public class GLRenderer10 implements RenderContext {
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 	}
 
-	/*public void pick(float mouseX, float mouseY) {
-		final int[] vp = new int[4];
-		final int[] mv = new int[16];
-		final int[] p = new int[16];
-		final double[] result = new double[3];
-		float mouseZ;
+	/*
+	 * public void pick(float mouseX, float mouseY) { final int[] vp = new
+	 * int[4]; final int[] mv = new int[16]; final int[] p = new int[16]; final
+	 * double[] result = new double[3]; float mouseZ;
+	 * 
+	 * mGl.glGetIntegerv(GLES11.GL_VIEWPORT, vp, 0);
+	 * mGl.glGetIntegerv(GLES11.GL_MODELVIEW_MATRIX, mv, 0);
+	 * mGl.glGetIntegerv(GLES11.GL_PROJECTION_MATRIX, p, 0);
+	 * 
+	 * mGl.glReadPixels(mouseX, mouseY, 1, 1, GLES11.GL_DEPTH_COMPONENT,
+	 * GLES11.GL_FLOAT, mouseZ);
+	 * 
+	 * glu.gluUnProject(mouseX, mouseY, mouseZ.get(0), mv, 0, p, 0, vp, 0,
+	 * result, 0);
+	 * 
+	 * System.out.println("mouse: " + mouseX + ", " + mouseY + ", " +
+	 * mouseZ.get(0)); System.out.println("world: " + result[0] + ", " +
+	 * result[1] + ", " + result[2]); }
+	 */
 
-		mGl.glGetIntegerv(GLES11.GL_VIEWPORT, vp, 0);
-		mGl.glGetIntegerv(GLES11.GL_MODELVIEW_MATRIX, mv, 0);
-		mGl.glGetIntegerv(GLES11.GL_PROJECTION_MATRIX, p, 0);
-
-		mGl.glReadPixels(mouseX, mouseY, 1, 1, GLES11.GL_DEPTH_COMPONENT,
-				GLES11.GL_FLOAT, mouseZ);
-
-		glu.gluUnProject(mouseX, mouseY, mouseZ.get(0), mv, 0, p, 0, vp, 0,
-				result, 0);
-
-		System.out.println("mouse: " + mouseX + ", " + mouseY + ", "
-				+ mouseZ.get(0));
-		System.out.println("world: " + result[0] + ", " + result[1] + ", "
-				+ result[2]);
-	}
-	*/
 }

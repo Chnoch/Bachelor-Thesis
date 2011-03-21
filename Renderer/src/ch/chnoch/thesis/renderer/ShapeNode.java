@@ -1,27 +1,19 @@
 package ch.chnoch.thesis.renderer;
 
-import javax.vecmath.Matrix4f;
-
 public class ShapeNode extends Leaf {
 
-    private Shape shape;
+    private Shape mShape;
     
     public ShapeNode() {
         super();
     }
     
     public void setShape(Shape shape) {
-        this.shape = shape;
+        this.mShape = shape;
     }
     
     public Shape getShape() {
-        return this.shape;
+        return this.mShape;
     }
 
-    public Light getLight() {
-        return null;
-    }
-
-    public void setLight(Light light) {
-    }
 }
