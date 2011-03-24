@@ -2,11 +2,12 @@ package ch.chnoch.thesis.renderer;
 
 import java.nio.IntBuffer;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 public class BoundingBox {
 
-	Vector3f low, high;
+	private Vector3f low, high;
 
 	public BoundingBox(IntBuffer vertices) {
 		init(vertices);
@@ -98,5 +99,21 @@ public class BoundingBox {
 
 		return true;
 	}
+	
+	public Vector3f getLow() {
+		return low;
+	}
 
+	public Vector3f getHigh() {
+		return high;
+	}
+
+	/**
+	 * This method is to be used to transform the bounding box together with the shape
+	 * @param trans
+	 */
+	public void transform(Matrix4f trans) {
+		trans.transform(low);
+		trans.transform(high);
+	}
 }

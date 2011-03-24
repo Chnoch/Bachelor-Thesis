@@ -3,8 +3,6 @@ package ch.chnoch.thesis.viewer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -35,8 +33,8 @@ public class GLViewerActivity extends Activity {
 
 		mSceneManager = new GraphSceneManager();
 //		Shape shape = loadTeapot();
-		Shape shapeBig = loadCube(1);
-		Shape shapeSmall = loadCube(0.25f);
+		Shape shapeBig = Util.loadCube(1);
+		Shape shapeSmall = Util.loadCube(0.25f);
 		Vector3f transY = new Vector3f(0,1,0);
 		Vector3f transLeft = new Vector3f(-0.5f,0,0);
 		Vector3f transRight = new Vector3f(0.5f,0,0);
@@ -160,30 +158,6 @@ public class GLViewerActivity extends Activity {
 		return new Shape(vertexBuffer);
 	}
 
-	private Shape loadCube(float scale) {
-		// Construct a data structure that stores the vertices, their
-        // attributes, and the triangle mesh connectivity
-//        VertexData vertexData = new VertexData(vertices.length / 3);
-//        vertexData.addElement(vertices, VertexData.Semantic.POSITION, 3);
-//        vertexData.addElement(colors, VertexData.Semantic.COLOR, 3);
-
-//        vertexData.addIndices(indices);
-        
-        VertexBuffers vertexBuffer = new VertexBuffers();
-        vertexBuffer.setColorBuffer(colors);
-        vertexBuffer.setIndexBuffer(indices);
-        
-        for (int i=0;i<vertices.length;i++) {
-        	vertices[i] *= scale;
-        }
-        
-        vertexBuffer.setVertexBuffer(vertices);
-
-        // Make a shape and add the object
-        return new Shape(vertexBuffer);
-	}
-	
-	
 	private String readRawText(int id) {
 		InputStream raw = getApplication().getResources().openRawResource(id);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -202,37 +176,4 @@ public class GLViewerActivity extends Activity {
 
 		return byteArrayOutputStream.toString();
 	}
-	
-	
-	int one = 0x10000;
-    float vertices[] = {
-            -one, -one, -one,
-            one, -one, -one,
-            one,  one, -one,
-            -one,  one, -one,
-            -one, -one,  one,
-            one, -one,  one,
-            one,  one,  one,
-            -one,  one,  one,
-    };
-    
-    int colors[] = {
-            0,    0,    0,  one,
-            one,    0,    0,  one,
-            one,  one,    0,  one,
-            0,  one,    0,  one,
-            0,    0,  one,  one,
-            one,    0,  one,  one,
-            one,  one,  one,  one,
-            0,  one,  one,  one,
-    };
-
-    short indices[] = {
-            0, 4, 5,    0, 5, 1,
-            1, 5, 6,    1, 6, 2,
-            2, 6, 7,    2, 7, 3,
-            3, 7, 4,    3, 4, 0,
-            4, 7, 6,    4, 6, 5,
-            3, 0, 1,    3, 1, 2
-    };
 }

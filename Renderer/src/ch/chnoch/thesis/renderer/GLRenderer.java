@@ -394,4 +394,8 @@ public class GLRenderer implements RenderContext {
 			Log.e(TAG, "Error creating surface", exc);
 		}
 	}
+
+	public SceneManagerInterface getSceneManager() {
+		return null;
+	}
 }

@@ -30,5 +30,7 @@ public interface RenderContext extends GLSurfaceView.Renderer {
 	Texture makeTexture();
 	
 	public Matrix4f getViewportMatrix();
+	
+	public SceneManagerInterface getSceneManager();
 
 }
