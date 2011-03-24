@@ -9,15 +9,18 @@ import javax.vecmath.*;
  */
 public class RenderItem {
 
+	private Shape mShape;
+	private Matrix4f t;
+	
 	public RenderItem(Shape shape, Matrix4f t)
 	{
-		this.shape = shape;
+		this.mShape = shape;
 		this.t = t;
 	}
 	
 	public Shape getShape()
 	{
-		return shape;
+		return mShape;
 	}
 	
 	public Matrix4f getT()
@@ -25,6 +28,4 @@ public class RenderItem {
 		return t;
 	}
 	
-	private Shape shape;
-	private Matrix4f t;
 }

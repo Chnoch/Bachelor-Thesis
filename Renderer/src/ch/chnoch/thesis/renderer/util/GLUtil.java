@@ -6,6 +6,7 @@ import android.opengl.GLES20;
 import android.util.Log;
 
 public class GLUtil {
+	private static float[] f = new float[16];
 
 	/**
 	 * Checks for the last GL error that occured. Throws a runtime exception if
@@ -26,7 +27,6 @@ public class GLUtil {
 	 * OpenGL.
 	 */
 	public static float[] matrix4fToFloat16(Matrix4f m) {
-		float[] f = new float[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
 				f[j * 4 + i] = m.getElement(i, j);

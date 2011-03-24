@@ -11,7 +11,10 @@ import java.util.ListIterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
@@ -24,11 +27,15 @@ public class GLRenderer10 implements RenderContext {
 
 	private Context mContext;
 	private SceneManagerInterface mSceneManager;
+	private Frustum mFrustum;
+	private Camera mCamera;
 	private Shader mShader;
+	private Matrix4f mViewportMatrix;
+	private GLViewer mViewer;
 
-	private float mAngle;
-	
 	private int mProgram;
+
+	Matrix4f t = new Matrix4f();
 
 	private ShortBuffer mIndexBuffer;
 	private IntBuffer mVertexBuffer;
@@ -38,7 +45,7 @@ public class GLRenderer10 implements RenderContext {
 
 	private List<Float> mVertexArray;
 	private List<Integer> mColorArray;
-	
+
 	public float mAngleX = 0;
 	public float mAngleY = 0;
 
@@ -56,10 +63,21 @@ public class GLRenderer10 implements RenderContext {
 
 		mVertexArray = new ArrayList<Float>();
 		mColorArray = new ArrayList<Integer>();
+		mViewportMatrix = new Matrix4f();
 	}
 
 	public void setSceneManager(SceneManagerInterface sceneManager) {
 		mSceneManager = sceneManager;
+		mCamera = mSceneManager.getCamera();
+		mFrustum = mSceneManager.getFrustum();
+	}
+
+	public void setViewer(GLViewer viewer) {
+		mViewer = viewer;
+	}
+	
+	public Matrix4f getViewportMatrix() {
+		return mViewportMatrix;
 	}
 
 	/**
@@ -139,21 +157,19 @@ public class GLRenderer10 implements RenderContext {
 		 * mIndexBuffer.position(0);
 		 */
 		// cleanMaterial(renderItem.getShape().getMaterial());
-
 		Shape shape = renderItem.getShape();
 		VertexBuffers buffers = shape.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
 		mColorBuffer = buffers.getColorBuffer();
 		mIndexBuffer = buffers.getIndexBuffer();
-		
+
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
-//		gl.glLoadIdentity();
-//		gl.glTranslatef(0, 0, -3.0f);
-//		gl.glRotatef(mAngleX, 0, 1, 0);
-//		gl.glRotatef(mAngleY, 1, 0, 0);
-		
-		Matrix4f t = new Matrix4f();
-		t.set(mSceneManager.getCamera().getCameraMatrix());
+		// gl.glLoadIdentity();
+		// gl.glTranslatef(0, 0, -3.0f);
+		// gl.glRotatef(mAngleX, 0, 1, 0);
+		// gl.glRotatef(mAngleY, 1, 0, 0);
+
+		t.set(mCamera.getCameraMatrix());
 		t.mul(renderItem.getT());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 		
@@ -272,6 +288,10 @@ public class GLRenderer10 implements RenderContext {
 		return new GLTexture(mContext);
 	}
 
+	public SceneManagerInterface getSceneManager() {
+		return mSceneManager;
+	}
+
 	public void onDrawFrame(GL10 gl) {
 		SceneManagerIterator it = mSceneManager.iterator();
 
@@ -286,41 +306,49 @@ public class GLRenderer10 implements RenderContext {
 		 * Now we're ready to draw some 3D objects
 		 */
 
-		
-
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
 		while (it.hasNext()) {
 			draw(it.next(), gl);
 		}
-		
-//		mCube.draw(gl);
 
-//		gl.glRotatef(mAngle * 2.0f, 0, 1, 1);
-//		gl.glTranslatef(0.5f, 0.5f, 0.5f);
+		// mCube.draw(gl);
 
-//		mAngle += 1.2f;
+		// gl.glRotatef(mAngle * 2.0f, 0, 1, 1);
+		// gl.glTranslatef(0.5f, 0.5f, 0.5f);
+
+		// mAngle += 1.2f;
 	}
 
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
-		gl.glViewport(0, 0, width, height);
+		 gl.glViewport(0, 0, width, height);
+		mViewer.surfaceHasChanged(width, height);
+		// mFrustum.setAspectRatio(height/width);
+		// reset the viewport matrix
 
+		mViewportMatrix.setM00(width / 2);
+		mViewportMatrix.setM03((width - 1) / 2);
+		mViewportMatrix.setM11(height / 2);
+		mViewportMatrix.setM13((height - 1) / 2);
+		mViewportMatrix.setM22(1);
+		mViewportMatrix.setM33(1);
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
 		 * draw, but usually a new projection needs to be set when the viewport
 		 * is resized.
 		 */
-
-		float ratio = (float) width / height;
 		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
+		gl.glLoadMatrixf(
+				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
+//		gl.glMatrixMode(GL11.GL_VIEWPORT);
+//		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(mViewportMatrix), 0);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		Log.d(TAG, "onsurfactecreated method called");
+
 		/*
 		 * By default, OpenGL enables features that improve quality but reduce
 		 * performance. One might want to tweak that especially on software
@@ -338,5 +366,30 @@ public class GLRenderer10 implements RenderContext {
 		gl.glEnable(GL10.GL_CULL_FACE);
 		gl.glShadeModel(GL10.GL_SMOOTH);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
+
+		gl.glMatrixMode(GLES10.GL_PROJECTION);
+		gl.glLoadMatrixf(
+				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 	}
+
+	/*
+	 * public void pick(float mouseX, float mouseY) { final int[] vp = new
+	 * int[4]; final int[] mv = new int[16]; final int[] p = new int[16]; final
+	 * double[] result = new double[3]; float mouseZ;
+	 * 
+	 * mGl.glGetIntegerv(GLES11.GL_VIEWPORT, vp, 0);
+	 * mGl.glGetIntegerv(GLES11.GL_MODELVIEW_MATRIX, mv, 0);
+	 * mGl.glGetIntegerv(GLES11.GL_PROJECTION_MATRIX, p, 0);
+	 * 
+	 * mGl.glReadPixels(mouseX, mouseY, 1, 1, GLES11.GL_DEPTH_COMPONENT,
+	 * GLES11.GL_FLOAT, mouseZ);
+	 * 
+	 * glu.gluUnProject(mouseX, mouseY, mouseZ.get(0), mv, 0, p, 0, vp, 0,
+	 * result, 0);
+	 * 
+	 * System.out.println("mouse: " + mouseX + ", " + mouseY + ", " +
+	 * mouseZ.get(0)); System.out.println("world: " + result[0] + ", " +
+	 * result[1] + ", " + result[2]); }
+	 */
+
 }
