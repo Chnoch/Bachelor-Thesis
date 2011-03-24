@@ -157,16 +157,16 @@ public class GLRenderer10 implements RenderContext {
 		t.mul(renderItem.getT());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 		
-		try {
+//		try {
 			gl.glFrontFace(GL10.GL_CW);
 			gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
 			gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
 //			gl.glColor4f(0.5f, 0.5f, 0f, 0.5f);
 			gl.glDrawElements(GL10.GL_TRIANGLES, mIndexBuffer.capacity(), GL10.GL_UNSIGNED_SHORT,
 					mIndexBuffer);
-		} catch (Exception exc) {
-			Log.e(TAG, "Exception drawing item", exc);
-		}
+//		} catch (Exception exc) {
+//			Log.e(TAG, "Exception drawing item", exc);
+//		}
 	}
 
 	/**
