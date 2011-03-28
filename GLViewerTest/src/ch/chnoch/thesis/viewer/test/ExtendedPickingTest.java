@@ -35,13 +35,13 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		zero = new Vector3f(0,0,0);
 		
 		mMove = Util.getIdentityMatrix();
-		mMove.m03 = 3;
-		mMove.m13 = 3;
-		mMove.m23 = 3;
+		mMove.m03 = 2;
+		mMove.m13 = 2;
+		mMove.m23 = 2;
 		
 		mSceneManager.getCamera().getCameraMatrix().set(mIdentity);
 		mSceneManager.getFrustum().getProjectionMatrix().set(mIdentity);
-		mRenderer.getViewportMatrix().set(mIdentity);
+		mRenderer.setViewportMatrix(320, 483);
 		
 		shape = Util.loadCube(1);
 		root = new TransformGroup();
@@ -65,14 +65,14 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		Vector3f vecOne = new Vector3f(1,1,1);
 		Vector3f vecNegOne = new Vector3f(-1,-1,-1);
 		
-		Vector3f vecTwo = new Vector3f(2,2,2);
-		Vector3f vecFour = new Vector3f(4,4,4);
+		Vector3f vecThree = new Vector3f(3,3,3);
+//		Vector3f vecFour = new Vector3f(4,4,4);
 		
 		assertEquals(shapeNode.getBoundingBox().getLow(), vecNegOne);
 		assertEquals(shapeNode.getBoundingBox().getHigh(), vecOne);
 		
-		assertEquals(shapeNode2.getBoundingBox().getLow(), vecTwo);
-		assertEquals(shapeNode2.getBoundingBox().getHigh(), vecFour);
+		assertEquals(shapeNode2.getBoundingBox().getLow(), vecOne);
+		assertEquals(shapeNode2.getBoundingBox().getHigh(), vecThree);
 	}
 	
 	public void testPicking() {
@@ -81,7 +81,7 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		assertEquals(in.node, shapeNode);
 //		assertTrue(!in.hitPoint.equals(zero));
 
-		in = Util.unproject(1, 1, mRenderer);
+		in = Util.unproject(0.99f, 0.99f, mRenderer);
 		assertTrue(in.hit);
 		assertEquals(in.node, shapeNode);
 		assertTrue(!in.hitPoint.equals(zero));
@@ -91,26 +91,26 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		assertEquals(in.node, shapeNode);
 		assertTrue(!in.hitPoint.equals(zero));
 		
+		in = Util.unproject(1.01f, 1.01f, mRenderer);
+		assertTrue(in.hit);
+		assertEquals(in.node, shapeNode2);
+		assertTrue(!in.hitPoint.equals(zero));
 		
-//		in = Util.unproject(2, 2, mRenderer);
-//		assertTrue(in.hit);
-//		assertEquals(in.node, shapeNode2);
-//		assertTrue(!in.hitPoint.equals(zero));
+		in = Util.unproject(2, 2, mRenderer);
+		assertTrue(in.hit);
+		assertEquals(in.node, shapeNode2);
+		assertTrue(!in.hitPoint.equals(zero));
 		
 		in = Util.unproject(3, 3, mRenderer);
 		assertTrue(in.hit);
 		assertEquals(in.node, shapeNode2);
 		assertTrue(!in.hitPoint.equals(zero));
 
-		in = Util.unproject(4, 4, mRenderer);
-		assertTrue(in.hit);
-		assertEquals(in.node, shapeNode2);
-		assertTrue(!in.hitPoint.equals(zero));
-		
-		in = Util.unproject(1.99f, 1.99f, mRenderer);
-		assertFalse(in.hit);
 
 		in = Util.unproject(-2, -2, mRenderer);
+		assertFalse(in.hit);
+
+		in = Util.unproject(4, 4, mRenderer);
 		assertFalse(in.hit);
 	}
 }

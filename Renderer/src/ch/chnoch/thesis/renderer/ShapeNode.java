@@ -34,7 +34,6 @@ public class ShapeNode extends Leaf {
     		temp.mul(transform);
     		transform.set(temp);
     	}
-    	transform.setRotationScale(new Matrix3f(1,0,0,0,1,0,0,0,1));
     	mBoundingBox = mShape.getBoundingBox().transform(transform);
     }
     

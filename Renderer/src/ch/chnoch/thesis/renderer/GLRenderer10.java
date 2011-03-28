@@ -87,7 +87,7 @@ public class GLRenderer10 implements RenderContext {
 	 * @param renderItem
 	 *            the object that needs to be drawn
 	 */
-	private void draw(RenderItem renderItem, GL10 gl) {
+	private void draw(RenderItem renderItem, GL11 gl) {
 		Shape shape = renderItem.getNode().getShape();
 		VertexBuffers buffers = shape.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
@@ -95,14 +95,14 @@ public class GLRenderer10 implements RenderContext {
 		mIndexBuffer = buffers.getIndexBuffer();
 
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		// gl.glLoadIdentity();
-		// gl.glTranslatef(0, 0, -3.0f);
-		// gl.glRotatef(mAngleX, 0, 1, 0);
-		// gl.glRotatef(mAngleY, 1, 0, 0);
-
 		t.set(mCamera.getCameraMatrix());
+		Log.d("CameraMatrix", mCamera.getCameraMatrix().toString());
 		t.mul(renderItem.getT());
+		Log.d("RenderItem Matrix", renderItem.getT().toString());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
+		float[] projMat = new float[16];
+		gl.glGetFloatv(GLES11.GL_PROJECTION_MATRIX, projMat, 0);
+		Log.d("Projection Matrix", projMat.toString());
 
 		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
 		gl.glFrontFace(GL10.GL_CW);
@@ -258,7 +258,7 @@ public class GLRenderer10 implements RenderContext {
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
 		while (it.hasNext()) {
-			drawShapeAndBox(it.next(), gl);
+			drawShapeAndBox(it.next(), (GL11) gl);
 		}
 
 		// mCube.draw(gl);
@@ -269,7 +269,7 @@ public class GLRenderer10 implements RenderContext {
 		// mAngle += 1.2f;
 	}
 
-	private void drawShapeAndBox(RenderItem item, GL10 gl) {
+	private void drawShapeAndBox(RenderItem item, GL11 gl) {
 		draw(item, gl);
 		drawBox(item, gl);
 	}
@@ -277,16 +277,8 @@ public class GLRenderer10 implements RenderContext {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
 		mViewer.surfaceHasChanged(width, height);
-
-		// reset the viewport matrix
-		mViewportMatrix.setM00(width / 2);
-		mViewportMatrix.setM03((width - 1) / 2);
-
-		mViewportMatrix.setM11(height / 2);
-		mViewportMatrix.setM13((height - 1) / 2);
-
-		mViewportMatrix.setM22(1);
-		mViewportMatrix.setM33(1);
+		Log.d("Width & Height", width + ", " + height);
+		setViewportMatrix(width, height);
 
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
@@ -297,6 +289,18 @@ public class GLRenderer10 implements RenderContext {
 		gl.glLoadMatrixf(
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 		gl.glViewport(0, 0, width, height);
+	}
+	
+	public void setViewportMatrix(int width, int height) {
+		// reset the viewport matrix
+		mViewportMatrix.setM00(width / 2.f);
+		mViewportMatrix.setM03((width - 1) / 2.f);
+
+		mViewportMatrix.setM11(height / 2.f);
+		mViewportMatrix.setM13((height - 1) / 2.f);
+
+		mViewportMatrix.setM22(1);
+		mViewportMatrix.setM33(1);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {

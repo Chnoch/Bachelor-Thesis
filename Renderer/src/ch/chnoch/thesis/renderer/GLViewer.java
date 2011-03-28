@@ -79,12 +79,14 @@ public class GLViewer extends GLSurfaceView {
 				// TOUCH_SCALE_FACTOR);
 				// mRenderer.pick(x,y);
 				requestRender();
+				mPreviousX = x;
+				mPreviousY = y;
 			}
 		case MotionEvent.ACTION_DOWN:
-			RayBoxIntersection intersect = Util.unproject(mPreviousX,
-					mPreviousY, mRenderer);
+			RayBoxIntersection intersect = Util.unproject(x,
+					y, mRenderer);
 			if (intersect.hit) {
-				Log.d("ACTION_DOWN", "Box hit at point " + intersect.hitPoint.toString());
+				Log.d("ACTION_DOWN", "Coordinates: " + x + ", " + y);
 				Log.d("ACTION_DOWN", "Box with BB low: " + intersect.node.getBoundingBox().getLow()+ " and high: " + intersect.node.getBoundingBox().getHigh());
 			} else {
 				Log.d("ACTION_DOWN", "Nothing hit");

@@ -33,7 +33,7 @@ public class GLViewerActivity extends Activity {
 
 		mSceneManager = new GraphSceneManager();
 //		Shape shape = loadTeapot();
-		Shape shapeBig = Util.loadCube(4);
+		Shape shapeBig = Util.loadCube(1);
 		Shape shapeSmall = Util.loadCube(1);
 		Vector3f transY = new Vector3f(0,6,0);
 		Vector3f transLeft = new Vector3f(-2,0,0);
@@ -67,8 +67,8 @@ public class GLViewerActivity extends Activity {
 		mShapeNodeSmallOne.setShape(shapeSmall);
 		mShapeNodeSmallTwo.setShape(shapeSmall);
 		
-		mSmallGroup.addChild(mShapeNodeSmallOne);
-		mSmallGroup.addChild(mShapeNodeSmallTwo);
+//		mSmallGroup.addChild(mShapeNodeSmallOne);
+//		mSmallGroup.addChild(mShapeNodeSmallTwo);
 		
 		
 		Trackball trackball = new Trackball(mRoot);

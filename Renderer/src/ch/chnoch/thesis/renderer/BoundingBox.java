@@ -3,8 +3,11 @@ package ch.chnoch.thesis.renderer;
 import java.nio.IntBuffer;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
+
+import android.util.Log;
 
 public class BoundingBox {
 
@@ -20,7 +23,8 @@ public class BoundingBox {
 	}
 
 	private void init(IntBuffer vertices) {
-		int x, y, z, lowX, lowY, lowZ, highX, highY, highZ;
+		int x, y, z; 
+		float lowX, lowY, lowZ, highX, highY, highZ;
 		lowX = Integer.MAX_VALUE;
 		lowY = Integer.MAX_VALUE;
 		lowZ = Integer.MAX_VALUE;
@@ -55,12 +59,13 @@ public class BoundingBox {
 		vertices.position(0);
 
 		// correction because of 16/16 fixed integer-representation of fp's
-		lowX >>= 16;
-		lowY >>= 16;
-		lowZ >>= 16;
-		highX >>= 16;
-		highY >>= 16;
-		highZ >>= 16;
+		float div = 65536;
+		lowX = (float) lowX / div;
+		lowY = (float) lowY / div;
+		lowZ = (float) lowZ / div;
+		highX = (float) highX / div;
+		highY = (float) highY / div;
+		highZ = (float) highZ / div;
 
 		mLow = new Vector3f(lowX, lowY, lowZ);
 		mHigh = new Vector3f(highX, highY, highZ);
@@ -177,6 +182,52 @@ public class BoundingBox {
 	public enum Quadrant {
 		LEFT, RIGHT, MIDDLE
 	}
+	
+	public RayBoxIntersection intersect(Ray ray) {
+		float tXmin, tXmax, tYmin, tYmax, tZmin, tZmax;
+		Vector3f low = mLow;
+		Vector3f high = mHigh;
+		RayBoxIntersection intersect = new RayBoxIntersection();
+		Log.d("Ray", "Origin: " + ray.getOrigin().toString() + "Direction: " + ray.getDirection().toString());
+		Log.d("Box", "Low: " + low.toString() + " High: " + high);
+		
+		if (ray.getDirection().x >= 0) {
+			tXmin = (low.x - ray.getOrigin().x) / ray.getDirection().x;
+			tXmax = (high.x - ray.getOrigin().x) / ray.getDirection().x;
+		} else {
+			tXmin = (high.x - ray.getOrigin().x) / ray.getDirection().x;
+			tXmax = (low.x - ray.getOrigin().x) / ray.getDirection().x;
+		}
+
+		if (ray.getDirection().y >= 0) {
+			tYmin = (low.y - ray.getOrigin().y) / ray.getDirection().y;
+			tYmax = (high.y - ray.getOrigin().y) / ray.getDirection().y;
+		} else {
+			tYmin = (high.y - ray.getOrigin().y) / ray.getDirection().y;
+			tYmax = (low.y - ray.getOrigin().y) / ray.getDirection().y;
+		}
+
+		if ((tXmin > tYmax) || (tYmin > tXmax))
+			return intersect;
+		if (tYmin > tXmin)
+			tXmin = tYmin;
+		if (tYmax < tXmax)
+			tXmax = tYmax;
+
+		if (ray.getDirection().z >= 0) {
+			tZmin = (low.z - ray.getOrigin().z) / ray.getDirection().z;
+			tZmax = (high.z - ray.getOrigin().z) / ray.getDirection().z;
+		} else {
+			tZmin = (high.z - ray.getOrigin().z) / ray.getDirection().z;
+			tZmax = (low.z - ray.getOrigin().z) / ray.getDirection().z;
+		}
+
+		if ((tXmin > tZmax) || (tZmin > tXmax))
+			return intersect;
+
+		intersect.hit = true;
+		return intersect;
+	}
 
 	/**
 	 * This method is to be used to transform the bounding box together with the
@@ -185,10 +236,14 @@ public class BoundingBox {
 	 * @param trans
 	 */
 	public BoundingBox transform(Matrix4f trans) {
-		Vector4f low = new Vector4f(mLow);
-		Vector4f high = new Vector4f(mHigh);
-		low.w = 1;
-		high.w = 1;
+//		Vector4f low = new Vector4f(mLow);
+//		Vector4f high = new Vector4f(mHigh);
+//		low.w = 1;
+//		high.w = 1;
+		
+		Point3f low = new Point3f(mLow);
+		Point3f high = new Point3f(mHigh);
+		
 		trans.transform(low);
 		trans.transform(high);
 		return new BoundingBox(new Vector3f(low.x, low.y, low.z), new Vector3f(high.x, high.y, high.z));

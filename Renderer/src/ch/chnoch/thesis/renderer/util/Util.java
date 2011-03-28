@@ -99,18 +99,17 @@ public class Util {
 
 		SceneManagerIterator it = sceneManager.iterator();
 		while (it.hasNext()) {
-			Point3f w1 = new Point3f(x, y, -1);
-			Point3f w2 = new Point3f(x, y, 1);
-
+			Point3f w1 = new Point3f(x, y, 1);
+			Point3f w2 = new Point3f(x, y, -1);
 			item = it.next();
 			inverse = new Matrix4f(staticMatrix);
 			inverse.mul(item.getT());
 			try {
 				inverse.invert();
 
-				inverse.transform(w1);
-				inverse.transform(w2);
-				RayBoxIntersection inter = intersectRay(w1, w2, item.getNode());
+				Util.transform(inverse, w1);
+				Util.transform(inverse, w2);
+				RayBoxIntersection inter = intersectRay(w1, w2, item);
 				if (inter.hit) {
 					return inter;
 				}
@@ -139,13 +138,25 @@ public class Util {
 	}
 
 	private static RayBoxIntersection intersectRay(Point3f w1, Point3f w2,
-			Node node) {
+			RenderItem item) {
+		Node node = item.getNode();
+		Matrix4f trans = item.getT();
+		trans.invert();
+		
 		Vector3f origin = new Vector3f(w1);
 		Vector3f direction = new Vector3f(w2);
 		direction.sub(origin);
 		Ray ray = new Ray(origin, direction);
+//		Log.d("RayOrigin", origin.toString());
+//		Log.d("RayDirection", direction.toString());
+		
 		BoundingBox box = node.getBoundingBox();
-		RayBoxIntersection intersection = box.hitPoint(ray);
+		
+//		Log.d("BoundingBox", "low: " + box.getLow().toString() + " high: " + box.getHigh().toString());
+//		BoundingBox box = node.getBoundingBox().transform(trans);
+		
+		
+		RayBoxIntersection intersection = box.intersect(ray);
 		if (intersection.hit) {
 //			Log.d("intersectRay", "Hit Box with BB Low: " + box.getLow().toString() + " and High: " + box.getHigh().toString());
 			intersection.node = node;
@@ -160,11 +171,27 @@ public class Util {
 		SceneManagerInterface sceneManager = renderer.getSceneManager();
 		Camera camera = sceneManager.getCamera();
 		Frustum frustum = sceneManager.getFrustum();
-		
+
+		Log.d("Util", "Viewport: " + renderer.getViewportMatrix().toString());
+		Log.d("Util", "Frustum: " + frustum.getProjectionMatrix().toString());
+		Log.d("Util", "Camera: " + camera.getCameraMatrix().toString());
 		Matrix4f staticMatrix = new Matrix4f(renderer.getViewportMatrix());
 		staticMatrix.mul(frustum.getProjectionMatrix());
 		staticMatrix.mul(camera.getCameraMatrix());
 		
 		return staticMatrix;
 	}
+	
+	public static void transform(Matrix4f m, Point3f point)
+    {
+        float  x, y, z, w;
+        x = m.m00*point.x + m.m01*point.y + m.m02*point.z + m.m03;
+        y = m.m10*point.x + m.m11*point.y + m.m12*point.z + m.m13;
+        z = m.m20*point.x + m.m21*point.y + m.m22*point.z + m.m23;
+        w = m.m30*point.x + m.m31*point.y + m.m32*point.z + m.m33;
+        point.x = x/w;
+        point.y = y/w;
+        point.z = z/w;
+        
+    }
 }
