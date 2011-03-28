@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testrun name="PickingTest" project="GLViewerTest" tests="5" started="5" failures="0" errors="0" ignored="0">
+  <testsuite name="ch.chnoch.thesis.viewer.test.PickingTest" time="293.294">
+    <testcase name="testBoundingBox" classname="ch.chnoch.thesis.viewer.test.PickingTest" time="0.077"/>
+    <testcase name="testPicking" classname="ch.chnoch.thesis.viewer.test.PickingTest" time="292.828"/>
+    <testcase name="testProjectionInverse" classname="ch.chnoch.thesis.viewer.test.PickingTest" time="0.134"/>
+    <testcase name="testSetup" classname="ch.chnoch.thesis.viewer.test.PickingTest" time="0.05"/>
+    <testcase name="testAndroidTestCaseSetupProperly" classname="ch.chnoch.thesis.viewer.test.PickingTest" time="0.205"/>
+  </testsuite>
+</testrun>

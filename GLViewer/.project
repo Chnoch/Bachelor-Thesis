@@ -3,6 +3,8 @@
 	<name>GLViewer</name>
 	<comment></comment>
 	<projects>
+		<project>GLViewerTest</project>
+		<project>Renderer</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

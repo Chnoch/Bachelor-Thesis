@@ -1,0 +1,62 @@
+package ch.chnoch.thesis.viewer.test;
+
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+
+import ch.chnoch.thesis.renderer.*;
+import ch.chnoch.thesis.renderer.util.*;
+import android.content.Context;
+import android.test.AndroidTestCase;
+import android.test.mock.MockContext;
+
+public class ExtendedPickingTest extends AndroidTestCase {
+	GraphSceneManager mSceneManager;
+	GLViewer mViewer;
+	GLRenderer10 mRenderer;
+	Context context;
+	
+	Matrix4f mIdentity, mMove;
+	
+	Shape shape;
+	Node root, shapeNode, shapeNode2;
+	
+	public ExtendedPickingTest() {
+		context = new MockContext();
+		
+		mSceneManager = new GraphSceneManager();
+		mRenderer = new GLRenderer10(context);
+		mRenderer.setSceneManager(mSceneManager);
+		mIdentity = Util.getIdentityMatrix();
+		mMove = Util.getIdentityMatrix();
+		mMove.m03 = 2;
+		mMove.m13 = 2;
+		mMove.m23 = 2;
+		
+//		mSceneManager.getCamera().getCameraMatrix().set(mIdentity);
+//		mSceneManager.getFrustum().getProjectionMatrix().set(mIdentity);
+		mRenderer.getViewportMatrix().set(mIdentity);
+		
+		shape = Util.loadCube(1);
+		root = new TransformGroup();
+		shapeNode = new ShapeNode();
+		shapeNode2 = new ShapeNode();
+		
+		shapeNode.setTransformationMatrix(mIdentity);
+		shapeNode2.setTransformationMatrix(mMove);
+		root.setTransformationMatrix(mIdentity);
+		
+		shapeNode.setShape(shape);
+		shapeNode2.setShape(shape);
+		
+		root.addChild(shapeNode);
+		root.addChild(shapeNode2);
+		
+		mSceneManager.setRoot(root);
+	}
+	
+	public void testBoundingBoxes() {
+		Vector3f vecOne = new Vector3f(1,1,1);
+		Vector3f vecNegOne = new Vector3f(-1,-1,-1);
+		shapeNode.getBoundingBox().getLow();
+	}
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;RenderContext.java&apos; to &apos;Renderer/src/ch.chnoch.thesis.renderer&apos;&#x0D;&#x0A;- Original project: &apos;CG-jrtr&apos;&#x0D;&#x0A;- Destination element: &apos;Renderer/src/ch.chnoch.thesis.renderer&apos;&#x0D;&#x0A;- Original element: &apos;jrtr.RenderContext.java&apos;" description="Copy compilation unit" destination="=Renderer/src&lt;ch.chnoch.thesis.renderer" element1="/src&lt;jrtr{RenderContext.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1299157636761" units="1" version="1.0"/>
+</session>

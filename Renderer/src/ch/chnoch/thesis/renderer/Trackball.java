@@ -1,32 +1,33 @@
 package ch.chnoch.thesis.renderer;
 
-import javax.vecmath.AxisAngle4d;
 import javax.vecmath.AxisAngle4f;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Quat4f;
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 public class Trackball {
 
 	private float mWidth = 0, mHeight = 0;
-	private Node mShape;
-	private final Vector3f mIdentTrans = new Vector3f(0,0,0);
+	private Node mNode;
 
 	public Trackball() {
 	}
 
 	public Trackball(Node shape) {
-		init(shape);
+		setNode(shape);
 	}
 
 	public Trackball(Node shape, int width, int height) {
 		mWidth = width;
 		mHeight = height;
-		init(shape);
+		setNode(shape);
 	}
 
-	private void init(Node shape) {
-		mShape = shape;
+	public void setNode(Node node) {
+		mNode = node;
+	}
+	
+	public Node getNode() {
+		return mNode;
 	}
 
 	public void setSize(int width, int height) {
@@ -44,47 +45,15 @@ public class Trackball {
 		mapped.normalize();
 		return mapped;
 	}
-
-	/*public Quat4f createQuaternion(float x, float y, float oldX, float oldY, final float factor) {
-
-		Vector3f oldVector = this.trackBallMapping(oldX, oldY);
-
-		Vector3f newVector = this.trackBallMapping(x, y);
-
-		Vector3f axisVector = new Vector3f();
-		axisVector.cross(oldVector, newVector);
-		// axisVector.normalize();
-		// newVector.negate();
-		float angle = oldVector.angle(newVector)*factor;
-
-		// AxisAngle:
-		Quat4f axisAngle = new Quat4f(axisVector.x, axisVector.y,
-				axisVector.z, angle);
-		// Quaternions:
-
-//		 return new Quat4f(axisVector.x,s * axisVector.y, s *
-//		 axisVector.z,
-//		 (float) Math.cos(omega));
-//		return new Quat4f(axisVector.x,axisVector.y,axisVector.z, angle);
-		return axisAngle;
-		//		return axisAngle;
+	
+	public Vector3f projectOnTrackball(Vector3f vector) {
+		Vector3f point = new Vector3f(vector);
+		Vector3f center = mNode.getBoundingBox().getCenter();
+		point.sub(center);
+		point.normalize();
+		point.add(center);
+		return point;
 	}
-
-	public void simpleUpdate(float x, float y, float oldX, float oldY, final float factor) {
-
-		 Quat4f quat = createQuaternion(x, y, oldX, oldY, factor);
-//		AxisAngle4d axisAngle = createQuaternion(x, y, oldX, oldY);
-//		Matrix4f trans = new Matrix4f();
-//		trans.set(axisAngle);
-//		 trans.set(quat);
-//		mShape.getTransformation().mul(trans);
-//		AxisAngle4f trans = new AxisAngle4f();
-//		trans.set(mShape.getTransformation());
-		 Quat4f q = new Quat4f();
-			mShape.getTransformationMatrix().get(q);
-			quat.mul(q);
-			mShape.getTransformationMatrix().set(quat);
-	}*/
 
 	public void update(Vector3f cur, Vector3f prev, float factor) {
 		Vector3f axisVector = new Vector3f();
@@ -93,16 +62,28 @@ public class Trackball {
 		// newVector.negate();
 		float angle = prev.angle(cur)*factor;
 
+//		Vector4f ax = new Vector4f(axisVector);
+//		ax.w = 1;
+//		mNode.getTransformationMatrix().transform(ax);
+//		axisVector.x = ax.x;
+//		axisVector.y = ax.y;
+//		axisVector.z = ax.z;
 		// AxisAngle:
 		AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
-		Quat4f quat = new Quat4f();
-		quat.set(axisAngle);
-		quat.normalize();
+//		Quat4f quat = new Quat4f();
+//		quat.set(axisAngle);
+//		quat.normalize();
+//		
+//		Quat4f q = new Quat4f();
+//		mNode.getTransformationMatrix().get(q);
+//		quat.mul(q);
+		Matrix3f rot = new Matrix3f();
+		mNode.getTransformationMatrix().getRotationScale(rot);
 		
-		Quat4f q = new Quat4f();
-		mShape.getTransformationMatrix().get(q);
-		quat.mul(q);
-		mShape.getTransformationMatrix().set(quat);
+//		rot.setRotation(axisAngle);
+		mNode.getTransformationMatrix().setRotation(axisAngle);
+		
+//		mNode.getTransformationMatrix().set(quat);
 	}
 	
 }

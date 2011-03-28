@@ -1,0 +1,6 @@
+1298977696117	Encapsulate field 'shader'
+1298977712053	Encapsulate field 'texture'
+1299156758852	Copy compilation unit
+1299157641231	Delete element
+1299243459672	Delete element
+1299243992410	Rename local variable 'bytes'

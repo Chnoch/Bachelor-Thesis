@@ -9,16 +9,16 @@ import javax.vecmath.*;
  */
 public class RenderItem {
 
-	private Shape mShape;
+	private Node mShape;
 	private Matrix4f t;
 	
-	public RenderItem(Shape shape, Matrix4f t)
+	public RenderItem(Node shape, Matrix4f t)
 	{
 		this.mShape = shape;
 		this.t = t;
 	}
 	
-	public Shape getShape()
+	public Node getNode()
 	{
 		return mShape;
 	}

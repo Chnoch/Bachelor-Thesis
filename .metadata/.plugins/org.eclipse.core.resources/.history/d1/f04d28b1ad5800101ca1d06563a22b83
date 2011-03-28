@@ -1,0 +1,35 @@
+package ch.chnoch.thesis.renderer;
+
+import javax.vecmath.Matrix4f;
+
+public class ShapeNode extends Leaf {
+
+    private Shape mShape;
+    private BoundingBox mBoundingBox;
+    
+    public ShapeNode() {
+        super();
+    }
+    
+    public void setShape(Shape shape) {
+        this.mShape = shape;
+        setBoundingBox();
+    }
+    
+    public Shape getShape() {
+        return this.mShape;
+    }
+    
+    private void setBoundingBox() {
+    	Matrix4f transform = new Matrix4f(transformationMatrix);
+    	while (getParent() != null) {
+    		
+    	}
+    	mBoundingBox = mShape.getBoundingBox().transform(transformationMatrix);
+    }
+    
+    public BoundingBox getBoundingBox() {
+    	return mBoundingBox;
+    }
+
+}

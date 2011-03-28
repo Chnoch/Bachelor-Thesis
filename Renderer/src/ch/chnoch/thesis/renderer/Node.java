@@ -10,6 +10,9 @@ public interface Node {
     public void setTransformationMatrix(Matrix4f t);
     public Shape getShape();
     public void setShape(Shape shape);
+    public BoundingBox getBoundingBox();
     public List<Node> getChildren();
     public void addChild(Node child);
+    public Node getParent();
+    public void setParent(Node parent);
 }

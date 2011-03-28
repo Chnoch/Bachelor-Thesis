@@ -76,7 +76,9 @@ public class SimpleSceneManager implements SceneManagerInterface {
 			// transformation matrix of the shape. More sophisticated 
 			// scene managers will set the transformation for the 
 			// RenderItem differently.
-			return new RenderItem(shape, shape.getTransformation());
+			
+			//don't use that anymore!!!!!
+			return new RenderItem(null, shape.getTransformation());
 		}
 		
 		ListIterator<Shape> itr;

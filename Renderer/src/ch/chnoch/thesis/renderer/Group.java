@@ -7,6 +7,7 @@ import javax.vecmath.Matrix4f;
 
 public abstract class Group implements Node {
 
+	public Node parent;
     protected List<Node> children;
     
     public Group() {
@@ -29,12 +30,27 @@ public abstract class Group implements Node {
         return null;
     }
     
+    public BoundingBox getBoundingBox() {
+    	return null;
+    }
+    
     public void addChild(Node child) {
         this.children.add(child);
+        child.setParent(this);
     }
     
     public void removeChild(Node child) {
         this.children.remove(child);
+        child.setParent(null);
     }
+    
+    public Node getParent() {
+    	return this.parent;
+    }
+    
+    public void setParent(Node parent) {
+    	this.parent = parent;
+    }
+    
 
 }

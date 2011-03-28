@@ -51,7 +51,7 @@ public class GraphSceneManager implements SceneManagerInterface {
 
 		private void init(Node node, Matrix4f t) {
 			if (node.getShape() != null) {
-				stack.push(new RenderItem(node.getShape(), t));
+				stack.push(new RenderItem(node, t));
 			}
 
 			if (node.getChildren() != null) {

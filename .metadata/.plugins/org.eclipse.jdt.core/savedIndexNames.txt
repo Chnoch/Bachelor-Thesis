@@ -1,0 +1,15 @@
+INDEX VERSION 1.126+E:\Eigene Dateien\Workspaces\BachelorThesis\.metadata\.plugins\org.eclipse.jdt.core
+4107680038.index
+2213106257.index
+2879090580.index
+781719614.index
+4016253986.index
+1942077373.index
+1597827916.index
+1739487989.index
+2974520037.index
+537748368.index
+1483134961.index
+2653297699.index
+3665488950.index
+2801530353.index

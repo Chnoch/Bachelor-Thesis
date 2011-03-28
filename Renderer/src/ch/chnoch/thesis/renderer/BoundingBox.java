@@ -4,6 +4,7 @@ import java.nio.IntBuffer;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 public class BoundingBox {
 
@@ -65,46 +66,6 @@ public class BoundingBox {
 		mHigh = new Vector3f(highX, highY, highZ);
 	}
 
-	public boolean intersect(Ray ray) {
-		float tXmin, tXmax, tYmin, tYmax, tZmin, tZmax;
-
-		if (ray.getDirection().x >= 0) {
-			tXmin = (mLow.x - ray.getOrigin().x) / ray.getDirection().x;
-			tXmax = (mHigh.x - ray.getOrigin().x) / ray.getDirection().x;
-		} else {
-			tXmin = (mHigh.x - ray.getOrigin().x) / ray.getDirection().x;
-			tXmax = (mLow.x - ray.getOrigin().x) / ray.getDirection().x;
-		}
-
-		if (ray.getDirection().y >= 0) {
-			tYmin = (mLow.y - ray.getOrigin().y) / ray.getDirection().y;
-			tYmax = (mHigh.y - ray.getOrigin().y) / ray.getDirection().y;
-		} else {
-			tYmin = (mHigh.y - ray.getOrigin().y) / ray.getDirection().y;
-			tYmax = (mLow.y - ray.getOrigin().y) / ray.getDirection().y;
-		}
-
-		if ((tXmin > tYmax) || (tYmin > tXmax))
-			return false;
-		if (tYmin > tXmin)
-			tXmin = tYmin;
-		if (tYmax < tXmax)
-			tXmax = tYmax;
-
-		if (ray.getDirection().z >= 0) {
-			tZmin = (mLow.z - ray.getOrigin().z) / ray.getDirection().z;
-			tZmax = (mHigh.z - ray.getOrigin().z) / ray.getDirection().z;
-		} else {
-			tZmin = (mHigh.z - ray.getOrigin().z) / ray.getDirection().z;
-			tZmax = (mLow.z - ray.getOrigin().z) / ray.getDirection().z;
-		}
-
-		if ((tXmin > tZmax) || (tZmin > tXmax))
-			return false;
-
-		return true;
-	}
-
 	public Vector3f getLow() {
 		return mLow;
 	}
@@ -113,7 +74,20 @@ public class BoundingBox {
 		return mHigh;
 	}
 
-	public boolean hitPoint(Ray ray, Vector3f coordinate) {
+	public Vector3f getCenter() {
+		float xa = (mHigh.x - mLow.x) / 2f;
+		float x = mLow.x + xa;
+
+		float ya = (mHigh.y - mLow.y) / 2f;
+		float y = mLow.y + ya;
+
+		float za = (mHigh.z - mLow.z) / 2f;
+		float z = mLow.z + za;
+
+		return new Vector3f(x, y, z);
+	}
+
+	public RayBoxIntersection hitPoint(Ray ray) {
 		boolean inside = true;
 		Quadrant[] quadrant = new Quadrant[3];
 		float[] origin = new float[3];
@@ -123,28 +97,29 @@ public class BoundingBox {
 		float[] candidatePlane = new float[3];
 		float[] maxT = new float[3];
 		float[] coord = new float[3];
+		RayBoxIntersection rayBoxIntersection = new RayBoxIntersection();
 
 		origin[0] = ray.getOrigin().x;
 		origin[1] = ray.getOrigin().y;
 		origin[2] = ray.getOrigin().z;
-		
+
 		direction[0] = ray.getDirection().x;
 		direction[1] = ray.getDirection().y;
 		direction[2] = ray.getDirection().z;
-				
-		high[0] = mHigh.x;		
-		high[1] = mHigh.y;		
+
+		high[0] = mHigh.x;
+		high[1] = mHigh.y;
 		high[2] = mHigh.z;
-		
+
 		low[0] = mLow.x;
 		low[1] = mLow.y;
 		low[2] = mLow.z;
-		
+
 		for (int i = 0; i < 3; i++) {
 			if (origin[i] < low[i]) {
 				quadrant[i] = Quadrant.LEFT;
-				 candidatePlane[i] = low[i];
-				 inside = false;
+				candidatePlane[i] = low[i];
+				inside = false;
 			} else if (origin[i] > high[i]) {
 				quadrant[i] = Quadrant.RIGHT;
 				candidatePlane[i] = high[i];
@@ -156,44 +131,47 @@ public class BoundingBox {
 
 		// Ray origin inside bounding box
 		if (inside) {
-			coordinate = ray.getOrigin();
-			return true;
+			rayBoxIntersection.hitPoint = ray.getOrigin();
+			rayBoxIntersection.hit = true;
+			return rayBoxIntersection;
 		}
-		
+
 		// calculate T distances to candidate planes
-		for (int i =0; i<3; i++) {
+		for (int i = 0; i < 3; i++) {
 			if (quadrant[i] != Quadrant.MIDDLE && direction[i] != 0) {
 				maxT[i] = (candidatePlane[i] - origin[i]) / direction[i];
 			} else {
 				maxT[i] = -1;
 			}
 		}
-		
+
 		// Get largest of the maxT's for final choice of intersection
 		int whichPlane = 0;
-		for (int i = 1; i<3; i++) {
+		for (int i = 1; i < 3; i++) {
 			if (maxT[whichPlane] < maxT[i]) {
 				whichPlane = i;
 			}
 		}
-		
+
 		// Check final candidate actually inside box
 		if (maxT[whichPlane] < 0) {
-			return false;
+			return rayBoxIntersection;
 		}
-		
-		for (int i=0; i< 3; i++) {
+
+		for (int i = 0; i < 3; i++) {
 			if (whichPlane != i) {
 				coord[i] = origin[i] + maxT[whichPlane] * direction[i];
 				if (coord[i] < low[i] || coord[i] > high[i]) {
-					return false;
+					return rayBoxIntersection;
 				}
 			} else {
 				coord[i] = candidatePlane[i];
 			}
 		}
+		rayBoxIntersection.hit = true;
+		rayBoxIntersection.hitPoint = new Vector3f(coord);
 
-		return true;
+		return rayBoxIntersection;
 	}
 
 	public enum Quadrant {
@@ -207,10 +185,12 @@ public class BoundingBox {
 	 * @param trans
 	 */
 	public BoundingBox transform(Matrix4f trans) {
-		Vector3f low = new Vector3f(mLow);
-		Vector3f high = new Vector3f(mHigh);
+		Vector4f low = new Vector4f(mLow);
+		Vector4f high = new Vector4f(mHigh);
+		low.w = 1;
+		high.w = 1;
 		trans.transform(low);
 		trans.transform(high);
-		return new BoundingBox(low, high);
+		return new BoundingBox(new Vector3f(low.x, low.y, low.z), new Vector3f(high.x, high.y, high.z));
 	}
 }

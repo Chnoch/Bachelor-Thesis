@@ -2,6 +2,8 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.Matrix4f;
 
+import ch.chnoch.thesis.renderer.util.Util;
+
 /**
  * Stores the specification of a viewing frustum, or a viewing volume. The
  * viewing frustum is represented by a 4x4 projection matrix. You will extend
@@ -27,6 +29,8 @@ public class Frustum {
 		this.nearPlane = 1;
 		this.farPlane = 50;
 		this.updateFrustum();
+		
+//		projectionMatrix = Util.getIdentityMatrix();
 	}
 
 	/**
@@ -78,17 +82,22 @@ public class Frustum {
 	private void updateFrustum() {
 		final float DEG2RAD = 3.14159265f / 180;
 
-		float temp = (float) (1 / (aspectRatio * Math.tan(vertFOV * DEG2RAD / 2)));
-		this.projectionMatrix.setM00(temp);
+		float halfFov = vertFOV * 0.5f * DEG2RAD;
+		float deltaZ = farPlane - nearPlane;
+		float sine = (float)Math.sin(halfFov);
+		float cotangent = (float) Math.cos(halfFov) / sine;
+		
+//		float temp = (float) (1 / (aspectRatio * Math.tan(vertFOV * DEG2RAD / 2)));
+		this.projectionMatrix.setM00(cotangent);
 
-		temp = (float) (1 / Math.tan(vertFOV * DEG2RAD / 2));
-		this.projectionMatrix.setM11(temp);
+//		temp = (float) (1 / Math.tan(vertFOV * DEG2RAD / 2));
+		this.projectionMatrix.setM11(cotangent * aspectRatio);
 
-		temp = (nearPlane + farPlane) / (nearPlane - farPlane);
-		this.projectionMatrix.setM22(temp);
+//		temp = (nearPlane + farPlane) / (nearPlane - farPlane);
+		this.projectionMatrix.setM22((farPlane + nearPlane)/deltaZ);
 
-		temp = (2 * nearPlane * farPlane) / (nearPlane - farPlane);
-		this.projectionMatrix.setM23(temp);
+//		temp = (2 * nearPlane * farPlane) / (nearPlane - farPlane);
+		this.projectionMatrix.setM23(2 * nearPlane * farPlane / deltaZ);
 		
 		this.projectionMatrix.setM32(-1);
 	}

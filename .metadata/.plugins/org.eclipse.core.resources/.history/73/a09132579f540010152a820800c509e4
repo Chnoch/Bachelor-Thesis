@@ -1,0 +1,75 @@
+package ch.chnoch.thesis.viewer.test;
+
+
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+
+import android.content.Context;
+import android.test.AndroidTestCase;
+import android.test.mock.MockContext;
+import ch.chnoch.thesis.renderer.*;
+import ch.chnoch.thesis.renderer.util.Util;
+
+public class PickingTest extends AndroidTestCase {
+
+	GraphSceneManager mSceneManager;
+	GLViewer mViewer;
+	GLRenderer10 mRenderer;
+	Context context;
+	
+	Matrix4f mIdentity;
+	
+	Shape shape;
+	ShapeNode root;
+	
+	public PickingTest() {
+		context = new MockContext();
+		
+		mSceneManager = new GraphSceneManager();
+		mRenderer = new GLRenderer10(context);
+		mRenderer.setSceneManager(mSceneManager);
+		mIdentity = Util.getIdentityMatrix();
+		
+//		mSceneManager.getFrustum().getProjectionMatrix().set(mIdentity);
+		mRenderer.getViewportMatrix().set(mIdentity);
+		
+		shape = Util.loadCube(1);
+		root = new ShapeNode();
+		root.setTransformationMatrix(new Matrix4f(mIdentity));
+		root.setShape(shape);
+		
+		mSceneManager.setRoot(root);
+	}
+	
+	public void testSetup() {
+		Matrix4f id = new Matrix4f(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+		
+//		assertTrue(mSceneManager.getFrustum().getProjectionMatrix().equals(id));
+		
+		assertTrue(mRenderer.getViewportMatrix().equals(id));
+		assertEquals(mSceneManager.getRoot(), root);
+		assertTrue(root.getChildren() == null);
+		assertEquals(root.getShape(), shape);
+	}
+	
+	public void testBoundingBox() {
+		Vector3f one = new Vector3f(Util.one, Util.one, Util.one);
+		
+		assertTrue(shape.getBoundingBox().getHigh().equals(one);
+	}
+	
+	
+	public void testPicking() {
+		assertEquals(Util.unproject(0, 0, mRenderer), shape);
+		assertEquals(Util.unproject(1, 1, mRenderer), shape);
+		assertEquals(Util.unproject(-1, -1, mRenderer), shape);
+		
+		assertNull(Util.unproject(-1.0001f, -1.0001f, mRenderer));
+		assertNull(Util.unproject(1.001f, 1.001f, mRenderer));
+		assertNull(Util.unproject(2, 2, mRenderer));
+		assertNull(Util.unproject(-2, -2, mRenderer));
+		assertNull(Util.unproject(10, 0, mRenderer));
+	}
+	
+	
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testrun name="ExtendedPickingTest" project="GLViewerTest" tests="3" started="3" failures="1" errors="0" ignored="0">
+  <testsuite name="ch.chnoch.thesis.viewer.test.ExtendedPickingTest" time="0.483">
+    <testcase name="testBoundingBoxes" classname="ch.chnoch.thesis.viewer.test.ExtendedPickingTest" time="0.133"/>
+    <testcase name="testPicking" classname="ch.chnoch.thesis.viewer.test.ExtendedPickingTest" time="0.05">
+      <failure>junit.framework.AssertionFailedError: expected:&lt;ch.chnoch.thesis.renderer.ShapeNode@40536490&gt; but was:&lt;ch.chnoch.thesis.renderer.ShapeNode@40536470&gt;
+at ch.chnoch.thesis.viewer.test.ExtendedPickingTest.testPicking(ExtendedPickingTest.java:85)
+at java.lang.reflect.Method.invokeNative(Native Method)
+at android.test.AndroidTestRunner.runTest(AndroidTestRunner.java:169)
+at android.test.AndroidTestRunner.runTest(AndroidTestRunner.java:154)
+at android.test.InstrumentationTestRunner.onStart(InstrumentationTestRunner.java:529)
+at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:1448)
+
+</failure>
+    </testcase>
+    <testcase name="testAndroidTestCaseSetupProperly" classname="ch.chnoch.thesis.viewer.test.ExtendedPickingTest" time="0.2"/>
+  </testsuite>
+</testrun>

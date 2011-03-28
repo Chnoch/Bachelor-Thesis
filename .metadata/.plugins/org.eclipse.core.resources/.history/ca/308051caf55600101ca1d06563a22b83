@@ -1,0 +1,21 @@
+package ch.chnoch.thesis.renderer;
+
+import javax.vecmath.Vector3f;
+
+public class RayBoxIntersection {
+	public Vector3f hitPoint;
+	public boolean hit;
+	public Node shape;
+	
+	public RayBoxIntersection() {
+		hitPoint = null;
+		hit = false;
+		shape = null;
+	}
+	
+	public RayBoxIntersection(boolean hit, Vector3f hitPoint, Shape shape) {
+		this.hit = hit;
+		this.hitPoint = hitPoint;
+		this.shape = shape;
+	}
+}

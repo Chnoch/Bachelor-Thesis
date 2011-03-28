@@ -3,11 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="C:/Program Files (x86)/Java/Java3D/1.5.2/lib/ext/vecmath.jar" sourcepath="C:/Program Files (x86)/Java/Java3D/1.5.2/j3d-1_5_2-src.zip">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Program Files (x86)/Java/Java3D/1.5.2/lib/ext"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="Renderer_src"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Java3D/1.5.2/lib/ext/vecmath.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
