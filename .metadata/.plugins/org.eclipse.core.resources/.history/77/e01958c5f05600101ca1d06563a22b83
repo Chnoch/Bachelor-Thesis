@@ -1,5 +1,0 @@
-package ch.chnoch.thesis.renderer;
-
-public class RayBoxIntersection {
-
-}

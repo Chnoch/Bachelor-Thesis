@@ -1,5 +1,0 @@
-package ch.chnoch.thesis.viewer.test;
-
-public class ExtendedPickingTest extends AndroidTestCase {
-
-}

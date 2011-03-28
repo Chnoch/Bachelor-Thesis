@@ -1,8 +1,0 @@
-1300359945818	Rename field 'matVP'
-1300376137558	Rename field 'material'
-1300376143232	Rename field 'vertexBuffers'
-1300376147595	Rename field 'box'
-1300377866920	Encapsulate field 'mDirection'
-1300377871507	Encapsulate field 'mOrigin'
-1300377876632	Rename local variable 'mDirection'
-1300533572868	Rename field 'shape'

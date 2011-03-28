@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testrun name="ExtendedPickingTest" project="GLViewerTest" tests="3" started="3" failures="0" errors="0" ignored="0">
-  <testsuite name="ch.chnoch.thesis.viewer.test.ExtendedPickingTest" time="0.344">
-    <testcase name="testBoundingBoxes" classname="ch.chnoch.thesis.viewer.test.ExtendedPickingTest" time="0.119"/>
-    <testcase name="testPicking" classname="ch.chnoch.thesis.viewer.test.ExtendedPickingTest" time="0.075"/>
-    <testcase name="testAndroidTestCaseSetupProperly" classname="ch.chnoch.thesis.viewer.test.ExtendedPickingTest" time="0.15"/>
-  </testsuite>
-</testrun>
