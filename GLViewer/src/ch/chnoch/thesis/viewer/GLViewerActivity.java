@@ -67,13 +67,10 @@ public class GLViewerActivity extends Activity {
 		mShapeNodeSmallOne.setShape(shapeSmall);
 		mShapeNodeSmallTwo.setShape(shapeSmall);
 		
-		mSmallGroup.addChild(mShapeNodeSmallOne);
-		mSmallGroup.addChild(mShapeNodeSmallTwo);
+//		mSmallGroup.addChild(mShapeNodeSmallOne);
+//		mSmallGroup.addChild(mShapeNodeSmallTwo);
 		
 		
-		Trackball trackball = new Trackball(mRoot);
-//		trackball.setSize(2, 2);
-
 		boolean openGlES20 = detectOpenGLES20(); 
 		if (openGlES20) {
 			// Tell the surface view we want to create an OpenGL ES
@@ -95,7 +92,7 @@ public class GLViewerActivity extends Activity {
 			mRenderer = new GLRenderer10(getApplication());
 		}
 
-		mViewer = new GLViewer(this, mRenderer, trackball);
+		mViewer = new GLViewer(this, mRenderer);
 		// Set the OpenGL Context to version 2.0
 		// Has to be done after the Viewer is initialized
 		if (openGlES20) {
