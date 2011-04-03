@@ -35,7 +35,7 @@ public class GLViewerActivity extends Activity {
 //		Shape shape = loadTeapot();
 		Shape shapeBig = Util.loadCube(4);
 		Shape shapeSmall = Util.loadCube(1);
-		Vector3f transY = new Vector3f(0,6,0);
+		Vector3f transY = new Vector3f(0,5,0);
 		Vector3f transLeft = new Vector3f(-2,0,0);
 		Vector3f transRight = new Vector3f(2,0,0);
 		
@@ -51,8 +51,8 @@ public class GLViewerActivity extends Activity {
 		mSceneManager.setRoot(mRoot);
 		
 		mShapeNodeBig = new ShapeNode();
-		mShapeNodeBig.setTransformationMatrix(Util.getIdentityMatrix());
 		mShapeNodeBig.setShape(shapeBig);
+		mShapeNodeBig.setTransformationMatrix(Util.getIdentityMatrix());
 		mRoot.addChild(mShapeNodeBig);
 		
 		mSmallGroup = new TransformGroup();
@@ -67,8 +67,8 @@ public class GLViewerActivity extends Activity {
 		mShapeNodeSmallOne.setShape(shapeSmall);
 		mShapeNodeSmallTwo.setShape(shapeSmall);
 		
-//		mSmallGroup.addChild(mShapeNodeSmallOne);
-//		mSmallGroup.addChild(mShapeNodeSmallTwo);
+		mSmallGroup.addChild(mShapeNodeSmallOne);
+		mSmallGroup.addChild(mShapeNodeSmallTwo);
 		
 		
 		boolean openGlES20 = detectOpenGLES20(); 

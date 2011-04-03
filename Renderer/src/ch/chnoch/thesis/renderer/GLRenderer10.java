@@ -96,9 +96,8 @@ public class GLRenderer10 implements RenderContext {
 
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		t.set(mCamera.getCameraMatrix());
-//		Log.d("CameraMatrix", mCamera.getCameraMatrix().toString());
 		t.mul(renderItem.getT());
-//		Log.d("RenderItem Matrix", renderItem.getT().toString());
+		Log.d("RenderItem Matrix", renderItem.getT().toString());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 		
 		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
@@ -258,12 +257,6 @@ public class GLRenderer10 implements RenderContext {
 			drawShapeAndBox(it.next(), (GL11) gl);
 		}
 
-		// mCube.draw(gl);
-
-		// gl.glRotatef(mAngle * 2.0f, 0, 1, 1);
-		// gl.glTranslatef(0.5f, 0.5f, 0.5f);
-
-		// mAngle += 1.2f;
 	}
 
 	private void drawShapeAndBox(RenderItem item, GL11 gl) {

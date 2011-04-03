@@ -93,7 +93,7 @@ public class SimplePickingTest extends AndroidTestCase {
 		assertEquals(shape.getBoundingBox().getLow(), minusOne);
 	}*/
 	
-	
+	/*
 	public void testPicking() {
 		RayBoxIntersection inter = Util.unproject(160, 240, mRenderer);
 		assertTrue(inter.hit);
@@ -112,7 +112,7 @@ public class SimplePickingTest extends AndroidTestCase {
 		/*inter = Util.unproject(-1, -1, mRenderer);
 		assertTrue(inter.hit);
 		assertEquals(inter.node, root);
-		assertNotNull(inter.hitPoint);*/
+		assertNotNull(inter.hitPoint);
 		
 		assertFalse(Util.unproject(-1, 0, mRenderer).hit);
 		assertFalse(Util.unproject(0, -1, mRenderer).hit);
@@ -120,7 +120,7 @@ public class SimplePickingTest extends AndroidTestCase {
 //		assertFalse(Util.unproject(-2, -72, mRenderer).hit);
 //		assertFalse(Util.unproject(10, 0, mRenderer).hit);
 	}
-	
+	*/
 	public void testBoundingBox() {
 		Ray ray = new Ray(new Vector3f(0.003125012f, -0.0041407943f, 16f), new Vector3f(0,0,-2));
 		BoundingBox box = new BoundingBox(new Vector3f(-0.5f,-0.5f,-0.5f), new Vector3f(0.5f,0.5f,0.5f));

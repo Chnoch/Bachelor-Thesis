@@ -119,7 +119,7 @@ public class Util {
 		while (it.hasNext()) {
 			RenderItem item = it.next();
 			item.getT().invert();
-			box = item.getNode().getBoundingBox().transform(item.getT());
+			box = item.getNode().getBoundingBox();
 
 			RayShapeIntersection intersection = box.hitPoint(ray);
 			if (intersection.hit) {

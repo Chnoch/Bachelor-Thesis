@@ -7,6 +7,8 @@ import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import android.util.Log;
+
 public class Trackball {
 
 	private float mWidth = 0, mHeight = 0;
@@ -52,7 +54,8 @@ public class Trackball {
 		Matrix4f rot = new Matrix4f();
 		rot.set(axisAngle);
 		t.mul(rot);
-		mNode.getTransformationMatrix().set(t);
+		mNode.setTransformationMatrix(t);
+		Log.d("Trackball", "Low: " + mNode.getBoundingBox().getLow().toString() + "High: " + mNode.getBoundingBox().getHigh().toString());
 	}
 
 	

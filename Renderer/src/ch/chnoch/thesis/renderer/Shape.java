@@ -20,7 +20,6 @@ public class Shape {
 	
 	private void init() {
 		mBox = new BoundingBox(mVertexBuffers.getVertexBuffer());
-//		mTrackball = new Trackball(this);
 		t = new Matrix4f();
 		t.setIdentity();
 	}

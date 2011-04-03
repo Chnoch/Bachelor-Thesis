@@ -78,9 +78,6 @@ public class GLViewer extends GLSurfaceView {
 				RayShapeIntersection endIntersection = mTrackball.intersect(endRay);
 				endIntersection.hitPoint.y = mHeight - endIntersection.hitPoint.y; 
 				mTrackball.update(startIntersection.hitPoint, endIntersection.hitPoint, TOUCH_SCALE_FACTOR);
-				// mTrackball.simpleUpdate(x, y, mPreviousX, mPreviousY,
-				// TOUCH_SCALE_FACTOR);
-				// mRenderer.pick(x,y);
 				requestRender();
 				mPreviousX = x;
 				mPreviousY = y;

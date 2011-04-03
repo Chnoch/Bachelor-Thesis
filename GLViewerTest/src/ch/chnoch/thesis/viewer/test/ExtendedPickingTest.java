@@ -75,7 +75,7 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		assertEquals(shapeNode2.getBoundingBox().getHigh(), vecThree);
 	}
 	
-	public void testPicking() {
+	/*public void testPicking() {
 		RayBoxIntersection in = Util.unproject(0, 0, mRenderer);
 		assertTrue(in.hit);
 		assertEquals(in.node, shapeNode);
@@ -112,5 +112,5 @@ public class ExtendedPickingTest extends AndroidTestCase {
 
 		in = Util.unproject(4, 4, mRenderer);
 		assertFalse(in.hit);
-	}
+	}*/
 }

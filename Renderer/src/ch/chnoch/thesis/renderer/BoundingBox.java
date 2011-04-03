@@ -3,9 +3,7 @@ package ch.chnoch.thesis.renderer;
 import java.nio.IntBuffer;
 
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 
 import ch.chnoch.thesis.renderer.util.Util;
 
@@ -71,6 +69,10 @@ public class BoundingBox {
 
 		mLow = new Vector3f(lowX, lowY, lowZ);
 		mHigh = new Vector3f(highX, highY, highZ);
+	}
+	
+	public BoundingBox clone() {
+		return new BoundingBox(this.mLow, this.mHigh);
 	}
 
 	public Vector3f getLow() {
@@ -181,10 +183,17 @@ public class BoundingBox {
 		return rayBoxIntersection;
 	}
 
-	public enum Quadrant {
-		LEFT, RIGHT, MIDDLE
-	}
 	
+	
+	/**
+	 * A simple algorithm to determine whether the specified Ray hit this box.
+	 * It will return a RayShapeIntersection, but only RayShapeIntersection.hit will be set.
+	 * Possibly also RayShapeIntersection.node, but .hitPoint won't reveal anything.
+	 * This method is mostly used to check if the box is hit. If you want the exact coordinates
+	 * use BoundingBox.hitPoint(ray) instead.
+	 * @param ray
+	 * @return RayShapeIntersection
+	 */
 	public RayShapeIntersection intersect(Ray ray) {
 		float tXmin, tXmax, tYmin, tYmax, tZmin, tZmax;
 		Vector3f low = mLow;
@@ -237,12 +246,12 @@ public class BoundingBox {
 	 * 
 	 * @param trans
 	 */
-	public BoundingBox transform(Matrix4f trans) {
-		Vector3f low = new Vector3f(mLow);
-		Vector3f high = new Vector3f(mHigh);
-		
-		Util.transform(trans, low);
-		Util.transform(trans, high);
-		return new BoundingBox(new Vector3f(low.x, low.y, low.z), new Vector3f(high.x, high.y, high.z));
+	public void transform(Matrix4f trans) {
+		trans.transform(mLow);
+		trans.transform(mHigh);
+	}
+
+	public enum Quadrant {
+		LEFT, RIGHT, MIDDLE
 	}
 }
