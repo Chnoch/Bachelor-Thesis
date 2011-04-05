@@ -261,7 +261,7 @@ public class GLRenderer10 implements RenderContext {
 
 	private void drawShapeAndBox(RenderItem item, GL11 gl) {
 		draw(item, gl);
-		drawBox(item, gl);
+//		drawBox(item, gl);
 	}
 
 	public void onSurfaceChanged(GL10 gl, int width, int height) {

@@ -66,6 +66,7 @@ public class GLViewer extends GLSurfaceView {
 		float x = e.getX();
 		float y = e.getY();
 
+		y = mHeight - y;
 		switch (e.getAction()) {
 		case MotionEvent.ACTION_MOVE:
 			Log.d("GLViewer", "Action_Move");
@@ -74,9 +75,7 @@ public class GLViewer extends GLSurfaceView {
 				Ray startRay = Util.unproject(mPreviousX, mPreviousY, mRenderer);
 				Ray endRay = Util.unproject(x, y, mRenderer);
 				RayShapeIntersection startIntersection = mTrackball.intersect(startRay);
-				startIntersection.hitPoint.y = mHeight - startIntersection.hitPoint.y; 
 				RayShapeIntersection endIntersection = mTrackball.intersect(endRay);
-				endIntersection.hitPoint.y = mHeight - endIntersection.hitPoint.y; 
 				mTrackball.update(startIntersection.hitPoint, endIntersection.hitPoint, TOUCH_SCALE_FACTOR);
 				requestRender();
 				mPreviousX = x;

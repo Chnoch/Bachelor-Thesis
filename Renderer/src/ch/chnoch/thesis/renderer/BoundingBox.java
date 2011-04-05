@@ -3,6 +3,7 @@ package ch.chnoch.thesis.renderer;
 import java.nio.IntBuffer;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.util.Util;
@@ -72,7 +73,7 @@ public class BoundingBox {
 	}
 	
 	public BoundingBox clone() {
-		return new BoundingBox(this.mLow, this.mHigh);
+		return new BoundingBox(new Vector3f(mLow), new Vector3f(mHigh));
 	}
 
 	public Vector3f getLow() {
@@ -247,8 +248,14 @@ public class BoundingBox {
 	 * @param trans
 	 */
 	public void transform(Matrix4f trans) {
-		trans.transform(mLow);
-		trans.transform(mHigh);
+		Point3f low = new Point3f(mLow);
+		Point3f high = new Point3f(mHigh);
+		
+		trans.transform(low);
+		trans.transform(high);
+		
+		mLow = new Vector3f(low);
+		mHigh = new Vector3f(high);
 	}
 
 	public enum Quadrant {

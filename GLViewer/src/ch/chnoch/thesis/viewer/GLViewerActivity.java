@@ -72,32 +72,32 @@ public class GLViewerActivity extends Activity {
 		
 		
 		boolean openGlES20 = detectOpenGLES20(); 
-		if (openGlES20) {
+//		if (false) {
 			// Tell the surface view we want to create an OpenGL ES
 			// 2.0-compatible
 			// context, and set an OpenGL ES 2.0-compatible renderer.
 
-			mRenderer = new GLRenderer(getApplication());
+//			mRenderer = new GLRenderer(getApplication());
 
-			Shader shader = createShaders();
+//			Shader shader = createShaders();
 			// exit if the shaders couldn't be loaded
-			if (shader.getProgram() == 0)
-				return;
-
-			Material material = new Material();
-			material.setShader(shader);
+//			if (shader.getProgram() == 0)
+//				return;
+//
+//			Material material = new Material();
+//			material.setShader(shader);
 
 //			shape.setMaterial(material);
-		} else {
+//		} else {
 			mRenderer = new GLRenderer10(getApplication());
-		}
+//		}
 
 		mViewer = new GLViewer(this, mRenderer);
 		// Set the OpenGL Context to version 2.0
 		// Has to be done after the Viewer is initialized
-		if (openGlES20) {
-			mViewer.setEGLContextClientVersion(2);
-		}
+//		if (openGlES20) {
+//			mViewer.setEGLContextClientVersion(2);
+//		}
 		mRenderer.setSceneManager(mSceneManager);
 
 		setContentView(mViewer);
@@ -123,7 +123,7 @@ public class GLViewerActivity extends Activity {
 		mViewer.onResume();
 	}
 
-	private Shader createShaders() {
+	/*private Shader createShaders() {
 		String vertexShader = readRawText(R.raw.simplevert);
 		String fragmentShader = readRawText(R.raw.simplefrag);
 
@@ -138,7 +138,7 @@ public class GLViewerActivity extends Activity {
 			Log.e(TAG, "Error loading Shaders", e);
 		}
 		return shader;
-	}
+	}*/
 
 	private Shape loadTeapot() {
 		// Construct a data structure that stores the vertices, their

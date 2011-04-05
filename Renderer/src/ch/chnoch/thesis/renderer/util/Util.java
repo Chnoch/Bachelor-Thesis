@@ -118,7 +118,6 @@ public class Util {
 		BoundingBox box;
 		while (it.hasNext()) {
 			RenderItem item = it.next();
-			item.getT().invert();
 			box = item.getNode().getBoundingBox();
 
 			RayShapeIntersection intersection = box.hitPoint(ray);
