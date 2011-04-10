@@ -86,27 +86,23 @@ public class Util {
 	public static Ray unproject(float x, float y, RenderContext renderer) {
 
 		Matrix4f staticMatrix = createMatrices(renderer);
-		SceneManagerInterface sceneManager = renderer.getSceneManager();
 		Matrix4f inverse;
 
-		SceneManagerIterator it = sceneManager.iterator();
-		while (it.hasNext()) {
-			Vector3f origin = new Vector3f(x, y, 1);
-			Vector3f direction = new Vector3f(x, y, -1);
-			inverse = new Matrix4f(staticMatrix);
-			try {
-				inverse.invert();
+		Vector3f origin = new Vector3f(x, y, 1);
+		Vector3f direction = new Vector3f(x, y, -1);
+		inverse = new Matrix4f(staticMatrix);
+		try {
+			inverse.invert();
 
-				Util.transform(inverse, origin);
-				Util.transform(inverse, direction);
+			Util.transform(inverse, origin);
+			Util.transform(inverse, direction);
 
-				direction.sub(origin);
-				return new Ray(origin, direction);
+			direction.sub(origin);
+			return new Ray(origin, direction);
 
-			} catch (RuntimeException exc) {
-				// Matrix not invertable, therefore no action.
-				Log.e("UNPROJECT", "Matrix can't be inverted");
-			}
+		} catch (RuntimeException exc) {
+			// Matrix not invertable, therefore no action.
+			Log.e("UNPROJECT", "Matrix can't be inverted");
 		}
 
 		return null;
@@ -130,7 +126,7 @@ public class Util {
 		return new RayShapeIntersection();
 	}
 
-	private static Matrix4f createMatrices(RenderContext renderer) {
+	public static Matrix4f createMatrices(RenderContext renderer) {
 		SceneManagerInterface sceneManager = renderer.getSceneManager();
 		Camera camera = sceneManager.getCamera();
 		Frustum frustum = sceneManager.getFrustum();

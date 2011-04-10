@@ -24,16 +24,17 @@ public class ShapeNode extends Leaf {
 
 	private void setBoundingBox() {
 		if (mShape != null && transformationMatrix != null && getParent()!= null) {
-			Matrix4f transform = new Matrix4f(transformationMatrix);
-			Matrix4f temp = Util.getIdentityMatrix();
-
-			Node current = this;
-			while (current.getParent() != null) {
-				current = current.getParent();
-				temp.set(current.getTransformationMatrix());
-				temp.mul(transform);
-				transform.set(temp);
-			}
+			Matrix4f transform = getCompleteTransformationMatrix();
+//			Matrix4f temp = Util.getIdentityMatrix();
+//
+//			Node current = this;
+//			while (current.getParent() != null) {
+//				current = current.getParent();
+//				temp.set(current.getTransformationMatrix());
+//				temp.mul(transform);
+//				transform.set(temp);
+//			}
+			
 			mBoundingBox = mShape.getBoundingBox().clone();
 			mBoundingBox.transform(transform);
 		}
@@ -49,6 +50,20 @@ public class ShapeNode extends Leaf {
 		}
 		transformationMatrix.set(t);
 		setBoundingBox();
+	}
+	
+	public Matrix4f getCompleteTransformationMatrix() {
+		Matrix4f transform = new Matrix4f(transformationMatrix);
+		Matrix4f temp = Util.getIdentityMatrix();
+		Node current = this;
+		while (current.getParent() != null) {
+			current = current.getParent();
+			temp.set(current.getTransformationMatrix());
+			temp.mul(transform);
+			transform.set(temp);
+		}
+		
+		return transform;
 	}
 	
 	public void setParent(Node parent) {

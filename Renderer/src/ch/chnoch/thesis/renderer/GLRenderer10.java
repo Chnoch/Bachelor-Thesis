@@ -97,7 +97,6 @@ public class GLRenderer10 implements RenderContext {
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		t.set(mCamera.getCameraMatrix());
 		t.mul(renderItem.getT());
-		Log.d("RenderItem Matrix", renderItem.getT().toString());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 		
 		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
@@ -237,19 +236,18 @@ public class GLRenderer10 implements RenderContext {
 	}
 
 	public void onDrawFrame(GL10 gl) {
+		calculateFPS();
 		SceneManagerIterator it = mSceneManager.iterator();
 
 		/*
 		 * Usually, the first thing one might want to do is to clear the screen.
 		 * The most efficient way of doing this is to use glClear().
 		 */
-
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
 		/*
 		 * Now we're ready to draw some 3D objects
 		 */
-
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
@@ -267,7 +265,6 @@ public class GLRenderer10 implements RenderContext {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
 		mViewer.surfaceHasChanged(width, height);
-		Log.d("Width & Height", width + ", " + height);
 		setViewportMatrix(width, height);
 
 		/*
@@ -331,5 +328,37 @@ public class GLRenderer10 implements RenderContext {
 	public Texture makeTexture() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	private int frameCount;
+	private long currentTime, previousTime=0;
+	private float fps;
+	
+	// -------------------------------------------------------------------------
+	// Calculates the frames per second
+	// -------------------------------------------------------------------------
+	void calculateFPS() {
+		// Increase frame count
+		frameCount++;
+		
+		// Get the number of milliseconds since glutInit called
+		// (or first call to glutGet(GLUT ELAPSED TIME)).
+		currentTime = System.currentTimeMillis();
+		
+		// Calculate time passed
+		long timeInterval = currentTime - previousTime;
+		
+		if (timeInterval > 1000) {
+			// calculate the number of frames per second
+			fps = frameCount / (timeInterval / 1000.0f);
+			
+			// Set time
+			previousTime = currentTime;
+			
+			// Reset frame count
+			frameCount = 0;
+			
+			Log.d("Renderer", "FPS: " + fps);
+		}
 	}
 }

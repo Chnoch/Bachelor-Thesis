@@ -24,7 +24,7 @@ public class BoundingBox {
 	}
 
 	private void init(IntBuffer vertices) {
-		int x, y, z; 
+		int x, y, z;
 		float lowX, lowY, lowZ, highX, highY, highZ;
 		lowX = Integer.MAX_VALUE;
 		lowY = Integer.MAX_VALUE;
@@ -71,7 +71,7 @@ public class BoundingBox {
 		mLow = new Vector3f(lowX, lowY, lowZ);
 		mHigh = new Vector3f(highX, highY, highZ);
 	}
-	
+
 	public BoundingBox clone() {
 		return new BoundingBox(new Vector3f(mLow), new Vector3f(mHigh));
 	}
@@ -180,18 +180,16 @@ public class BoundingBox {
 		}
 		rayBoxIntersection.hit = true;
 		rayBoxIntersection.hitPoint = new Vector3f(coord);
-
 		return rayBoxIntersection;
 	}
 
-	
-	
 	/**
 	 * A simple algorithm to determine whether the specified Ray hit this box.
-	 * It will return a RayShapeIntersection, but only RayShapeIntersection.hit will be set.
-	 * Possibly also RayShapeIntersection.node, but .hitPoint won't reveal anything.
-	 * This method is mostly used to check if the box is hit. If you want the exact coordinates
-	 * use BoundingBox.hitPoint(ray) instead.
+	 * It will return a RayShapeIntersection, but only RayShapeIntersection.hit
+	 * will be set. Possibly also RayShapeIntersection.node, but .hitPoint won't
+	 * reveal anything. This method is mostly used to check if the box is hit.
+	 * If you want the exact coordinates use BoundingBox.hitPoint(ray) instead.
+	 * 
 	 * @param ray
 	 * @return RayShapeIntersection
 	 */
@@ -200,9 +198,7 @@ public class BoundingBox {
 		Vector3f low = mLow;
 		Vector3f high = mHigh;
 		RayShapeIntersection intersect = new RayShapeIntersection();
-		Log.d("Ray", "Origin: " + ray.getOrigin().toString() + "Direction: " + ray.getDirection().toString());
-		Log.d("Box", "Low: " + low.toString() + " High: " + high);
-		
+
 		if (ray.getDirection().x >= 0) {
 			tXmin = (low.x - ray.getOrigin().x) / ray.getDirection().x;
 			tXmax = (high.x - ray.getOrigin().x) / ray.getDirection().x;
@@ -248,12 +244,44 @@ public class BoundingBox {
 	 * @param trans
 	 */
 	public void transform(Matrix4f trans) {
-		Point3f low = new Point3f(mLow);
-		Point3f high = new Point3f(mHigh);
-		
-		trans.transform(low);
-		trans.transform(high);
-		
+		// create all possible points
+		Point3f[] box = new Point3f[8];
+		box[0] = new Point3f(mLow);
+		box[1] = new Point3f(mLow.x, mHigh.y, mLow.z);
+		box[2] = new Point3f(mLow.x, mLow.y, mHigh.z);
+		box[3] = new Point3f(mLow.x, mHigh.y, mHigh.z);
+		box[4] = new Point3f(mHigh.x, mLow.y, mLow.z);
+		box[5] = new Point3f(mHigh.x, mHigh.y, mLow.z);
+		box[6] = new Point3f(mHigh.x, mLow.y, mHigh.z);
+		box[7] = new Point3f(mHigh);
+
+		for (int i = 0; i < box.length; i++) {
+			trans.transform(box[i]);
+		}
+
+		Point3f low = new Point3f(box[0]);
+		Point3f high = new Point3f(box[7]);
+		for (int i = 0; i < box.length; i++) {
+			if (box[i].x < low.x) {
+				low.x = box[i].x;
+			}
+			if (box[i].y < low.y) {
+				low.y = box[i].y;
+			}
+			if (box[i].z < low.z) {
+				low.z = box[i].z;
+			}
+			if (box[i].x > high.x) {
+				high.x = box[i].x;
+			}
+			if (box[i].y > high.y) {
+				high.y = box[i].y;
+			}
+			if (box[i].z > high.z) {
+				high.z = box[i].z;
+			}
+		}
+
 		mLow = new Vector3f(low);
 		mHigh = new Vector3f(high);
 	}

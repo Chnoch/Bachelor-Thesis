@@ -99,6 +99,11 @@ public class GLViewerActivity extends Activity {
 //			mViewer.setEGLContextClientVersion(2);
 //		}
 		mRenderer.setSceneManager(mSceneManager);
+		
+		TouchHandler touchHandler = new TouchHandler(mRenderer);
+		mViewer.setOnTouchListener(touchHandler);
+		KeyHandler keyHandler = new KeyHandler(mRenderer);
+		mViewer.setOnKeyListener(keyHandler);
 
 		setContentView(mViewer);
 		mViewer.requestFocus();

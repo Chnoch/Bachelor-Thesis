@@ -5,6 +5,7 @@ import java.math.MathContext;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import android.util.Log;
@@ -49,13 +50,14 @@ public class Trackball {
 		float angle = prev.angle(cur) * factor;
 
 		AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
+		Quat4f quat = new Quat4f();
+		quat.set(axisAngle);
 		Matrix4f t = new Matrix4f();
 		t = mNode.getTransformationMatrix();
 		Matrix4f rot = new Matrix4f();
-		rot.set(axisAngle);
+		rot.set(quat);
 		t.mul(rot);
 		mNode.setTransformationMatrix(t);
-		Log.d("Trackball", "Low: " + mNode.getBoundingBox().getLow().toString() + "High: " + mNode.getBoundingBox().getHigh().toString());
 	}
 
 	
