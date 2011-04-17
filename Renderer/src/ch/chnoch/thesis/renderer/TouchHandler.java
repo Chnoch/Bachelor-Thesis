@@ -25,6 +25,7 @@ public class TouchHandler implements OnTouchListener {
 	private RenderContext mRenderer;
 
 	private Trackball mTrackball;
+	private Plane mPlane;
 	private RayShapeIntersection mIntersection;
 
 	private GLViewer mViewer;
@@ -36,6 +37,7 @@ public class TouchHandler implements OnTouchListener {
 		mRenderer = renderer;
 		mViewer = viewer;
 		mTrackball = new Trackball();
+		mPlane = new Plane();
 	}
 
 	public boolean onTouch(View view, MotionEvent e) {
@@ -53,33 +55,19 @@ public class TouchHandler implements OnTouchListener {
 			mEventEnd = e.getEventTime();
 
 			if (mOnNode) {
-//				if (mEventEnd - mEventStart > 500 || (mIsTranslation && !mRotate)) {
-				if (false) {
+				if (mEventEnd - mEventStart > 500 || (mIsTranslation && !mRotate)) {
 					Log.d("TouchHandler", "Moving Object");
 					// Long Press occured: Manipulate object by moving it
 					Ray prevRay = Util.unproject(mPreviousX, mPreviousY, mRenderer);
 					Ray curRay = Util.unproject(x, y, mRenderer);
-					RayShapeIntersection prevInter = mIntersection.node
-							.getBoundingBox().hitPoint(prevRay);
-					RayShapeIntersection curInter = mIntersection.node
-					.getBoundingBox().hitPoint(curRay);
-					prevInter.node = mIntersection.node;
-					curInter.node = mIntersection.node;
 					
+					mPlane.setNode(mIntersection.node);
 					
-					float dx = (curInter.hitPoint.x - prevInter.hitPoint.x);
-					float dy = (curInter.hitPoint.y - prevInter.hitPoint.y);
+					RayShapeIntersection prevInter = mPlane.intersect(prevRay);
+					RayShapeIntersection curInter = mPlane.intersect(curRay);
 					
-					// translation vector. 3rd dimension??
-					Vector3f trans = new Vector3f(dx, dy, 0);
+					mPlane.update(curInter.hitPoint, prevInter.hitPoint);
 					
-					Matrix4f transMatrix = Util.getIdentityMatrix();
-					transMatrix.setTranslation(trans);
-					if (prevInter.hit) {
-						Matrix4f t = prevInter.node.getTranslationMatrix();
-						t.mul(transMatrix);
-						prevInter.node.setTranslationMatrix(t);
-					}
 					mIsTranslation = true;
 
 				} else {

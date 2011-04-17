@@ -98,6 +98,7 @@ public class GLRenderer10 implements RenderContext {
 	 *            the object that needs to be drawn
 	 */
 	private void draw(RenderItem renderItem, GL10 gl) {
+		
 		Shape shape = renderItem.getNode().getShape();
 		VertexBuffers buffers = shape.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
@@ -107,8 +108,9 @@ public class GLRenderer10 implements RenderContext {
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		t.set(mCamera.getCameraMatrix());
 		t.mul(renderItem.getT());
+
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
-		
+
 		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
 		gl.glFrontFace(GL10.GL_CW);
 		gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
@@ -120,6 +122,8 @@ public class GLRenderer10 implements RenderContext {
 
 	public void onDrawFrame(GL10 gl) {
 		calculateFPS();
+		long oldTime = System.currentTimeMillis();
+
 		SceneManagerIterator it = mSceneManager.iterator();
 
 		/*
@@ -137,6 +141,10 @@ public class GLRenderer10 implements RenderContext {
 		while (it.hasNext()) {
 			draw(it.next(), gl);
 		}
+		long newTime = System.currentTimeMillis();
+
+		long diff = newTime - oldTime;
+		Log.d("RendererFrame", "Rendering single frame: " + diff + " ms");
 
 	}
 
@@ -155,7 +163,7 @@ public class GLRenderer10 implements RenderContext {
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 		gl.glViewport(0, 0, width, height);
 	}
-	
+
 	public void setViewportMatrix(int width, int height) {
 		// reset the viewport matrix
 		mViewportMatrix.setM00(width / 2.f);
@@ -207,7 +215,7 @@ public class GLRenderer10 implements RenderContext {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public Matrix4f createMatrices() {
 		SceneManagerInterface sceneManager = getSceneManager();
 		Camera camera = sceneManager.getCamera();
@@ -221,34 +229,34 @@ public class GLRenderer10 implements RenderContext {
 	}
 
 	private int frameCount;
-	private long currentTime, previousTime=0;
+	private long currentTime, previousTime = 0;
 	private float fps;
-	
+
 	// -------------------------------------------------------------------------
 	// Calculates the frames per second
 	// -------------------------------------------------------------------------
 	void calculateFPS() {
 		// Increase frame count
 		frameCount++;
-		
+
 		// Get the number of milliseconds since glutInit called
 		// (or first call to glutGet(GLUT ELAPSED TIME)).
 		currentTime = System.currentTimeMillis();
-		
+
 		// Calculate time passed
 		long timeInterval = currentTime - previousTime;
-		
+
 		if (timeInterval > 1000) {
 			// calculate the number of frames per second
-			fps = frameCount / (timeInterval / 1000.0f);
-			
+			fps = timeInterval / frameCount;
+
 			// Set time
 			previousTime = currentTime;
-			
+
 			// Reset frame count
 			frameCount = 0;
-			
-			Log.d("Renderer", "FPS: " + fps);
+
+			Log.d("Renderer", "Rendertime per Frame: " + fps + " ms");
 		}
 	}
 }
