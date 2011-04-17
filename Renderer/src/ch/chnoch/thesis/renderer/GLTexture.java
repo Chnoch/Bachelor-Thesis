@@ -5,6 +5,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

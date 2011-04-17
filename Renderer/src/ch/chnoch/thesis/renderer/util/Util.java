@@ -9,6 +9,12 @@ import javax.vecmath.Vector3f;
 import android.util.Log;
 
 import ch.chnoch.thesis.renderer.*;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 public class Util {
 
@@ -85,7 +91,7 @@ public class Util {
 
 	public static Ray unproject(float x, float y, RenderContext renderer) {
 
-		Matrix4f staticMatrix = createMatrices(renderer);
+		Matrix4f staticMatrix = renderer.createMatrices();
 		Matrix4f inverse;
 
 		Vector3f origin = new Vector3f(x, y, 1);
@@ -98,6 +104,8 @@ public class Util {
 			Util.transform(inverse, direction);
 
 			direction.sub(origin);
+			direction.normalize();
+			
 			return new Ray(origin, direction);
 
 		} catch (RuntimeException exc) {
@@ -116,26 +124,16 @@ public class Util {
 			RenderItem item = it.next();
 			box = item.getNode().getBoundingBox();
 
+//			Log.d("Util", "Checking out Node with BoundingBox: "+ item.getNode().getBoundingBox().getLow().toString() + ", " + item.getNode().getBoundingBox().getHigh().toString());
 			RayShapeIntersection intersection = box.hitPoint(ray);
 			if (intersection.hit) {
+				Log.d("Util", "Hit Node with BoundingBox: "+ item.getNode().getBoundingBox().getLow().toString() + ", " + item.getNode().getBoundingBox().getHigh().toString());
 				intersection.node = item.getNode();
 				return intersection;
 			}
 		}
 
 		return new RayShapeIntersection();
-	}
-
-	public static Matrix4f createMatrices(RenderContext renderer) {
-		SceneManagerInterface sceneManager = renderer.getSceneManager();
-		Camera camera = sceneManager.getCamera();
-		Frustum frustum = sceneManager.getFrustum();
-
-		Matrix4f staticMatrix = new Matrix4f(renderer.getViewportMatrix());
-		staticMatrix.mul(frustum.getProjectionMatrix());
-		staticMatrix.mul(camera.getCameraMatrix());
-
-		return staticMatrix;
 	}
 
 	public static void transform(Matrix4f m, Vector3f point) {

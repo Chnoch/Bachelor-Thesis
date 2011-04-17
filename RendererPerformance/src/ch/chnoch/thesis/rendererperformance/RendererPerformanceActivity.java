@@ -6,6 +6,8 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.*;
+import ch.chnoch.thesis.renderer.interfaces.Node;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.*;
 import android.opengl.GLSurfaceView;
 
@@ -18,6 +20,7 @@ public class RendererPerformanceActivity extends Activity {
 	private GLSurfaceView mViewer;
 	private Matrix4f mRotation, mTranslation;
 	private static final int NUM_OF_SHAPES = 100;
+	private AnimationTask task;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,6 @@ public class RendererPerformanceActivity extends Activity {
 		mShape = Util.loadCube(1);
 
 		mRoot = new TransformGroup();
-		mRoot.setTransformationMatrix(Util.getIdentityMatrix());
 		mSceneManager.setRoot(mRoot);
 
 		mRenderer = new GLRenderer10(getApplication());
@@ -42,9 +44,8 @@ public class RendererPerformanceActivity extends Activity {
 		mTranslation = Util.getIdentityMatrix();
 
 		for (int i = 0; i < NUM_OF_SHAPES; i++) {
-			mNode = new ShapeNode();
-			mNode.setShape(mShape);
-			mNode.setTransformationMatrix(new Matrix4f(mTranslation));
+			mNode = new ShapeNode(mShape, mSceneManager);
+			mNode.setTranslationMatrix(new Matrix4f(mTranslation));
 			mRoot.addChild(mNode);
 			mTranslation.m03 += 1;
 		}
@@ -53,7 +54,7 @@ public class RendererPerformanceActivity extends Activity {
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 
-		AnimationTask task = new AnimationTask();
+		task = new AnimationTask();
 		task.start();
 
 	}
@@ -61,11 +62,13 @@ public class RendererPerformanceActivity extends Activity {
 	@Override
 	public void onPause() {
 		super.onPause();
+		task.stop();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		task.start();
 	}
 
 	public class AnimationTask extends Thread {
@@ -75,7 +78,7 @@ public class RendererPerformanceActivity extends Activity {
 				SceneManagerIterator it = mSceneManager.iterator();
 				while (it.hasNext()) {
 					RenderItem item = it.next();
-					item.getNode().getTransformationMatrix().mul(mRotation);
+					item.getNode().getTranslationMatrix().mul(mRotation);
 				}
 				mViewer.requestRender();
 			}

@@ -17,6 +17,16 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
 
@@ -87,7 +97,7 @@ public class GLRenderer10 implements RenderContext {
 	 * @param renderItem
 	 *            the object that needs to be drawn
 	 */
-	private void draw(RenderItem renderItem, GL11 gl) {
+	private void draw(RenderItem renderItem, GL10 gl) {
 		Shape shape = renderItem.getNode().getShape();
 		VertexBuffers buffers = shape.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
@@ -108,133 +118,6 @@ public class GLRenderer10 implements RenderContext {
 		gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
 	}
 
-	private void drawBox(RenderItem item, GL10 gl) {
-		BoundingBox box = item.getNode().getBoundingBox();
-		float[] vertices = getVertices(box);
-		int[] intVert = new int[24];
-
-		// fixed point conversion made
-		for (int i = 0; i < intVert.length; i++) {
-			intVert[i] = (int) vertices[i];
-		}
-
-		int[] indices = getIndices();
-
-		ByteBuffer vbb = ByteBuffer.allocateDirect(intVert.length * 4);
-		vbb.order(ByteOrder.nativeOrder());
-		IntBuffer vertexBuffer = vbb.asIntBuffer();
-		vertexBuffer.put(intVert);
-		vertexBuffer.position(0);
-
-		vbb = ByteBuffer.allocateDirect(indices.length*4);
-		vbb.order(ByteOrder.nativeOrder());
-		IntBuffer indexBuffer = vbb.asIntBuffer();
-		indexBuffer.put(indices);
-		indexBuffer.position(0);
-		
-		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
-
-		gl.glVertexPointer(3, GLES10.GL_UNSIGNED_SHORT, 0, vertexBuffer);
-		gl.glColor4f(1, 1,1, 1);
-//		gl.glDrawElements(GLES11.GL_TRIANGLES, indexBuffer.capacity(), GLES10.GL_UNSIGNED_SHORT, indexBuffer);
-
-		gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
-	}
-
-	private int[] getIndices() {
-		int[] indices = new int[36];
-		indices[0] = 0;
-		indices[1] = 2;
-		indices[2] = 0;
-
-		indices[3] = 0;
-		indices[4] = 4;
-		indices[5] = 0;
-
-		indices[6] = 0;
-		indices[7] = 1;
-		indices[8] = 0;
-
-		indices[9] = 4;
-		indices[10] = 6;
-		indices[11] = 4;
-		
-		indices[12] = 2;
-		indices[13] = 6;
-		indices[14] = 2;
-		
-		indices[15] = 2;
-		indices[16] = 3;
-		indices[17] = 2;
-		
-		indices[18] = 1;
-		indices[19] = 3;
-		indices[20] = 1;
-		
-		indices[21] = 1;
-		indices[22] = 5;
-		indices[23] = 1;
-		
-		indices[24] = 4;
-		indices[25] = 5;
-		indices[26] = 4;
-		
-		indices[27] = 5;
-		indices[28] = 7;
-		indices[29] = 5;
-		
-		indices[30] = 6;
-		indices[31] = 7;
-		indices[32] = 6;
-		
-		indices[33] = 3;
-		indices[34] = 7;
-		indices[35] = 3;
-		
-		return indices;
-	}
-
-	private float[] getVertices(BoundingBox box) {
-		Vector3f low = box.getLow();
-		Vector3f high = box.getHigh();
-		int one = Util.one;
-		float[] vertices = new float[24];
-
-		vertices[0] = one * low.x;
-		vertices[1] = one * low.y;
-		vertices[2] = one * low.z;
-
-		vertices[3] = one * low.x;
-		vertices[4] = one * low.y;
-		vertices[5] = one * high.z;
-
-		vertices[6] = one * low.x;
-		vertices[7] = one * high.y;
-		vertices[8] = one * low.z;
-
-		vertices[9] = one * low.x;
-		vertices[10] = one * high.y;
-		vertices[11] = one * high.z;
-
-		vertices[12] = one * high.x;
-		vertices[13] = one * low.y;
-		vertices[14] = one * low.z;
-
-		vertices[15] = one * high.x;
-		vertices[16] = one * low.y;
-		vertices[17] = one * high.z;
-
-		vertices[18] = one * high.x;
-		vertices[19] = one * high.y;
-		vertices[20] = one * low.z;
-
-		vertices[21] = one * high.x;
-		vertices[22] = one * high.y;
-		vertices[23] = one * high.z;
-
-		return vertices;
-	}
-
 	public void onDrawFrame(GL10 gl) {
 		calculateFPS();
 		SceneManagerIterator it = mSceneManager.iterator();
@@ -252,14 +135,9 @@ public class GLRenderer10 implements RenderContext {
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
 		while (it.hasNext()) {
-			drawShapeAndBox(it.next(), (GL11) gl);
+			draw(it.next(), gl);
 		}
 
-	}
-
-	private void drawShapeAndBox(RenderItem item, GL11 gl) {
-		draw(item, gl);
-//		drawBox(item, gl);
 	}
 
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -328,6 +206,18 @@ public class GLRenderer10 implements RenderContext {
 	public Texture makeTexture() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public Matrix4f createMatrices() {
+		SceneManagerInterface sceneManager = getSceneManager();
+		Camera camera = sceneManager.getCamera();
+		Frustum frustum = sceneManager.getFrustum();
+
+		Matrix4f staticMatrix = new Matrix4f(getViewportMatrix());
+		staticMatrix.mul(frustum.getProjectionMatrix());
+		staticMatrix.mul(camera.getCameraMatrix());
+
+		return staticMatrix;
 	}
 
 	private int frameCount;

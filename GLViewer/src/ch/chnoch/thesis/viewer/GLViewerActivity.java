@@ -8,6 +8,8 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.*;
+import ch.chnoch.thesis.renderer.interfaces.Node;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.*;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -47,31 +49,25 @@ public class GLViewerActivity extends Activity {
 		rightTrans.setTranslation(transRight);
 		
 		mRoot = new TransformGroup();
-		mRoot.setTransformationMatrix(Util.getIdentityMatrix());
 		mSceneManager.setRoot(mRoot);
 		
-		mShapeNodeBig = new ShapeNode();
-		mShapeNodeBig.setShape(shapeBig);
-		mShapeNodeBig.setTransformationMatrix(Util.getIdentityMatrix());
+		mShapeNodeBig = new ShapeNode(shapeBig, mSceneManager);
 		mRoot.addChild(mShapeNodeBig);
 		
 		mSmallGroup = new TransformGroup();
-		mSmallGroup.setTransformationMatrix(smallTrans);
+		mSmallGroup.initTranslationMatrix(smallTrans);
 		mRoot.addChild(mSmallGroup);
 		
-		mShapeNodeSmallOne = new ShapeNode();
-		mShapeNodeSmallOne.setTransformationMatrix(leftTrans);
-		mShapeNodeSmallTwo = new ShapeNode();
-		mShapeNodeSmallTwo.setTransformationMatrix(rightTrans);
-		
-		mShapeNodeSmallOne.setShape(shapeSmall);
-		mShapeNodeSmallTwo.setShape(shapeSmall);
+		mShapeNodeSmallOne = new ShapeNode(shapeSmall, mSceneManager);
+		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
+		mShapeNodeSmallTwo = new ShapeNode(shapeSmall, mSceneManager);
+		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
 		
 		mSmallGroup.addChild(mShapeNodeSmallOne);
 		mSmallGroup.addChild(mShapeNodeSmallTwo);
 		
 		
-		boolean openGlES20 = detectOpenGLES20(); 
+//		boolean openGlES20 = detectOpenGLES20(); 
 //		if (false) {
 			// Tell the surface view we want to create an OpenGL ES
 			// 2.0-compatible
@@ -100,7 +96,7 @@ public class GLViewerActivity extends Activity {
 //		}
 		mRenderer.setSceneManager(mSceneManager);
 		
-		TouchHandler touchHandler = new TouchHandler(mRenderer);
+		TouchHandler touchHandler = new TouchHandler(mRenderer, (GLViewer) mViewer);
 		mViewer.setOnTouchListener(touchHandler);
 		KeyHandler keyHandler = new KeyHandler(mRenderer);
 		mViewer.setOnKeyListener(keyHandler);

@@ -2,6 +2,12 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.*;
 
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+
 /**
  * Stores the specification of a virtual camera. You will extend this class to
  * construct a 4x4 camera matrix, i.e., the world-to- camera transform from

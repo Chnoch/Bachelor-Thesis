@@ -4,6 +4,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.*;
+import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.util.*;
 import android.content.Context;
 import android.test.AndroidTestCase;
@@ -45,12 +46,10 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		
 		shape = Util.loadCube(1);
 		root = new TransformGroup();
-		shapeNode = new ShapeNode();
-		shapeNode2 = new ShapeNode();
+		shapeNode = new ShapeNode(shape, mSceneManager);
+		shapeNode2 = new ShapeNode(shape, mSceneManager);
 		
-		shapeNode.setTransformationMatrix(mIdentity);
-		shapeNode2.setTransformationMatrix(mMove);
-		root.setTransformationMatrix(mIdentity);
+		shapeNode2.setTranslationMatrix(mMove);
 		
 		shapeNode.setShape(shape);
 		shapeNode2.setShape(shape);

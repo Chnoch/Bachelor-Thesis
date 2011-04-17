@@ -5,6 +5,12 @@ import java.util.List;
 
 import javax.vecmath.Matrix4f;
 
+import ch.chnoch.thesis.renderer.interfaces.Node;
+
+import ch.chnoch.thesis.renderer.interfaces.Node;
+
+import ch.chnoch.thesis.renderer.interfaces.Node;
+
 public abstract class Group implements Node {
 
 	public Node parent;
@@ -26,8 +32,16 @@ public abstract class Group implements Node {
     public void setShape(Shape shape) {
     }
     
+    public Matrix4f getTranslationMatrix() {
+    	return null;
+    }
+    
+    public Matrix4f getRotationMatrix() {
+    	return null;
+    }
+    
     public Matrix4f getTransformationMatrix() {
-        return null;
+    	return null;
     }
     
     public BoundingBox getBoundingBox() {

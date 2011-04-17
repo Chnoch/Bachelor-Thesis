@@ -2,6 +2,9 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.Matrix4f;
 
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 import ch.chnoch.thesis.renderer.util.Util;
 
 /**

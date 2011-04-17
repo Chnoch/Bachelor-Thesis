@@ -11,6 +11,18 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Matrix4f;
 
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
 
@@ -397,5 +409,17 @@ public class GLRenderer implements RenderContext {
 
 	public SceneManagerInterface getSceneManager() {
 		return null;
+	}
+	
+	public Matrix4f createMatrices() {
+		SceneManagerInterface sceneManager = getSceneManager();
+		Camera camera = sceneManager.getCamera();
+		Frustum frustum = sceneManager.getFrustum();
+
+		Matrix4f staticMatrix = new Matrix4f(getViewportMatrix());
+		staticMatrix.mul(frustum.getProjectionMatrix());
+		staticMatrix.mul(camera.getCameraMatrix());
+
+		return staticMatrix;
 	}
 }

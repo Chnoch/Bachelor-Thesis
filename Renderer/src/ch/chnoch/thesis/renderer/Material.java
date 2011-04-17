@@ -2,6 +2,15 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.*;
 
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+
 /**
  * Stores the properties of a material.
  */

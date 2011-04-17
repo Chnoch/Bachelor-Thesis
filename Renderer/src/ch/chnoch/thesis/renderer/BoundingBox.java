@@ -12,15 +12,24 @@ import android.util.Log;
 
 public class BoundingBox {
 
-	private Vector3f mLow, mHigh;
+	private Point3f mLow, mHigh, mLowUpdated, mHighUpdated;
+	private boolean updated;
 
 	public BoundingBox(IntBuffer vertices) {
+		updated = true;
 		init(vertices);
+		mLowUpdated = new Point3f(mLow);
+		mHighUpdated = new Point3f(mHigh);
 	}
 
-	public BoundingBox(Vector3f low, Vector3f high) {
-		mLow = low;
-		mHigh = high;
+	public BoundingBox(Point3f low, Point3f high) {
+		mLow = new Point3f(low);
+		mHigh = new Point3f(high);
+
+		updated = true;
+
+		mLowUpdated = new Point3f(mLow);
+		mHighUpdated = new Point3f(mHigh);
 	}
 
 	private void init(IntBuffer vertices) {
@@ -68,23 +77,23 @@ public class BoundingBox {
 		highY = (float) highY / div;
 		highZ = (float) highZ / div;
 
-		mLow = new Vector3f(lowX, lowY, lowZ);
-		mHigh = new Vector3f(highX, highY, highZ);
+		mLow = new Point3f(lowX, lowY, lowZ);
+		mHigh = new Point3f(highX, highY, highZ);
 	}
 
 	public BoundingBox clone() {
-		return new BoundingBox(new Vector3f(mLow), new Vector3f(mHigh));
+		return new BoundingBox(new Point3f(mLow), new Point3f(mHigh));
 	}
 
-	public Vector3f getLow() {
+	public Point3f getLow() {
 		return mLow;
 	}
 
-	public Vector3f getHigh() {
+	public Point3f getHigh() {
 		return mHigh;
 	}
 
-	public Vector3f getCenter() {
+	public Point3f getCenter() {
 		float xa = (mHigh.x - mLow.x) / 2f;
 		float x = mLow.x + xa;
 
@@ -93,8 +102,13 @@ public class BoundingBox {
 
 		float za = (mHigh.z - mLow.z) / 2f;
 		float z = mLow.z + za;
+		Log.d("Bounding Box", "Center: " + x + ", " + y + ", " + z);
+		return new Point3f(x, y, z);
+	}
 
-		return new Vector3f(x, y, z);
+	public float getRadius() {
+		// simple calculation based on half of width / height / depth
+		return (mHigh.x - mLow.x) / 2f;
 	}
 
 	public RayShapeIntersection hitPoint(Ray ray) {
@@ -195,8 +209,8 @@ public class BoundingBox {
 	 */
 	public RayShapeIntersection intersect(Ray ray) {
 		float tXmin, tXmax, tYmin, tYmax, tZmin, tZmax;
-		Vector3f low = mLow;
-		Vector3f high = mHigh;
+		Point3f low = mLow;
+		Point3f high = mHigh;
 		RayShapeIntersection intersect = new RayShapeIntersection();
 
 		if (ray.getDirection().x >= 0) {
@@ -244,6 +258,11 @@ public class BoundingBox {
 	 * @param trans
 	 */
 	public void transform(Matrix4f trans) {
+		mLow.sub(getCenter());
+		mHigh.sub(getCenter());
+
+		Log.d("Bounding Box",
+				"Pre Low: " + mLow.toString() + " High: " + mHigh.toString());
 		// create all possible points
 		Point3f[] box = new Point3f[8];
 		box[0] = new Point3f(mLow);
@@ -261,6 +280,7 @@ public class BoundingBox {
 
 		Point3f low = new Point3f(box[0]);
 		Point3f high = new Point3f(box[7]);
+
 		for (int i = 0; i < box.length; i++) {
 			if (box[i].x < low.x) {
 				low.x = box[i].x;
@@ -282,11 +302,85 @@ public class BoundingBox {
 			}
 		}
 
-		mLow = new Vector3f(low);
-		mHigh = new Vector3f(high);
+		mLow = new Point3f(low);
+		mHigh = new Point3f(high);
+
+		Log.d("Bounding Box", "Past Low: " + mLow.toString() + " High: "
+				+ mHigh.toString());
+	}
+
+	public BoundingBox update(Matrix4f rot) {
+		if (updated) {
+			Log.d("Bounding Box", "Pre Low: " + mLow.toString() + " High: "
+					+ mHigh.toString());
+			// create all possible points
+			Point3f[] box = new Point3f[8];
+			box[0] = new Point3f(mLow);
+			box[1] = new Point3f(mLow.x, mHigh.y, mLow.z);
+			box[2] = new Point3f(mLow.x, mLow.y, mHigh.z);
+			box[3] = new Point3f(mLow.x, mHigh.y, mHigh.z);
+			box[4] = new Point3f(mHigh.x, mLow.y, mLow.z);
+			box[5] = new Point3f(mHigh.x, mHigh.y, mLow.z);
+			box[6] = new Point3f(mHigh.x, mLow.y, mHigh.z);
+			box[7] = new Point3f(mHigh);
+
+			for (int i = 0; i < box.length; i++) {
+				rot.transform(box[i]);
+			}
+
+			Point3f low = new Point3f(box[0]);
+			Point3f high = new Point3f(box[7]);
+
+			for (int i = 0; i < box.length; i++) {
+				if (box[i].x < low.x) {
+					low.x = box[i].x;
+				}
+				if (box[i].y < low.y) {
+					low.y = box[i].y;
+				}
+				if (box[i].z < low.z) {
+					low.z = box[i].z;
+				}
+				if (box[i].x > high.x) {
+					high.x = box[i].x;
+				}
+				if (box[i].y > high.y) {
+					high.y = box[i].y;
+				}
+				if (box[i].z > high.z) {
+					high.z = box[i].z;
+				}
+			}
+
+			updated = false;
+			Log.d("Bounding Box", "Past Low: " + low.toString() + " High: "
+					+ high.toString());
+
+			mLowUpdated = low;
+			mHighUpdated = high;
+		}
+		return new BoundingBox(mLowUpdated, mHighUpdated);
+	}
+
+	public void setUpdated() {
+		updated = true;
 	}
 
 	public enum Quadrant {
 		LEFT, RIGHT, MIDDLE
+	}
+
+	public boolean equals(Object obj) {
+		if (obj instanceof BoundingBox) {
+			BoundingBox box = (BoundingBox) obj;
+			float epsilon = 0.00001f;
+			return (this.mLow.epsilonEquals(box.mLow, epsilon) && this.mHigh.epsilonEquals(box.mHigh, epsilon));
+		} else {
+			return false;
+		}
+	}
+	
+	public String toString() {
+		return "Low: " + this.mLow.toString() + " High: " + this.mHigh.toString();
 	}
 }

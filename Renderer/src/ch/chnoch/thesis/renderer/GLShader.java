@@ -1,5 +1,8 @@
 package ch.chnoch.thesis.renderer;
 
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import android.opengl.GLES20;
 import android.util.Log;

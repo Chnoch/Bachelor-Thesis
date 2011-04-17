@@ -5,6 +5,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Iterator;
 
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+
 /**
  * A simple scene manager that stores objects in a linked list.
  */

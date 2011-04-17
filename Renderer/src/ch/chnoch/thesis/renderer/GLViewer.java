@@ -1,5 +1,6 @@
 package ch.chnoch.thesis.renderer;
 
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 

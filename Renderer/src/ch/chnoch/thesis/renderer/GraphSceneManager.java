@@ -5,6 +5,12 @@ import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
 
+import ch.chnoch.thesis.renderer.interfaces.Node;
+import ch.chnoch.thesis.renderer.interfaces.Node;
+import ch.chnoch.thesis.renderer.interfaces.Node;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 import ch.chnoch.thesis.renderer.util.Util;
 
 public class GraphSceneManager implements SceneManagerInterface {
@@ -60,7 +66,6 @@ public class GraphSceneManager implements SceneManagerInterface {
 				for (Node child : children) {
 					Matrix4f mat = new Matrix4f(t);
 					mat.mul(child.getTransformationMatrix());
-
 					init(child, mat);
 				}
 			}

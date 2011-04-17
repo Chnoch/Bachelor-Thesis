@@ -7,15 +7,11 @@ import org.jbox2d.collision.*;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 
-import ch.chnoch.thesis.renderer.GLRenderer10;
-import ch.chnoch.thesis.renderer.GLViewer;
-import ch.chnoch.thesis.renderer.GraphSceneManager;
-import ch.chnoch.thesis.renderer.Node;
-import ch.chnoch.thesis.renderer.RenderContext;
+import ch.chnoch.thesis.renderer.*;
 import ch.chnoch.thesis.renderer.Shape;
-import ch.chnoch.thesis.renderer.ShapeNode;
-import ch.chnoch.thesis.renderer.TransformGroup;
-import ch.chnoch.thesis.renderer.util.Util;
+import ch.chnoch.thesis.renderer.interfaces.*;
+import ch.chnoch.thesis.renderer.util.*;
+
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -24,7 +20,7 @@ public class Box2DIntegration extends Activity {
 
 	private GraphSceneManager mSceneManager;
 	private Shape mShape;
-	private Node mNode, mRoot;
+	private ch.chnoch.thesis.renderer.interfaces.Node mNode, mRoot;
 	private RenderContext mRenderer;
 	private GLSurfaceView mViewer;
 	private World world;
@@ -41,16 +37,13 @@ public class Box2DIntegration extends Activity {
 		mShape = Util.loadCube(1);
 
 		mRoot = new TransformGroup();
-		mRoot.setTransformationMatrix(Util.getIdentityMatrix());
 		mSceneManager.setRoot(mRoot);
 
 		mRenderer = new GLRenderer10(getApplication());
 		mRenderer.setSceneManager(mSceneManager);
 		mViewer = new GLViewer(this, mRenderer);
 
-		mNode = new ShapeNode();
-		mNode.setShape(mShape);
-		mNode.setTransformationMatrix(Util.getIdentityMatrix());
+		mNode = new ShapeNode(mShape, mSceneManager);
 		mRoot.addChild(mNode);
 
 		setContentView(mViewer);
