@@ -4,10 +4,6 @@ import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
-import ch.chnoch.thesis.renderer.interfaces.Node;
-
-import ch.chnoch.thesis.renderer.interfaces.Node;
-
 public class RayShapeIntersection {
 	public Vector3f hitPoint;
 	public boolean hit;

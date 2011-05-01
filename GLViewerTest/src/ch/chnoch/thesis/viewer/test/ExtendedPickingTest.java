@@ -46,8 +46,8 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		
 		shape = Util.loadCube(1);
 		root = new TransformGroup();
-		shapeNode = new ShapeNode(shape, mSceneManager);
-		shapeNode2 = new ShapeNode(shape, mSceneManager);
+		shapeNode = new ShapeNode(shape);
+		shapeNode2 = new ShapeNode(shape);
 		
 		shapeNode2.setTranslationMatrix(mMove);
 		

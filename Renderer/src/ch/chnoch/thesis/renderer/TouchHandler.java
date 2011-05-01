@@ -1,11 +1,5 @@
 package ch.chnoch.thesis.renderer;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.Util;
 import android.util.Log;
@@ -104,9 +98,11 @@ public class TouchHandler implements OnTouchListener {
 
 			mEventStart = e.getEventTime();
 
-			RayShapeIntersection intersect = Util.intersectRayBox(
-					Util.unproject(x, y, mRenderer),
-					mRenderer.getSceneManager());
+			Ray ray = Util.unproject(x, y, mRenderer);
+			RayShapeIntersection intersect = mRenderer.getSceneManager().intersectRayNode(ray);
+//			RayShapeIntersection intersect = Util.intersectRayBox(
+//					Util.unproject(x, y, mRenderer),
+//					mRenderer.getSceneManager());
 			if (intersect.hit) {
 				mIntersection = intersect;
 				mOnNode = true;

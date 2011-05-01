@@ -71,7 +71,14 @@ public class Util {
 			vertexArray[i] = vertices[i] * scale;
 		}
 
+		float texCoordsArray[] = new float[vertices.length];
+		for (int i = 0; i < vertexArray.length; i++) {
+			texCoordsArray[i] = vertices[i];
+		}
+
+		vertexBuffer.setTexCoordsBuffer(texCoordsArray);
 		vertexBuffer.setVertexBuffer(vertexArray);
+		vertexBuffer.setNormalBuffer(normals);
 
 		// Make a shape and add the object
 		return new Shape(vertexBuffer);
@@ -86,8 +93,12 @@ public class Util {
 			one, 0, one, 0, 0, one, one, one, 0, one, one, one, one, one, one,
 			0, one, one, one, };
 
-	static short indices[] = { 0, 4, 5, 0, 5, 1, 1, 5, 6, 1, 6, 2, 2, 6, 7, 2,
-			7, 3, 3, 7, 4, 3, 4, 0, 4, 7, 6, 4, 6, 5, 3, 0, 1, 3, 1, 2 };
+	static int indices[] = { 0, 4, 5, 0, 5, 1, 1, 5, 6, 1, 6, 2, 2, 6, 7, 2, 7,
+			3, 3, 7, 4, 3, 4, 0, 4, 7, 6, 4, 6, 5, 3, 0, 1, 3, 1, 2 };
+
+	static int normals[] = { 0, -one, 0, 0, -one, 0, one, 0, 0, one, 0, 0, 0,
+			one, 0, 0, one, 0, -one, 0, 0, -one, 0, 0, 0, 0, one, 0, 0, one, 0,
+			0, -one, 0, 0, -one };
 
 	public static Ray unproject(float x, float y, RenderContext renderer) {
 
@@ -105,7 +116,7 @@ public class Util {
 
 			direction.sub(origin);
 			direction.normalize();
-			
+
 			return new Ray(origin, direction);
 
 		} catch (RuntimeException exc) {
@@ -124,10 +135,15 @@ public class Util {
 			RenderItem item = it.next();
 			box = item.getNode().getBoundingBox();
 
-//			Log.d("Util", "Checking out Node with BoundingBox: "+ item.getNode().getBoundingBox().getLow().toString() + ", " + item.getNode().getBoundingBox().getHigh().toString());
+			// Log.d("Util", "Checking out Node with BoundingBox: "+
+			// item.getNode().getBoundingBox().getLow().toString() + ", " +
+			// item.getNode().getBoundingBox().getHigh().toString());
 			RayShapeIntersection intersection = box.hitPoint(ray);
 			if (intersection.hit) {
-				Log.d("Util", "Hit Node with BoundingBox: "+ item.getNode().getBoundingBox().getLow().toString() + ", " + item.getNode().getBoundingBox().getHigh().toString());
+				Log.d("Util", "Hit Node with BoundingBox: "
+						+ item.getNode().getBoundingBox().getLow().toString()
+						+ ", "
+						+ item.getNode().getBoundingBox().getHigh().toString());
 				intersection.node = item.getNode();
 				return intersection;
 			}

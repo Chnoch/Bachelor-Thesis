@@ -36,7 +36,7 @@ public class SimplePickingTest extends AndroidTestCase {
 //		mRenderer.setViewportMatrix(320, 483);
 		
 		shape = Util.loadCube(0.5f);
-		root = new ShapeNode(shape, mSceneManager);
+		root = new ShapeNode(shape);
 		
 		mSceneManager.setRoot(root);
 	}

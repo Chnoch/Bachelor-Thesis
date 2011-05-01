@@ -23,7 +23,7 @@ public class Plane {
 		pointOnPlane = new Vector3f(boundingBox.getLow());
 		float x = boundingBox.getHigh().x;
 		float y = boundingBox.getLow().y;
-		float z = boundingBox.getHigh().z;
+		float z = boundingBox.getLow().z;
 		Vector3f firstVector = new Vector3f(x, y, z);
 		firstVector.sub(firstVector, pointOnPlane);
 		y = boundingBox.getHigh().y;
@@ -38,11 +38,11 @@ public class Plane {
 		RayShapeIntersection intersection = new RayShapeIntersection();
 
 		// if conditional fails, ray and plane are parallel
-		if (normal.dot(ray.getDirection()) != 0) {
+		float denominator = normal.dot(ray.getDirection());
+		if (denominator != 0) {
 			Vector3f dist = new Vector3f();
 			dist.sub(pointOnPlane, ray.getOrigin());
-			float numerator = normal.dot(dist);
-			float denominator = normal.dot(ray.getDirection());
+			float numerator = dist.dot(normal);
 
 			float s = numerator / denominator;
 

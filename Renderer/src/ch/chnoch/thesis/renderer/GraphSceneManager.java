@@ -1,9 +1,13 @@
 package ch.chnoch.thesis.renderer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
+
+import android.util.Log;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.Node;
@@ -15,33 +19,46 @@ import ch.chnoch.thesis.renderer.util.Util;
 
 public class GraphSceneManager implements SceneManagerInterface {
 
-	private Node root;
-	private Camera camera;
-	private Frustum frustum;
+	private Node mRoot;
+	private Camera mCamera;
+	private Frustum mFrustum;
+	private List<Light> mLights;
 
 	public GraphSceneManager() {
-		this.camera = new Camera();
-		this.frustum = new Frustum();
+		super();
+		this.mCamera = new Camera();
+		this.mFrustum = new Frustum();
+		mLights = new ArrayList<Light>();
 	}
 
 	public Camera getCamera() {
-		return this.camera;
+		return this.mCamera;
 	}
 
 	public Frustum getFrustum() {
-		return this.frustum;
+		return this.mFrustum;
 	}
 
 	public SceneManagerIterator iterator() {
 		return new GraphSceneIterator(this);
 	}
+	
+	public Iterator<Light> lightIterator() {
+		return mLights.iterator();
+	}
 
 	public void setRoot(Node root) {
-		this.root = root;
+		this.mRoot = root;
 	}
 
 	public Node getRoot() {
-		return this.root;
+		return this.mRoot;
+	}
+	
+	public void addLight(Light light) {
+		if (mLights.size()<=8) {
+			mLights.add(light);
+		}
 	}
 
 	private class GraphSceneIterator implements SceneManagerIterator {
@@ -79,6 +96,25 @@ public class GraphSceneManager implements SceneManagerInterface {
 			return stack.pop();
 		}
 
+	}
+	
+	public RayShapeIntersection intersectRayNode(Ray ray) {
+		SceneManagerIterator it = this.iterator();
+		Node node;
+		while (it.hasNext()) {
+			RenderItem item = it.next();
+			node = item.getNode();
+
+//			Log.d("Util", "Checking out Node with BoundingBox: "+ item.getNode().getBoundingBox().getLow().toString() + ", " + item.getNode().getBoundingBox().getHigh().toString());
+			RayShapeIntersection intersection = node.intersect(ray);
+			if (intersection.hit) {
+				Log.d("Util", "Hit Node with BoundingBox: "+ item.getNode().getBoundingBox().getLow().toString() + ", " + item.getNode().getBoundingBox().getHigh().toString());
+				intersection.node = item.getNode();
+				return intersection;
+			}
+		}
+
+		return new RayShapeIntersection();
 	}
 
 }

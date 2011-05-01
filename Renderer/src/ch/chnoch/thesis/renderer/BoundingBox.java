@@ -110,6 +110,10 @@ public class BoundingBox {
 		// simple calculation based on half of width / height / depth
 		return (mHigh.x - mLow.x) / 2f;
 	}
+	
+	public enum Quadrant {
+		LEFT, RIGHT, MIDDLE
+	}
 
 	public RayShapeIntersection hitPoint(Ray ray) {
 		boolean inside = true;
@@ -364,10 +368,6 @@ public class BoundingBox {
 
 	public void setUpdated() {
 		updated = true;
-	}
-
-	public enum Quadrant {
-		LEFT, RIGHT, MIDDLE
 	}
 
 	public boolean equals(Object obj) {

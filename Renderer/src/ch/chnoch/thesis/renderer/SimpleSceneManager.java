@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Iterator;
 
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-
+import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 /**
@@ -88,5 +85,18 @@ public class SimpleSceneManager implements SceneManagerInterface {
 		}
 		
 		ListIterator<Shape> itr;
+	}
+
+	public RayShapeIntersection intersectRayNode(Ray ray) {
+		SceneManagerIterator it = this.iterator();
+		Node node;
+		while (it.hasNext()) {
+			node = it.next().getNode();
+			RayShapeIntersection intersection = node.intersect(ray);
+			if (intersection.hit) {
+				return intersection;
+			}
+		}
+		return null;
 	}
 }

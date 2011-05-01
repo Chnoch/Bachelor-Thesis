@@ -50,7 +50,7 @@ public class RendererPerformanceActivity extends Activity {
 		mTranslation = Util.getIdentityMatrix();
 
 		for (int i = 0; i < NUM_OF_SHAPES; i++) {
-			mNode = new ShapeNode(mShape, mSceneManager);
+			mNode = new ShapeNode(mShape);
 			mNode.initTranslationMatrix(new Matrix4f(mTranslation));
 			mRoot.addChild(mNode);
 			mTranslation.m03 += 1;

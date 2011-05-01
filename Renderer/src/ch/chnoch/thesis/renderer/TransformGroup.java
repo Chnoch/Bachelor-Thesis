@@ -76,4 +76,24 @@ public class TransformGroup extends Group {
 		return transform;
 	}
 
+	public Light getLight() {
+		return null;
+	}
+
+	public void setLight(Light light) {
+		
+	}
+
+	public Material getMaterial() {
+		return null;
+	}
+
+	public void setMaterial(Material material) {
+		
+	}
+	
+	public RayShapeIntersection intersect(Ray ray) {
+		return null;
+	}
+
 }

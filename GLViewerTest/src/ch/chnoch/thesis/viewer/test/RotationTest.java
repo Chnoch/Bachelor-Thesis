@@ -41,7 +41,7 @@ public class RotationTest extends AndroidTestCase {
 		// mRenderer.setViewportMatrix(320, 480);
 
 		shape = Util.loadCube(1f);
-		root = new ShapeNode(shape, mSceneManager);
+		root = new ShapeNode(shape);
 		mTrackball = new Trackball();
 		mSceneManager.setRoot(root);
 		root.initTranslationMatrix(mIdentity);

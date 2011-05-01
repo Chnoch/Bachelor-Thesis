@@ -40,7 +40,7 @@ public class TranslationTest extends AndroidTestCase {
 		// mRenderer.setViewportMatrix(320, 480);
 
 		shape = Util.loadCube(1f);
-		root = new ShapeNode(shape, mSceneManager);
+		root = new ShapeNode(shape);
 		mPlane = new Plane();
 		mSceneManager.setRoot(root);
 		root.initTranslationMatrix(mIdentity);
@@ -71,14 +71,44 @@ public class TranslationTest extends AndroidTestCase {
 		t.setTranslation(new Vector3f(7, 3, 0));
 		assertEquals(root.getTranslationMatrix(), t);
 	}
-	
+
 	public void testHitPoint() {
 		mPlane.setNode(root);
-		
-		Ray ray = new Ray(new Vector3f(0,0,-4), new Vector3f(0,0,1));
+
+		Ray ray = new Ray(new Vector3f(0, 0, 5), new Vector3f(0, 0, -1));
 		RayShapeIntersection intersection = mPlane.intersect(ray);
-		
+
 		assertTrue(intersection.hit);
-		assertEquals(new Vector3f(0,0,-1), intersection.hitPoint);
+		assertTrue(new Vector3f(0, 0, 4).epsilonEquals(intersection.hitPoint, epsilon));
+	}
+
+	public void testDirectTranslation() {
+		mPlane.setNode(root);
+
+		Ray rayPrev = new Ray(new Vector3f(10, 0, 5), new Vector3f(0, 0, -1));
+		Ray rayCur = new Ray(new Vector3f(0, 3, 5), new Vector3f(0, 0, -1));
+		RayShapeIntersection intPrev = mPlane.intersect(rayPrev);
+		RayShapeIntersection intCur = mPlane.intersect(rayCur);
+		
+		
+		assertTrue(intPrev.hit);
+		assertTrue(intCur.hit);
+//		assertTrue(new Vector3f(10,0,1).epsilonEquals(intPrev.hitPoint, epsilon));
+//		assertTrue(new Vector3f(0,3,1).epsilonEquals(intCur.hitPoint, epsilon));
+		assertEquals(new Vector3f(10,0,1), intPrev.hitPoint);
+		assertEquals(new Vector3f(0,3,1), intCur.hitPoint);
+		
+		mPlane.update(intCur.hitPoint, intPrev.hitPoint);
+		
+		Matrix4f t = Util.getIdentityMatrix();
+		t.setTranslation(new Vector3f(-10,3,0));
+		assertEquals(root.getTranslationMatrix(), t);
+	}
+	
+	public void Plane() {
+		mPlane.setNode(root);
+		Vector3f pointOnPlane = new Vector3f(-1,-1,-1);
+		Vector3f normal = new Vector3f();
+		
 	}
 }

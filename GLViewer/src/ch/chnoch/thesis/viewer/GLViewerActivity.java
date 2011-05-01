@@ -15,13 +15,12 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 
 public class GLViewerActivity extends Activity {
 
-	private GLSurfaceView mViewer;
+	private GLViewer mViewer;
 	private GraphSceneManager mSceneManager;
 	private RenderContext mRenderer;
 	private final String TAG = "GLViewerActivity";
@@ -35,37 +34,10 @@ public class GLViewerActivity extends Activity {
 
 		mSceneManager = new GraphSceneManager();
 //		Shape shape = loadTeapot();
-		Shape shapeBig = Util.loadCube(4);
-		Shape shapeSmall = Util.loadCube(1);
-		Vector3f transY = new Vector3f(0,5,0);
-		Vector3f transLeft = new Vector3f(-2,0,0);
-		Vector3f transRight = new Vector3f(2,0,0);
 		
-		Matrix4f smallTrans = Util.getIdentityMatrix();
-		smallTrans.setTranslation(transY);
-		Matrix4f leftTrans = Util.getIdentityMatrix();
-		leftTrans.setTranslation(transLeft);
-		Matrix4f rightTrans = Util.getIdentityMatrix();
-		rightTrans.setTranslation(transRight);
-		
-		mRoot = new TransformGroup();
-		mSceneManager.setRoot(mRoot);
-		
-		mShapeNodeBig = new ShapeNode(shapeBig, mSceneManager);
-		mRoot.addChild(mShapeNodeBig);
-		
-		mSmallGroup = new TransformGroup();
-		mSmallGroup.initTranslationMatrix(smallTrans);
-		mRoot.addChild(mSmallGroup);
-		
-		mShapeNodeSmallOne = new ShapeNode(shapeSmall, mSceneManager);
-		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
-		mShapeNodeSmallTwo = new ShapeNode(shapeSmall, mSceneManager);
-		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
-		
-		mSmallGroup.addChild(mShapeNodeSmallOne);
-		mSmallGroup.addChild(mShapeNodeSmallTwo);
-		
+		createShapes();
+		createLights();
+		setMaterial();
 		
 //		boolean openGlES20 = detectOpenGLES20(); 
 //		if (false) {
@@ -96,7 +68,7 @@ public class GLViewerActivity extends Activity {
 //		}
 		mRenderer.setSceneManager(mSceneManager);
 		
-		TouchHandler touchHandler = new TouchHandler(mRenderer, (GLViewer) mViewer);
+		TouchHandler touchHandler = new TouchHandler(mRenderer, mViewer);
 		mViewer.setOnTouchListener(touchHandler);
 		KeyHandler keyHandler = new KeyHandler(mRenderer);
 		mViewer.setOnKeyListener(keyHandler);
@@ -106,11 +78,6 @@ public class GLViewerActivity extends Activity {
 		mViewer.setFocusableInTouchMode(true);
 	}
 
-	private boolean detectOpenGLES20() {
-		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		ConfigurationInfo info = am.getDeviceConfigurationInfo();
-		return (info.reqGlEsVersion >= 0x20000);
-	}
 
 	@Override
 	public void onPause() {
@@ -140,6 +107,72 @@ public class GLViewerActivity extends Activity {
 		}
 		return shader;
 	}*/
+	
+	
+	/*
+	 * Private Methods
+	 */
+	
+	private void createShapes() {
+		
+		Shape shapeBig = Util.loadCube(4);
+		Shape shapeSmall = Util.loadCube(1);
+		
+		Vector3f transY = new Vector3f(0,5,0);
+		Vector3f transLeft = new Vector3f(-2,0,0);
+		Vector3f transRight = new Vector3f(2,0,0);
+		
+		Matrix4f smallTrans = Util.getIdentityMatrix();
+		smallTrans.setTranslation(transY);
+		Matrix4f leftTrans = Util.getIdentityMatrix();
+		leftTrans.setTranslation(transLeft);
+		Matrix4f rightTrans = Util.getIdentityMatrix();
+		rightTrans.setTranslation(transRight);
+		
+		mRoot = new TransformGroup();
+		mSceneManager.setRoot(mRoot);
+		
+		mShapeNodeBig = new ShapeNode(shapeBig);
+		mRoot.addChild(mShapeNodeBig);
+		
+		mSmallGroup = new TransformGroup();
+		mSmallGroup.initTranslationMatrix(smallTrans);
+		mRoot.addChild(mSmallGroup);
+		
+		mShapeNodeSmallOne = new ShapeNode(shapeSmall);
+		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
+		mShapeNodeSmallTwo = new ShapeNode(shapeSmall);
+		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
+		
+		mSmallGroup.addChild(mShapeNodeSmallOne);
+		mSmallGroup.addChild(mShapeNodeSmallTwo);
+	}
+	
+	private void createLights() {
+		
+		Light light = new Light();
+		light.type = Light.Type.POINT;
+		light.position.set(2, 2, 0);
+//		light.direction.set(0,0,0);
+		light.specular.set(1,0,0);
+		light.ambient.set(0.2f,0.2f,0.2f);
+		light.diffuse.set(0.3f,0.3f,0.3f);
+		
+		mSceneManager.addLight(light);
+	}
+	
+	private void setMaterial() {
+		Material mat = new Material();
+		
+		mat.shininess = 5;
+		mat.mAmbient.set(0.3f,0.3f,0.3f);
+		mat.mDiffuse.set(0.5f,0.5f,0.5f);
+		mat.mSpecular.set(0.5f,0.5f,0.5f);
+		
+		mShapeNodeBig.setMaterial(mat);
+		mShapeNodeSmallOne.setMaterial(mat);
+		mShapeNodeSmallTwo.setMaterial(mat);
+	}
 
 	private Shape loadTeapot() {
 		// Construct a data structure that stores the vertices, their
@@ -173,5 +206,11 @@ public class GLViewerActivity extends Activity {
 		}
 
 		return byteArrayOutputStream.toString();
+	}
+
+	private boolean detectOpenGLES20() {
+		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		ConfigurationInfo info = am.getDeviceConfigurationInfo();
+		return (info.reqGlEsVersion >= 0x20000);
 	}
 }
