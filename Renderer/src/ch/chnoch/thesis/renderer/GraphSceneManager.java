@@ -105,10 +105,8 @@ public class GraphSceneManager implements SceneManagerInterface {
 			RenderItem item = it.next();
 			node = item.getNode();
 
-//			Log.d("Util", "Checking out Node with BoundingBox: "+ item.getNode().getBoundingBox().getLow().toString() + ", " + item.getNode().getBoundingBox().getHigh().toString());
 			RayShapeIntersection intersection = node.intersect(ray);
 			if (intersection.hit) {
-				Log.d("Util", "Hit Node with BoundingBox: "+ item.getNode().getBoundingBox().getLow().toString() + ", " + item.getNode().getBoundingBox().getHigh().toString());
 				intersection.node = item.getNode();
 				return intersection;
 			}

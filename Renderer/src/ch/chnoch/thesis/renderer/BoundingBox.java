@@ -1,6 +1,8 @@
 package ch.chnoch.thesis.renderer;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
@@ -93,6 +95,73 @@ public class BoundingBox {
 		return mHigh;
 	}
 
+	public List<Plane> getPlanes() {
+		List<Plane> planes = new ArrayList<Plane>();
+
+		// create all possible points
+		Point3f[] box = new Point3f[8];
+		box[0] = new Point3f(mLow);
+		box[1] = new Point3f(mLow.x, mHigh.y, mLow.z);
+		box[2] = new Point3f(mLow.x, mLow.y, mHigh.z);
+		box[3] = new Point3f(mLow.x, mHigh.y, mHigh.z);
+		box[4] = new Point3f(mHigh.x, mLow.y, mLow.z);
+		box[5] = new Point3f(mHigh.x, mHigh.y, mLow.z);
+		box[6] = new Point3f(mHigh.x, mLow.y, mHigh.z);
+		box[7] = new Point3f(mHigh);
+
+		Plane plane;
+		Vector3f a = new Vector3f();
+		Vector3f b = new Vector3f();
+		
+		// Create all six planes and add them to the array
+		
+		// First Plane
+		Vector3f pointOnPlane = new Vector3f(box[0]);
+		Vector3f normal = new Vector3f();
+		a.sub(box[1], box[0]);
+		b.sub(box[2], box[0]);
+		normal.cross(a, b);
+		planes.add(new Plane(pointOnPlane, normal));
+
+		// Second plane
+		pointOnPlane = new Vector3f(box[0]);
+		normal = new Vector3f();
+		b.sub(box[4], box[0]);
+		normal.cross(a, b);
+		planes.add(new Plane(pointOnPlane, normal));
+		
+		// Third Plane
+		pointOnPlane = new Vector3f(box[0]);
+		normal = new Vector3f();
+		a.sub(box[2], box[0]);
+		normal.cross(a, b);
+		planes.add(new Plane(pointOnPlane, normal));
+		
+		// Fourth Plane
+		pointOnPlane = new Vector3f(box[7]);
+		normal = new Vector3f();
+		a.sub(box[3], box[7]);
+		b.sub(box[5], box[7]);
+		normal.cross(a, b);
+		planes.add(new Plane(pointOnPlane, normal));
+		
+		// Fifth Plane
+		pointOnPlane = new Vector3f(box[7]);
+		normal = new Vector3f();
+		b.sub(box[6], box[7]);
+		normal.cross(a, b);
+		planes.add(new Plane(pointOnPlane, normal));
+		
+		//Sixth Plane
+		pointOnPlane = new Vector3f(box[7]);
+		normal = new Vector3f();
+		a.sub(box[5], box[7]);
+		normal.cross(a, b);
+		planes.add(new Plane(pointOnPlane, normal));
+		
+		return planes;
+	}
+
 	public Point3f getCenter() {
 		float xa = (mHigh.x - mLow.x) / 2f;
 		float x = mLow.x + xa;
@@ -110,7 +179,7 @@ public class BoundingBox {
 		// simple calculation based on half of width / height / depth
 		return (mHigh.x - mLow.x) / 2f;
 	}
-	
+
 	public enum Quadrant {
 		LEFT, RIGHT, MIDDLE
 	}
@@ -374,13 +443,15 @@ public class BoundingBox {
 		if (obj instanceof BoundingBox) {
 			BoundingBox box = (BoundingBox) obj;
 			float epsilon = 0.00001f;
-			return (this.mLow.epsilonEquals(box.mLow, epsilon) && this.mHigh.epsilonEquals(box.mHigh, epsilon));
+			return (this.mLow.epsilonEquals(box.mLow, epsilon) && this.mHigh
+					.epsilonEquals(box.mHigh, epsilon));
 		} else {
 			return false;
 		}
 	}
-	
+
 	public String toString() {
-		return "Low: " + this.mLow.toString() + " High: " + this.mHigh.toString();
+		return "Low: " + this.mLow.toString() + " High: "
+				+ this.mHigh.toString();
 	}
 }

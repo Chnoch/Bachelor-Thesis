@@ -110,8 +110,6 @@ public class ShapeNode extends Leaf {
 			}
 		} 
 		
-		
-		
 		return intersection;
 	}
 

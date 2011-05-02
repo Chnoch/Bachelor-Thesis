@@ -1,5 +1,9 @@
 package ch.chnoch.thesis.renderer;
 
+import java.util.List;
+
+import javax.vecmath.Vector3f;
+
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.Util;
 import android.util.Log;
@@ -49,19 +53,22 @@ public class TouchHandler implements OnTouchListener {
 			mEventEnd = e.getEventTime();
 
 			if (mOnNode) {
-				if (mEventEnd - mEventStart > 500 || (mIsTranslation && !mRotate)) {
+				if (mEventEnd - mEventStart > 500
+						|| (mIsTranslation && !mRotate)) {
 					Log.d("TouchHandler", "Moving Object");
 					// Long Press occured: Manipulate object by moving it
-					Ray prevRay = Util.unproject(mPreviousX, mPreviousY, mRenderer);
+					Ray prevRay = Util.unproject(mPreviousX, mPreviousY,
+							mRenderer);
 					Ray curRay = Util.unproject(x, y, mRenderer);
 					
+					mPlane = findClosestPlane(prevRay);
 					mPlane.setNode(mIntersection.node);
-					
+
 					RayShapeIntersection prevInter = mPlane.intersect(prevRay);
 					RayShapeIntersection curInter = mPlane.intersect(curRay);
-					
+
 					mPlane.update(curInter.hitPoint, prevInter.hitPoint);
-					
+
 					mIsTranslation = true;
 
 				} else {
@@ -73,15 +80,11 @@ public class TouchHandler implements OnTouchListener {
 					Ray startRay = Util.unproject(mPreviousX, mPreviousY,
 							mRenderer);
 					Ray endRay = Util.unproject(x, y, mRenderer);
-//					Log.d("TouchHandler", "startRay: Origin: " + startRay.getOrigin().toString() + " Direction: " + startRay.getDirection().toString());
-//					Log.d("TouchHandler", "endRay: Origin: " + endRay.getOrigin().toString() + " Direction: " + endRay.getDirection().toString());
 					RayShapeIntersection startIntersection = mTrackball
 							.intersect(startRay);
 					RayShapeIntersection endIntersection = mTrackball
 							.intersect(endRay);
-					Log.d("TouchHandler", "startIntersection: Hit: " + startIntersection.hit + " Hitpoint: " + startIntersection.hitPoint.toString());
-					Log.d("TouchHandler", "endIntersection: Hit: " + endIntersection.hit + " Hitpoint: " + endIntersection.hitPoint.toString());
-					
+
 					mTrackball.update(startIntersection.hitPoint,
 							endIntersection.hitPoint, TOUCH_SCALE_FACTOR);
 					mRotate = true;
@@ -89,7 +92,7 @@ public class TouchHandler implements OnTouchListener {
 				}
 				mPreviousX = x;
 				mPreviousY = y;
-				
+
 				mViewer.requestRender();
 			}
 			mEventStart = e.getEventTime();
@@ -99,10 +102,8 @@ public class TouchHandler implements OnTouchListener {
 			mEventStart = e.getEventTime();
 
 			Ray ray = Util.unproject(x, y, mRenderer);
-			RayShapeIntersection intersect = mRenderer.getSceneManager().intersectRayNode(ray);
-//			RayShapeIntersection intersect = Util.intersectRayBox(
-//					Util.unproject(x, y, mRenderer),
-//					mRenderer.getSceneManager());
+			RayShapeIntersection intersect = mRenderer.getSceneManager()
+					.intersectRayNode(ray);
 			if (intersect.hit) {
 				mIntersection = intersect;
 				mOnNode = true;
@@ -111,7 +112,7 @@ public class TouchHandler implements OnTouchListener {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			//reset all flags
+			// reset all flags
 			mIsTranslation = false;
 			mOnNode = false;
 			mRotate = false;
@@ -124,6 +125,31 @@ public class TouchHandler implements OnTouchListener {
 
 	public void setTrackball(Trackball trackball) {
 		mTrackball = trackball;
+	}
+
+	/*
+	 * Private Methods
+	 */
+
+	private Plane findClosestPlane(Ray ray) {
+		List<Plane> planes = mIntersection.node.getBoundingBox().getPlanes();
+		Plane closestPlane = null;
+		RayShapeIntersection tempInter = new RayShapeIntersection();
+		Vector3f tempVec = new Vector3f();
+		// Initialize the closest Vector at Infinity
+		float tempClosestDist = Float.MAX_VALUE;
+		for (Plane plane : planes) {
+			tempInter = plane.intersect(ray);
+			if (tempInter.hit) {
+				tempVec.sub(tempInter.hitPoint, ray.getOrigin());
+				if (tempVec.length() < tempClosestDist) {
+					tempClosestDist = tempVec.length();
+					closestPlane = plane;
+				}
+			}
+		}
+
+		return closestPlane;
 	}
 
 }

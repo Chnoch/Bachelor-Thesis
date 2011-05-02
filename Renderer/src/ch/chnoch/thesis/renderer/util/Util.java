@@ -127,31 +127,6 @@ public class Util {
 		return null;
 	}
 
-	public static RayShapeIntersection intersectRayBox(Ray ray,
-			SceneManagerInterface sceneManager) {
-		SceneManagerIterator it = sceneManager.iterator();
-		BoundingBox box;
-		while (it.hasNext()) {
-			RenderItem item = it.next();
-			box = item.getNode().getBoundingBox();
-
-			// Log.d("Util", "Checking out Node with BoundingBox: "+
-			// item.getNode().getBoundingBox().getLow().toString() + ", " +
-			// item.getNode().getBoundingBox().getHigh().toString());
-			RayShapeIntersection intersection = box.hitPoint(ray);
-			if (intersection.hit) {
-				Log.d("Util", "Hit Node with BoundingBox: "
-						+ item.getNode().getBoundingBox().getLow().toString()
-						+ ", "
-						+ item.getNode().getBoundingBox().getHigh().toString());
-				intersection.node = item.getNode();
-				return intersection;
-			}
-		}
-
-		return new RayShapeIntersection();
-	}
-
 	public static void transform(Matrix4f m, Vector3f point) {
 		float x, y, z, w;
 		x = m.m00 * point.x + m.m01 * point.y + m.m02 * point.z + m.m03;

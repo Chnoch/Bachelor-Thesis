@@ -6,6 +6,11 @@ public class Ray {
 	private Vector3f mOrigin;
 	private Vector3f mDirection;
 	
+	public Ray() {
+		mOrigin = new Vector3f();
+		mDirection = new Vector3f();
+	}
+	
 	public Ray(Vector3f origin, Vector3f direction) {
 		mOrigin = origin;
 		mDirection = direction;
