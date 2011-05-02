@@ -43,7 +43,7 @@ public class Box2DIntegration extends Activity {
 		mRenderer.setSceneManager(mSceneManager);
 		mViewer = new GLViewer(this, mRenderer);
 
-		mNode = new ShapeNode(mShape, mSceneManager);
+		mNode = new ShapeNode(mShape);
 		mRoot.addChild(mNode);
 
 		setContentView(mViewer);

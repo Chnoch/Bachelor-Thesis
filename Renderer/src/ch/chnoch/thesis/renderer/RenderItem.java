@@ -4,10 +4,6 @@ import javax.vecmath.*;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
-import ch.chnoch.thesis.renderer.interfaces.Node;
-
-import ch.chnoch.thesis.renderer.interfaces.Node;
-
 /**
  * A data structure that contains a shape and its transformation.
  * Its purpose is to pass data from the scene manager to the 

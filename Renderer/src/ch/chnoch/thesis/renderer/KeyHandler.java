@@ -4,10 +4,6 @@ import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;

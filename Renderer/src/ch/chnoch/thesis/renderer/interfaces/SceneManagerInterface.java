@@ -1,9 +1,13 @@
 package ch.chnoch.thesis.renderer.interfaces;
 
 import java.util.Iterator;
+import java.util.List;
 
 import ch.chnoch.thesis.renderer.Camera;
 import ch.chnoch.thesis.renderer.Frustum;
+import ch.chnoch.thesis.renderer.Light;
+import ch.chnoch.thesis.renderer.Ray;
+import ch.chnoch.thesis.renderer.RayShapeIntersection;
 import ch.chnoch.thesis.renderer.SceneManagerIterator;
 
 /**
@@ -20,6 +24,10 @@ public interface SceneManagerInterface {
 	 * @return an iterator to traverse the scene.
 	 */
 	public SceneManagerIterator iterator();
+	
+	public Iterator<Light> lightIterator();
+	
+	public RayShapeIntersection intersectRayNode(Ray ray);
 
 	public Camera getCamera();
 	

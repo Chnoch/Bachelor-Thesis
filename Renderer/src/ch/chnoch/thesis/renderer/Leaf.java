@@ -7,9 +7,6 @@ import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
-import ch.chnoch.thesis.renderer.interfaces.Node;
-
-import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.util.Util;
 
 public abstract class Leaf implements Node {
@@ -17,6 +14,13 @@ public abstract class Leaf implements Node {
 	protected Node parent;
 	protected Matrix4f mTranslationMatrix, mRotationMatrix,
 			mTransformationMatrix;
+
+	public Leaf() {
+		super();
+		mTransformationMatrix = Util.getIdentityMatrix();
+		mRotationMatrix = Util.getIdentityMatrix();
+		mTranslationMatrix = Util.getIdentityMatrix();
+	}
 
 	public List<Node> getChildren() {
 		return null;
@@ -48,17 +52,15 @@ public abstract class Leaf implements Node {
 	}
 
 	protected void setTransformationMatrix() {
-		if (mRotationMatrix != null && mTranslationMatrix != null) {
-			Matrix4f trans = new Matrix4f(mRotationMatrix);
-			Vector3f translation = new Vector3f();
-			mTranslationMatrix.get(translation);
-			trans.setTranslation(translation);
-			
-			if (mTransformationMatrix == null) {
-				mTransformationMatrix = Util.getIdentityMatrix();
-			}
-			mTransformationMatrix.set(trans);
+		Matrix4f trans = new Matrix4f(mRotationMatrix);
+		Vector3f translation = new Vector3f();
+		mTranslationMatrix.get(translation);
+		trans.setTranslation(translation);
+
+		if (mTransformationMatrix == null) {
+			mTransformationMatrix = Util.getIdentityMatrix();
 		}
+		mTransformationMatrix.set(trans);
 	}
 
 	public Node getParent() {

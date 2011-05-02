@@ -2,48 +2,52 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.Matrix4f;
 
+import android.util.Log;
+
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.util.Util;
 
 public class ShapeNode extends Leaf {
 
-	private GraphSceneManager mSceneManager;
 	private Shape mShape;
 	private BoundingBox mBoundingBox;
+	private Material mMaterial;
 
-	public ShapeNode(Shape shape, GraphSceneManager sceneManager) {
+	public ShapeNode(Shape shape) {
 		super();
-		mRotationMatrix = Util.getIdentityMatrix();
-		mTranslationMatrix = Util.getIdentityMatrix();
 		mShape = shape;
-		mSceneManager = sceneManager;
+		mBoundingBox = mShape.getBoundingBox().clone();
 		setTransformationMatrix();
-		initBoundingBox();
 	}
 
 	public void setShape(Shape shape) {
 		this.mShape = shape;
-		initBoundingBox();
 	}
 
 	public Shape getShape() {
 		return this.mShape;
 	}
+	
+	public void setMaterial(Material material) {
+		mMaterial = material;
+	}
+	
+	public Material getMaterial() {
+		return mMaterial;
+	}
 
 	public BoundingBox getBoundingBox() {
-		return mBoundingBox.update(getRotationMatrix());
+		return mBoundingBox.update(getCompleteTransformationMatrix());
 	}
 
 	public void initTranslationMatrix(Matrix4f t) {
 		mTranslationMatrix.set(t);
 		setTransformationMatrix();
-		initBoundingBox();
 	}
 
 	public void initRotationMatrix(Matrix4f t) {
 		mRotationMatrix.set(t);
 		setTransformationMatrix();
-		initBoundingBox();
 	}
 
 	public void setTranslationMatrix(Matrix4f t) {
@@ -74,7 +78,39 @@ public class ShapeNode extends Leaf {
 
 	public void setParent(Node parent) {
 		this.parent = parent;
-		initBoundingBox();
+	}
+	
+	public Light getLight() {
+		return null;
+	}
+	
+	public void setLight(Light light) {
+		//nothing is set, as this is no light
+	}
+	
+	/**
+	 * For now this only tests on the Shape as a cube. Will need
+	 * to generalize that to work with any shape.
+	 * @param ray
+	 * @return the intersection
+	 */
+	public RayShapeIntersection intersect(Ray ray) {
+		RayShapeIntersection intersection;
+		
+		// Test against BoundingBox for fast check
+		intersection = this.getBoundingBox().hitPoint(ray);
+		if (intersection.hit) {
+			Log.d("ShapeNode", "Hit Bounding Box: " + getBoundingBox().toString());
+			// Test against Shape if BoundingBox is hit
+			intersection = mShape.intersect(ray, getCompleteTransformationMatrix());
+			// if shape ist hit
+			if (intersection.hit) {
+				Log.d("ShapeNode", "Hit Shape of BB: " + getBoundingBox().toString());
+				intersection.node = this;
+			}
+		} 
+		
+		return intersection;
 	}
 
 	/*
@@ -82,26 +118,7 @@ public class ShapeNode extends Leaf {
 	 */
 
 	private void updateBoundingBox() {
-		// The bounding box must be set
-		assert mBoundingBox != null;
-//		mBoundingBox.transform(getRotationMatrix());
 		mBoundingBox.setUpdated();
 	}
 
-	/**
-	 * This method is only used upon initialization or if something drastic has
-	 * changed (e.g. the underlying shape or the parent). Do not use this to re
-	 * calculate the Bounding box after a rotation or translation.
-	 */
-	private void initBoundingBox() {
-		if (mShape != null && getTransformationMatrix() != null
-				&& (getParent() != null || mSceneManager.getRoot() == this)) {
-			Matrix4f transform = getCompleteTransformationMatrix();
-
-			if (mBoundingBox == null) {
-				mBoundingBox = mShape.getBoundingBox().clone();
-			}
-			mBoundingBox.transform(transform);
-		}
-	}
 }

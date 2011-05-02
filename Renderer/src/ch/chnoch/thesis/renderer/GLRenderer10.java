@@ -6,6 +6,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -50,12 +51,9 @@ public class GLRenderer10 implements RenderContext {
 
 	private ShortBuffer mIndexBuffer;
 	private IntBuffer mVertexBuffer;
-	// private IntBuffer mTextureBuffer;
+	private FloatBuffer mTexCoordsBuffer;
 	private IntBuffer mColorBuffer;
-	// private IntBuffer mNormalBuffer;
-
-	private List<Float> mVertexArray;
-	private List<Integer> mColorArray;
+	private IntBuffer mNormalBuffer;
 
 	public float mAngleX = 0;
 	public float mAngleY = 0;
@@ -72,15 +70,21 @@ public class GLRenderer10 implements RenderContext {
 	public GLRenderer10(Context context) {
 		mContext = context;
 
-		mVertexArray = new ArrayList<Float>();
-		mColorArray = new ArrayList<Integer>();
 		mViewportMatrix = new Matrix4f();
 	}
+
+	/*
+	 * Public Methods
+	 */
 
 	public void setSceneManager(SceneManagerInterface sceneManager) {
 		mSceneManager = sceneManager;
 		mCamera = mSceneManager.getCamera();
 		mFrustum = mSceneManager.getFrustum();
+	}
+
+	public SceneManagerInterface getSceneManager() {
+		return mSceneManager;
 	}
 
 	public void setViewer(GLViewer viewer) {
@@ -91,40 +95,49 @@ public class GLRenderer10 implements RenderContext {
 		return mViewportMatrix;
 	}
 
-	/**
-	 * The main rendering method.
-	 * 
-	 * @param renderItem
-	 *            the object that needs to be drawn
-	 */
-	private void draw(RenderItem renderItem, GL10 gl) {
-		
-		Shape shape = renderItem.getNode().getShape();
-		VertexBuffers buffers = shape.getVertexBuffers();
-		mVertexBuffer = buffers.getVertexBuffer();
-		mColorBuffer = buffers.getColorBuffer();
-		mIndexBuffer = buffers.getIndexBuffer();
+	public void setViewportMatrix(int width, int height) {
+		// reset the viewport matrix
+		mViewportMatrix.setM00(width / 2.f);
+		mViewportMatrix.setM03((width - 1) / 2.f);
 
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		t.set(mCamera.getCameraMatrix());
-		t.mul(renderItem.getT());
+		mViewportMatrix.setM11(height / 2.f);
+		mViewportMatrix.setM13((height - 1) / 2.f);
 
-		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
-
-		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
-		gl.glFrontFace(GL10.GL_CW);
-		gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
-		gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
-		gl.glDrawElements(GL10.GL_TRIANGLES, mIndexBuffer.capacity(),
-				GL10.GL_UNSIGNED_SHORT, mIndexBuffer);
-		gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+		mViewportMatrix.setM22(1);
+		mViewportMatrix.setM33(1);
 	}
+
+	public Shader makeShader() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Texture makeTexture() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Matrix4f createMatrices() {
+		SceneManagerInterface sceneManager = getSceneManager();
+		Camera camera = sceneManager.getCamera();
+		Frustum frustum = sceneManager.getFrustum();
+
+		Matrix4f staticMatrix = new Matrix4f(getViewportMatrix());
+		staticMatrix.mul(frustum.getProjectionMatrix());
+		staticMatrix.mul(camera.getCameraMatrix());
+
+		return staticMatrix;
+	}
+
+	/*
+	 * Framework Callback Methods
+	 */
 
 	public void onDrawFrame(GL10 gl) {
 		calculateFPS();
 		long oldTime = System.currentTimeMillis();
 
-		SceneManagerIterator it = mSceneManager.iterator();
+		SceneManagerIterator shapeIterator = mSceneManager.iterator();
 
 		/*
 		 * Usually, the first thing one might want to do is to clear the screen.
@@ -138,9 +151,10 @@ public class GLRenderer10 implements RenderContext {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
-		while (it.hasNext()) {
-			draw(it.next(), gl);
+		while (shapeIterator.hasNext()) {
+			draw(shapeIterator.next(), gl);
 		}
+
 		long newTime = System.currentTimeMillis();
 
 		long diff = newTime - oldTime;
@@ -162,18 +176,6 @@ public class GLRenderer10 implements RenderContext {
 		gl.glLoadMatrixf(
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 		gl.glViewport(0, 0, width, height);
-	}
-
-	public void setViewportMatrix(int width, int height) {
-		// reset the viewport matrix
-		mViewportMatrix.setM00(width / 2.f);
-		mViewportMatrix.setM03((width - 1) / 2.f);
-
-		mViewportMatrix.setM11(height / 2.f);
-		mViewportMatrix.setM13((height - 1) / 2.f);
-
-		mViewportMatrix.setM22(1);
-		mViewportMatrix.setM33(1);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -200,60 +202,127 @@ public class GLRenderer10 implements RenderContext {
 		gl.glMatrixMode(GLES10.GL_PROJECTION);
 		gl.glLoadMatrixf(
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
+		
+		setLights(gl);
 	}
 
-	public SceneManagerInterface getSceneManager() {
-		return mSceneManager;
+	/*
+	 * Private Methods
+	 */
+
+	/**
+	 * The main rendering method for one item.
+	 * 
+	 * @param renderItem
+	 *            the object that needs to be drawn
+	 */
+	private void draw(RenderItem renderItem, GL10 gl) {
+
+		Shape shape = renderItem.getNode().getShape();
+		VertexBuffers buffers = shape.getVertexBuffers();
+		mVertexBuffer = buffers.getVertexBuffer();
+		mColorBuffer = buffers.getColorBuffer();
+		mIndexBuffer = buffers.getIndexBuffer();
+		mTexCoordsBuffer = buffers.getTexCoordsBuffer();
+		mNormalBuffer = buffers.getNormalBuffer();
+
+		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		t.set(mCamera.getCameraMatrix());
+		t.mul(renderItem.getT());
+
+		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
+		
+		setMaterial(renderItem.getNode().getMaterial(), gl);
+
+		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		gl.glFrontFace(GL10.GL_CW);
+		gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
+//		gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL10.GL_FIXED, 0, mNormalBuffer);
+//		gl.glEnable(GL10.GL_TEXTURE_2D);
+//		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTexCoordsBuffer);
+		gl.glDrawElements(GL10.GL_TRIANGLES, mIndexBuffer.capacity(),
+				GL10.GL_UNSIGNED_SHORT, mIndexBuffer);
+		gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
 	}
 
-	public Shader makeShader() {
-		// TODO Auto-generated method stub
-		return null;
+	private void setLights(GL10 gl) {
+		int lightIndex[] = { GL10.GL_LIGHT0, GL10.GL_LIGHT1, GL10.GL_LIGHT2,
+				GL10.GL_LIGHT3, GL10.GL_LIGHT4, GL10.GL_LIGHT5, GL10.GL_LIGHT6,
+				GL10.GL_LIGHT7 };
+
+		gl.glEnable(GL10.GL_LIGHTING);
+		gl.glLoadIdentity();
+		
+		Iterator<Light> iter = mSceneManager.lightIterator();
+
+		int i = 0;
+		Light l;
+		while (iter.hasNext() && i < 8) {
+			l = iter.next();
+			gl.glEnable(lightIndex[i]);
+
+			if (l.type == Light.Type.DIRECTIONAL) {
+				gl.glLightfv(lightIndex[i], GL10.GL_POSITION, l.createDirectionArray(), 0);
+			}
+			if (l.type == Light.Type.POINT || l.type == Light.Type.SPOT) {
+				gl.glLightfv(lightIndex[i], GL10.GL_POSITION, l.createPositionArray(), 0);
+			}
+			if (l.type == Light.Type.SPOT) {
+				gl.glLightfv(lightIndex[i], GL10.GL_SPOT_DIRECTION,
+						l.createSpotDirectionArray(), 0);
+				gl.glLightf(lightIndex[i], GL10.GL_SPOT_EXPONENT,
+						l.spotExponent);
+				gl.glLightf(lightIndex[i], GL10.GL_SPOT_CUTOFF, l.spotCutoff);
+			}
+
+			gl.glLightfv(lightIndex[i], GL10.GL_DIFFUSE, l.createDiffuseArray(), 0);
+			gl.glLightfv(lightIndex[i], GL10.GL_AMBIENT, l.createAmbientArray(), 0);
+			gl.glLightfv(lightIndex[i], GL10.GL_SPECULAR, l.createSpecularArray(), 0);
+
+			i++;
+		}
+		
+		gl.glEnable(GL10.GL_CCW);
+	}
+	
+	/**
+	 * Pass the material properties to OpenGL, including textures and shaders.
+	 */
+	private void setMaterial(Material m, GL10 gl)
+	{
+		if(m!=null)
+		{
+			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, m.createDiffuseArray(), 0);
+			
+			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, m.createAmbientArray(), 0);
+
+			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, m.createSpecularArray(), 0);
+
+			gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, m.shininess);
+		}
 	}
 
-	public Texture makeTexture() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Matrix4f createMatrices() {
-		SceneManagerInterface sceneManager = getSceneManager();
-		Camera camera = sceneManager.getCamera();
-		Frustum frustum = sceneManager.getFrustum();
-
-		Matrix4f staticMatrix = new Matrix4f(getViewportMatrix());
-		staticMatrix.mul(frustum.getProjectionMatrix());
-		staticMatrix.mul(camera.getCameraMatrix());
-
-		return staticMatrix;
-	}
-
+	// only used to calculate rendering time per frame
 	private int frameCount;
 	private long currentTime, previousTime = 0;
 	private float fps;
 
-	// -------------------------------------------------------------------------
-	// Calculates the frames per second
-	// -------------------------------------------------------------------------
-	void calculateFPS() {
+	private void calculateFPS() {
 		// Increase frame count
 		frameCount++;
 
-		// Get the number of milliseconds since glutInit called
-		// (or first call to glutGet(GLUT ELAPSED TIME)).
 		currentTime = System.currentTimeMillis();
 
 		// Calculate time passed
 		long timeInterval = currentTime - previousTime;
 
 		if (timeInterval > 1000) {
-			// calculate the number of frames per second
 			fps = timeInterval / frameCount;
 
-			// Set time
 			previousTime = currentTime;
 
-			// Reset frame count
 			frameCount = 0;
 
 			Log.d("Renderer", "Rendertime per Frame: " + fps + " ms");
