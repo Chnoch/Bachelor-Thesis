@@ -152,10 +152,10 @@ public class GLViewerActivity extends Activity {
 		
 		Light light = new Light();
 		light.type = Light.Type.POINT;
-		light.position.set(2, 2, 0);
+		light.position.set(5, 5, 5);
 //		light.direction.set(0,0,0);
-		light.specular.set(3,0,0);
-		light.ambient.set(0.2f,0.2f,0.2f);
+		light.specular.set(1,0,0);
+		light.ambient.set(0.4f,0.4f,0.4f);
 		light.diffuse.set(0.3f,0.3f,0.3f);
 		
 		mSceneManager.addLight(light);
