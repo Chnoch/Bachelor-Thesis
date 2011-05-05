@@ -36,6 +36,7 @@ public class TouchHandler implements OnTouchListener {
 		mViewer = viewer;
 		mTrackball = new Trackball();
 		mPlane = new Plane();
+		mPlane.setNormal(new Vector3f(0,0,1));
 	}
 
 	public boolean onTouch(View view, MotionEvent e) {
@@ -61,13 +62,15 @@ public class TouchHandler implements OnTouchListener {
 							mRenderer);
 					Ray curRay = Util.unproject(x, y, mRenderer);
 					
-					mPlane = findClosestPlane(prevRay);
+//					mPlane = findClosestPlane(prevRay);
+					RayShapeIntersection startIntersection = mIntersection.node.intersect(prevRay);
+					mPlane.setPointOnPlane(startIntersection.hitPoint);
 					mPlane.setNode(mIntersection.node);
+					
+					RayShapeIntersection endIntersection = mPlane.intersect(curRay);
 
-					RayShapeIntersection prevInter = mPlane.intersect(prevRay);
-					RayShapeIntersection curInter = mPlane.intersect(curRay);
-
-					mPlane.update(curInter.hitPoint, prevInter.hitPoint);
+					Log.d("TouchHandler", "Moving from " + startIntersection.hitPoint.toString() + " to " +endIntersection.hitPoint.toString());
+					mPlane.update(endIntersection.hitPoint, startIntersection.hitPoint);
 
 					mIsTranslation = true;
 

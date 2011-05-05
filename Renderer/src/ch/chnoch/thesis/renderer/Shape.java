@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.vecmath.*;
 
+import android.util.Log;
+
 /**
  * Represents a 3D shape. The shape currently just consists of its vertex data.
  * It should later be extended to include material properties, shaders, etc.
@@ -60,15 +62,32 @@ public class Shape {
 
 	public RayShapeIntersection intersect(Ray ray, Matrix4f transformation) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
+		List<RayShapeIntersection> hitTriangles = new ArrayList<RayShapeIntersection>();
 
 		// get all triangles
 		Iterator<Triangle> it = getTriangles().iterator();
 		Triangle triangle;
 		// calculate intersection of ray and triangle
-		while (it.hasNext() && !intersection.hit) {
+		while (it.hasNext()) {
 			triangle = it.next();
 			triangle.transform(transformation);
 			intersection = calculateIntersection(ray, triangle);
+			if (intersection.hit) {
+				hitTriangles.add(intersection);
+			}
+		}
+		
+		Log.d("Shape", "Hit Triangles: " + hitTriangles.size());
+		Vector3f distance = new Vector3f();
+		float shortestDist = Float.MAX_VALUE;
+		for (RayShapeIntersection in : hitTriangles) {
+			distance.sub(ray.getOrigin(), in.hitPoint);
+			Log.d("Shape", "Distance from ray origin to triangle: " + distance.length());
+			if (distance.length()<shortestDist) {
+				Log.d("Shape", "Found closer Triangle. HitPoint: " + in.hitPoint.toString());
+				intersection = in;
+				shortestDist = distance.length();
+			}
 		}
 
 		// return the intersected point if any
