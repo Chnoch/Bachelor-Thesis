@@ -25,6 +25,7 @@ public class GLViewerActivity extends Activity {
 	private RenderContext mRenderer;
 	private final String TAG = "GLViewerActivity";
 	
+	
 	private Node mRoot, mSmallGroup, mShapeNodeBig, mShapeNodeSmallOne, mShapeNodeSmallTwo;
 
 	/** Called when the activity is first created. */
@@ -151,10 +152,10 @@ public class GLViewerActivity extends Activity {
 	private void createLights() {
 		
 		Light light = new Light();
-		light.type = Light.Type.POINT;
+		light.type = Light.Type.DIRECTIONAL;
 		light.position.set(5, 5, 5);
-//		light.direction.set(0,0,0);
-		light.specular.set(1,0,0);
+		light.direction.set(1,1,1);
+		light.specular.set(1,1,1);
 		light.ambient.set(0.4f,0.4f,0.4f);
 		light.diffuse.set(0.3f,0.3f,0.3f);
 		
@@ -165,9 +166,9 @@ public class GLViewerActivity extends Activity {
 		Material mat = new Material();
 		
 		mat.shininess = 5;
-		mat.mAmbient.set(0.3f,0.3f,0.3f);
-		mat.mDiffuse.set(0.5f,0.5f,0.5f);
-		mat.mSpecular.set(0.5f,0.5f,0.5f);
+		mat.mAmbient.set(1,0,0);
+		mat.mDiffuse.set(1f,0,0);
+		mat.mSpecular.set(1f,0f,0f);
 		
 		mShapeNodeBig.setMaterial(mat);
 		mShapeNodeSmallOne.setMaterial(mat);

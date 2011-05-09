@@ -1,6 +1,5 @@
 package ch.chnoch.thestis.box2dintegration;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import org.jbox2d.collision.*;
@@ -11,6 +10,7 @@ import ch.chnoch.thesis.renderer.*;
 import ch.chnoch.thesis.renderer.Shape;
 import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.*;
+
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
@@ -96,7 +96,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 			Vec2 position;
 			Vec2 difference;
 
-			do {
+			for (int i=0; i<1000;i++) {
 				world.step(timeStep, velocityIterations + positionIterations);
 				position = body.getPosition();
 				float angle = body.getAngle();
@@ -110,11 +110,10 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 
 				Log.d("Box2dIntegration", position.x + ", " + position.y
 						+ ", angle: " + angle);
-			} while (difference.x > 0.001f && difference.y > 0.001f);
+			}
 		}
 	}
 
-	@Override
 	public void onClick(View arg0) {
 		Log.d("Box2dIntegration", "onClick");
 		new Thread(new Simulation()).run();
