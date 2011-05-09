@@ -96,4 +96,14 @@ public class TransformGroup extends Group {
 		return null;
 	}
 
+	public void move(Vector3f t) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void rotZ(float angle) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

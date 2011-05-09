@@ -3,6 +3,7 @@ package ch.chnoch.thesis.renderer.interfaces;
 import java.util.List;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
@@ -25,6 +26,9 @@ public interface Node {
     public void initRotationMatrix(Matrix4f t);
     public void setRotationMatrix(Matrix4f t);
     public Matrix4f getTransformationMatrix();
+    
+    public void move(Vector3f t);
+    public void rotZ(float angle);
     
     public Shape getShape();
     public void setShape(Shape shape);

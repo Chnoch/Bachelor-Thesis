@@ -1,6 +1,7 @@
 package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 import android.util.Log;
 
@@ -74,6 +75,22 @@ public class ShapeNode extends Leaf {
 		}
 
 		return transform;
+	}
+	
+	public void move(Vector3f v) {
+		Matrix4f t = getTranslationMatrix();
+		Matrix4f move = new Matrix4f();
+		move.setTranslation(v);
+		t.add(move);
+		Log.d("Box2dIntegration", "Translation: " + t.toString());
+		setTranslationMatrix(t);
+	}
+	
+	public void rotZ(float angle) {
+		Matrix4f t = getRotationMatrix();
+		t.rotZ(angle);
+		setRotationMatrix(t);
+		Log.d("Box2dIntegration", "Rotation: " + t.toString());
 	}
 
 	public void setParent(Node parent) {
