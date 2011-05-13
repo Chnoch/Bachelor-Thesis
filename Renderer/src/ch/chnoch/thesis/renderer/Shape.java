@@ -22,6 +22,7 @@ public class Shape {
 	private BoundingBox mBox;
 	private Vector3f mZeroVector;
 	private float mEpsilon;
+	private org.jbox2d.collision.Shape mBox2dShape;
 
 	public Shape(VertexBuffers vertexBuffers) {
 		mVertexBuffers = vertexBuffers;
@@ -60,6 +61,12 @@ public class Shape {
 		return this.mMaterial;
 	}
 
+	/**
+	 * 
+	 * @param ray
+	 * @param transformation
+	 * @return
+	 */
 	public RayShapeIntersection intersect(Ray ray, Matrix4f transformation) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
 		List<RayShapeIntersection> hitTriangles = new ArrayList<RayShapeIntersection>();
@@ -77,14 +84,11 @@ public class Shape {
 			}
 		}
 		
-		Log.d("Shape", "Hit Triangles: " + hitTriangles.size());
 		Vector3f distance = new Vector3f();
 		float shortestDist = Float.MAX_VALUE;
 		for (RayShapeIntersection in : hitTriangles) {
 			distance.sub(ray.getOrigin(), in.hitPoint);
-			Log.d("Shape", "Distance from ray origin to triangle: " + distance.length());
 			if (distance.length()<shortestDist) {
-				Log.d("Shape", "Found closer Triangle. HitPoint: " + in.hitPoint.toString());
 				intersection = in;
 				shortestDist = distance.length();
 			}

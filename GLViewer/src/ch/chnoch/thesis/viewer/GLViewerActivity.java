@@ -60,6 +60,7 @@ public class GLViewerActivity extends Activity {
 			mRenderer = new GLRenderer10(getApplication());
 //		}
 
+			
 		mViewer = new GLViewer(this, mRenderer);
 		// Set the OpenGL Context to version 2.0
 		// Has to be done after the Viewer is initialized
