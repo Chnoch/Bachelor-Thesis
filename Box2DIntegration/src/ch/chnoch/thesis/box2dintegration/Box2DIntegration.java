@@ -113,7 +113,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		}
 	}
 
-	@Override
 	public void onClick(View arg0) {
 		Log.d("Box2dIntegration", "onClick");
 		new Thread(new Simulation()).run();
