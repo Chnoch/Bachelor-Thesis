@@ -1,10 +1,14 @@
 package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 import android.util.Log;
 
+import ch.chnoch.thesis.renderer.box2d.Box2DBody;
+import ch.chnoch.thesis.renderer.box2d.Box2DShape;
+import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.util.Util;
 
@@ -13,6 +17,7 @@ public class ShapeNode extends Leaf {
 	private Shape mShape;
 	private BoundingBox mBoundingBox;
 	private Material mMaterial;
+	private Box2DBody mBox2DBody;
 
 	public ShapeNode(Shape shape) {
 		super();
@@ -77,32 +82,38 @@ public class ShapeNode extends Leaf {
 		return transform;
 	}
 	
-	public void move(Vector3f v) {
-		Matrix4f t = getTranslationMatrix();
-		Matrix4f move = new Matrix4f();
-		move.setTranslation(v);
-		t.add(move);
-		Log.d("Box2dIntegration", "Translation: " + t.toString());
-		setTranslationMatrix(t);
+
+	@Override
+	public void enablePhysicsProperties(Box2DWorld world) {
+		Matrix4f trans = getCompleteTransformationMatrix();
+		Vector2f position = new Vector2f();
+		position.x = trans.m03;
+		position.y = trans.m13;
+		mBox2DBody = new Box2DBody(position, world);
+		
+		Box2DShape shape = mShape.enableBox2D();
+		mBox2DBody.createShape(shape);
 	}
 	
-	public void rotZ(float angle) {
-		Matrix4f t = getRotationMatrix();
-		t.rotZ(angle);
-		setRotationMatrix(t);
-		Log.d("Box2dIntegration", "Rotation: " + t.toString());
+	@Override
+	public void updatePhysics() {
+		Vector2f prevPos = mBox2DBody.getPreviousPosition();
+		Vector2f curPos = mBox2DBody.getCurrentPosition();
+		
+		Vector3f trans = new Vector3f();
+		trans.x = curPos.x - prevPos.x;
+		trans.y = curPos.y - prevPos.y;
+		trans.z = 0;
+		move(trans);
+		
+		mBox2DBody.setPreviousPosition(curPos);
+		
+		rotZ(mBox2DBody.getAngle());
 	}
+	
 
 	public void setParent(Node parent) {
 		this.parent = parent;
-	}
-	
-	public Light getLight() {
-		return null;
-	}
-	
-	public void setLight(Light light) {
-		//nothing is set, as this is no light
 	}
 	
 	/**
@@ -138,4 +149,19 @@ public class ShapeNode extends Leaf {
 		mBoundingBox.setUpdated();
 	}
 
+	private void move(Vector3f v) {
+		Matrix4f t = getTranslationMatrix();
+		Matrix4f move = new Matrix4f();
+		move.setTranslation(v);
+		t.add(move);
+		Log.d("Box2dIntegration", "Translation: " + t.toString());
+		setTranslationMatrix(t);
+	}
+	
+	private void rotZ(float angle) {
+		Matrix4f t = getRotationMatrix();
+		t.rotZ(angle);
+		setRotationMatrix(t);
+		Log.d("Box2dIntegration", "Rotation: " + t.toString());
+	}
 }

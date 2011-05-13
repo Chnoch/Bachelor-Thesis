@@ -4,7 +4,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
+import javax.vecmath.Vector2f;
+
+import ch.chnoch.thesis.renderer.box2d.*;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
@@ -12,6 +14,7 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 	protected Camera mCamera;
 	protected Frustum mFrustum;
 	protected List<Light> mLights;
+	protected Box2DWorld mWorld;
 	
 	public AbstractSceneManager() {
 		mCamera = new Camera();
@@ -69,12 +72,35 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 
 	@Override
 	public void enablePhysicsEngine() {
-
+		Vector2f low = new Vector2f(-100,-100);
+		Vector2f high = new Vector2f(100,100);
+		Vector2f gravity = new Vector2f(0,-10);
+		
+		mWorld = new Box2DWorld(low, high, gravity);
+		
+		SceneManagerIterator it = this.iterator();
+		while (it.hasNext()) {
+			it.next().getNode().enablePhysicsProperties(mWorld);
+		}
+	}
+	
+	@Override
+	public void updateScene() {
+		float dt = 1f/60f;
+		int iterations = 8;
+		// update the world
+		mWorld.step(dt, iterations);
+		
+		// reflect the updated values onto the Nodes
+		SceneManagerIterator it = this.iterator();
+		while (it.hasNext()) {
+			it.next().getNode().updatePhysics();;
+		}
 	}
 
 	@Override
 	public Box2DWorld getPhysicsWorld() {
-		return null;
+		return mWorld;
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package ch.chnoch.thesis.renderer;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.util.Util;
 
@@ -76,14 +77,6 @@ public class TransformGroup extends Group {
 		return transform;
 	}
 
-	public Light getLight() {
-		return null;
-	}
-
-	public void setLight(Light light) {
-		
-	}
-
 	public Material getMaterial() {
 		return null;
 	}
@@ -98,12 +91,22 @@ public class TransformGroup extends Group {
 
 	public void move(Vector3f t) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public void rotZ(float angle) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void enablePhysicsProperties(Box2DWorld world) {
+		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
+	public void updatePhysics() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

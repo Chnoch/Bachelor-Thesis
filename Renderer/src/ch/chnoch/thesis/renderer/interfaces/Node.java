@@ -5,6 +5,7 @@ import java.util.List;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
 import ch.chnoch.thesis.renderer.BoundingBox;
@@ -27,13 +28,8 @@ public interface Node {
     public void setRotationMatrix(Matrix4f t);
     public Matrix4f getTransformationMatrix();
     
-    public void move(Vector3f t);
-    public void rotZ(float angle);
-    
     public Shape getShape();
     public void setShape(Shape shape);
-    public Light getLight();
-    public void setLight(Light light);
     public Material getMaterial();
     public void setMaterial(Material material);
     
@@ -44,4 +40,6 @@ public interface Node {
     public void setParent(Node parent);
     
     public RayShapeIntersection intersect(Ray ray);
+	public void enablePhysicsProperties(Box2DWorld world);
+	public void updatePhysics();
 }

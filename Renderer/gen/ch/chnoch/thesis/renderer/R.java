@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package ch.chnoch.thestis.box2dintegration;
+package ch.chnoch.thesis.renderer;
 
 public final class R {
     public static final class attr {

@@ -22,7 +22,6 @@ public class Shape {
 	private BoundingBox mBox;
 	private Vector3f mZeroVector;
 	private float mEpsilon;
-	private Box2DShape mBox2dShape;
 
 	public Shape(VertexBuffers vertexBuffers) {
 		mVertexBuffers = vertexBuffers;
@@ -61,8 +60,8 @@ public class Shape {
 		return this.mMaterial;
 	}
 	
-	public void enableBox2D() {
-		mBox2dShape = new Box2DShape(mVertexBuffers.getVertexBuffer());
+	public Box2DShape enableBox2D() {
+		return new Box2DShape(mVertexBuffers.getVertexBuffer());
 	}
 
 	/**

@@ -30,15 +30,6 @@ public class SimpleSceneManager extends AbstractSceneManager {
 		return new SimpleSceneManagerItr(this);
 	}
 
-	public void enablePhysicsEngine() {
-
-	}
-
-	public Box2DWorld getPhysicsWorld() {
-
-		return null;
-	}
-
 	private class SimpleSceneManagerItr implements SceneManagerIterator {
 
 		public SimpleSceneManagerItr(SimpleSceneManager sceneManager) {

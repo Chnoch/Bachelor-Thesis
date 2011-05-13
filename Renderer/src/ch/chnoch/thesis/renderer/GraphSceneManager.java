@@ -30,18 +30,6 @@ public class GraphSceneManager extends AbstractSceneManager {
 		return this.mRoot;
 	}
 	
-	
-	public void enablePhysicsEngine() {
-		
-	}
-	
-	public Box2DWorld getPhysicsWorld() {
-
-		return null;
-	}
-	
-
-	
 	/*
 	 * The Iterator for the scene.
 	 */

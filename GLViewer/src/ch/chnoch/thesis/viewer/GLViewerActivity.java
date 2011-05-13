@@ -16,16 +16,18 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 
-public class GLViewerActivity extends Activity {
+public class GLViewerActivity extends Activity implements OnClickListener {
 
 	private GLViewer mViewer;
 	private SceneManagerInterface mSceneManager;
 	private RenderContext mRenderer;
 	private final String TAG = "GLViewerActivity";
-	
-	
-	private Node mRoot, mSmallGroup, mShapeNodeBig, mShapeNodeSmallOne, mShapeNodeSmallTwo;
+
+	private Node mRoot, mSmallGroup, mShapeNodeBig, mShapeNodeSmallOne,
+			mShapeNodeSmallTwo;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -33,42 +35,41 @@ public class GLViewerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		mSceneManager = new GraphSceneManager();
-//		Shape shape = loadTeapot();
-		
+		// Shape shape = loadTeapot();
+
 		createShapes();
 		createLights();
 		setMaterial();
-		
-//		boolean openGlES20 = detectOpenGLES20(); 
-//		if (false) {
-			// Tell the surface view we want to create an OpenGL ES
-			// 2.0-compatible
-			// context, and set an OpenGL ES 2.0-compatible renderer.
 
-//			mRenderer = new GLRenderer(getApplication());
+		// boolean openGlES20 = detectOpenGLES20();
+		// if (false) {
+		// Tell the surface view we want to create an OpenGL ES
+		// 2.0-compatible
+		// context, and set an OpenGL ES 2.0-compatible renderer.
 
-//			Shader shader = createShaders();
-			// exit if the shaders couldn't be loaded
-//			if (shader.getProgram() == 0)
-//				return;
-//
-//			Material material = new Material();
-//			material.setShader(shader);
+		// mRenderer = new GLRenderer(getApplication());
 
-//			shape.setMaterial(material);
-//		} else {
-			mRenderer = new GLRenderer10(getApplication());
-//		}
+		// Shader shader = createShaders();
+		// exit if the shaders couldn't be loaded
+		// if (shader.getProgram() == 0)
+		// return;
+		//
+		// Material material = new Material();
+		// material.setShader(shader);
 
-			
+		// shape.setMaterial(material);
+		// } else {
+		mRenderer = new GLRenderer10(getApplication());
+		// }
+
 		mViewer = new GLViewer(this, mRenderer);
 		// Set the OpenGL Context to version 2.0
 		// Has to be done after the Viewer is initialized
-//		if (openGlES20) {
-//			mViewer.setEGLContextClientVersion(2);
-//		}
+		// if (openGlES20) {
+		// mViewer.setEGLContextClientVersion(2);
+		// }
 		mRenderer.setSceneManager(mSceneManager);
-		
+
 		TouchHandler touchHandler = new TouchHandler(mRenderer, mViewer);
 		mViewer.setOnTouchListener(touchHandler);
 		KeyHandler keyHandler = new KeyHandler(mRenderer);
@@ -77,8 +78,10 @@ public class GLViewerActivity extends Activity {
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
-	}
 
+		
+//		enablePhysics();
+	}
 
 	@Override
 	public void onPause() {
@@ -92,87 +95,85 @@ public class GLViewerActivity extends Activity {
 		mViewer.onResume();
 	}
 
-	/*private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.simplevert);
-		String fragmentShader = readRawText(R.raw.simplefrag);
+	/*
+	 * private Shader createShaders() { String vertexShader =
+	 * readRawText(R.raw.simplevert); String fragmentShader =
+	 * readRawText(R.raw.simplefrag);
+	 * 
+	 * Shader shader = mRenderer.makeShader(); int program = 0; try { program =
+	 * shader.load(vertexShader, fragmentShader); if (program == 0) { throw new
+	 * RuntimeException(); } } catch (Exception e) { Log.e(TAG,
+	 * "Error loading Shaders", e); } return shader; }
+	 */
 
-		Shader shader = mRenderer.makeShader();
-		int program = 0;
-		try {
-			program = shader.load(vertexShader, fragmentShader);
-			if (program == 0) {
-				throw new RuntimeException();
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Error loading Shaders", e);
-		}
-		return shader;
-	}*/
-	
-	
 	/*
 	 * Private Methods
 	 */
-	
+
 	private void createShapes() {
-		
+
 		Shape shapeBig = Util.loadCube(4);
 		Shape shapeSmall = Util.loadCube(1);
-		
-		Vector3f transY = new Vector3f(0,5,0);
-		Vector3f transLeft = new Vector3f(-2,0,0);
-		Vector3f transRight = new Vector3f(2,0,0);
-		
+
+		Vector3f transY = new Vector3f(0, 5, 0);
+		Vector3f transLeft = new Vector3f(-2, 0, 0);
+		Vector3f transRight = new Vector3f(2, 0, 0);
+
 		Matrix4f smallTrans = Util.getIdentityMatrix();
 		smallTrans.setTranslation(transY);
 		Matrix4f leftTrans = Util.getIdentityMatrix();
 		leftTrans.setTranslation(transLeft);
 		Matrix4f rightTrans = Util.getIdentityMatrix();
 		rightTrans.setTranslation(transRight);
-		
+
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
-		
+
 		mShapeNodeBig = new ShapeNode(shapeBig);
 		mRoot.addChild(mShapeNodeBig);
-		
+
 		mSmallGroup = new TransformGroup();
 		mSmallGroup.initTranslationMatrix(smallTrans);
 		mRoot.addChild(mSmallGroup);
-		
+
 		mShapeNodeSmallOne = new ShapeNode(shapeSmall);
 		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
 		mShapeNodeSmallTwo = new ShapeNode(shapeSmall);
 		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
-		
+
 		mSmallGroup.addChild(mShapeNodeSmallOne);
 		mSmallGroup.addChild(mShapeNodeSmallTwo);
 	}
-	
+
 	private void createLights() {
-		
+
 		Light light = new Light();
 		light.type = Light.Type.DIRECTIONAL;
 		light.position.set(5, 5, 5);
-		light.direction.set(1,1,1);
-		light.specular.set(1,1,1);
-		light.ambient.set(0.4f,0.4f,0.4f);
-		light.diffuse.set(0.3f,0.3f,0.3f);
-		
+		light.direction.set(1, 1, 1);
+		light.specular.set(1, 1, 1);
+		light.ambient.set(0.4f, 0.4f, 0.4f);
+		light.diffuse.set(0.3f, 0.3f, 0.3f);
+
 		mSceneManager.addLight(light);
 	}
-	
+
 	private void setMaterial() {
 		Material mat = new Material();
-		
+
 		mat.shininess = 5;
-		mat.mAmbient.set(1,0,0);
-		mat.mDiffuse.set(1f,0,0);
-		mat.mSpecular.set(1f,0f,0f);
-		
+		mat.mAmbient.set(1, 0, 0);
+		mat.mDiffuse.set(1f, 0, 0);
+		mat.mSpecular.set(1f, 0f, 0f);
+
 		mShapeNodeBig.setMaterial(mat);
 		mShapeNodeSmallOne.setMaterial(mat);
 		mShapeNodeSmallTwo.setMaterial(mat);
+	}
+
+	private void enablePhysics() {
+		mSceneManager.enablePhysicsEngine();
+		mViewer.setOnClickListener(this);
 	}
 
 	private Shape loadTeapot() {
@@ -213,5 +214,23 @@ public class GLViewerActivity extends Activity {
 		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		ConfigurationInfo info = am.getDeviceConfigurationInfo();
 		return (info.reqGlEsVersion >= 0x20000);
+	}
+
+	
+	/*
+	 * Used for the physics Simulation
+	 */
+	private class Simulation implements Runnable {
+		public void run() {
+			for (int i = 0; i < 100; i++) {
+				mSceneManager.updateScene();
+				mViewer.requestRender();
+			}
+		}
+	}
+
+	public void onClick(View v) {
+		Log.d("Box2dIntegration", "onClick");
+		new Thread(new Simulation()).run();
 	}
 }

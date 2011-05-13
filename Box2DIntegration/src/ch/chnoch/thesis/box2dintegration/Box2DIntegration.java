@@ -1,5 +1,6 @@
 package ch.chnoch.thesis.box2dintegration;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import org.jbox2d.collision.*;
@@ -46,13 +47,16 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mViewer = new GLViewer(this, mRenderer);
 
 		mNode = new ShapeNode(mShape);
-		mNode.move(new Vector3f(0, 10, 0));
+		Matrix4f trans = Util.getIdentityMatrix();
+		trans.setTranslation(new Vector3f(0, 10, 0));
+		mNode.setTranslationMatrix(trans);
 		mRoot.addChild(mNode);
 
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 
+		/*
 		Vec2 gravity = new Vec2(0.0f, -10.0f);
 		boolean doSleep = true;
 		AABB completeBoundingBox = new AABB(new Vec2(-100f, -100f), new Vec2(
@@ -80,13 +84,17 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 
 		body.createShape(shapeDef);
 		body.setMassFromShapes();
-
+		*/
+		
+		
+		mSceneManager.enablePhysicsEngine();
 		mViewer.setOnClickListener(this);
 
 	}
 
 	private class Simulation implements Runnable {
 		public void run() {
+			/*
 			float timeStep = 1.0f / 60.f;
 
 			int velocityIterations = 6;
@@ -110,6 +118,11 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 				Log.d("Box2dIntegration", position.x + ", " + position.y
 						+ ", angle: " + angle);
 			} while (difference.x > 0.001f && difference.y > 0.001f);
+			*/
+			for (int i=0; i<100; i++) {
+				mSceneManager.updateScene();
+				mViewer.requestRender();
+			}
 		}
 	}
 

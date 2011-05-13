@@ -33,6 +33,8 @@ public interface SceneManagerInterface {
 	public void enablePhysicsEngine();
 	
 	public Box2DWorld getPhysicsWorld();
+
+	public void updateScene();
 	
 	/**
 	 * These methods will only be used, if the SceneManager is a Graph.
