@@ -1,65 +1,50 @@
 package ch.chnoch.thesis.renderer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
 
-import android.util.Log;
+import ch.chnoch.thesis.renderer.box2d.*;
+import ch.chnoch.thesis.renderer.interfaces.*;
 
-import ch.chnoch.thesis.renderer.interfaces.Node;
-import ch.chnoch.thesis.renderer.interfaces.Node;
-import ch.chnoch.thesis.renderer.interfaces.Node;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.util.Util;
-
-public class GraphSceneManager implements SceneManagerInterface {
+public class GraphSceneManager extends AbstractSceneManager {
 
 	private Node mRoot;
-	private Camera mCamera;
-	private Frustum mFrustum;
-	private List<Light> mLights;
-
+	
 	public GraphSceneManager() {
 		super();
-		this.mCamera = new Camera();
-		this.mFrustum = new Frustum();
-		mLights = new ArrayList<Light>();
-	}
-
-	public Camera getCamera() {
-		return this.mCamera;
-	}
-
-	public Frustum getFrustum() {
-		return this.mFrustum;
 	}
 
 	public SceneManagerIterator iterator() {
 		return new GraphSceneIterator(this);
 	}
 	
-	public Iterator<Light> lightIterator() {
-		return mLights.iterator();
-	}
-
+	@Override
 	public void setRoot(Node root) {
 		this.mRoot = root;
 	}
 
+	@Override
 	public Node getRoot() {
 		return this.mRoot;
 	}
 	
-	public void addLight(Light light) {
-		if (mLights.size()<=8) {
-			mLights.add(light);
-		}
+	
+	public void enablePhysicsEngine() {
+		
 	}
+	
+	public Box2DWorld getPhysicsWorld() {
+
+		return null;
+	}
+	
+
+	
+	/*
+	 * The Iterator for the scene.
+	 */
 
 	private class GraphSceneIterator implements SceneManagerIterator {
 
@@ -97,22 +82,4 @@ public class GraphSceneManager implements SceneManagerInterface {
 		}
 
 	}
-	
-	public RayShapeIntersection intersectRayNode(Ray ray) {
-		SceneManagerIterator it = this.iterator();
-		Node node;
-		while (it.hasNext()) {
-			RenderItem item = it.next();
-			node = item.getNode();
-
-			RayShapeIntersection intersection = node.intersect(ray);
-			if (intersection.hit) {
-				intersection.node = item.getNode();
-				return intersection;
-			}
-		}
-
-		return new RayShapeIntersection();
-	}
-
 }

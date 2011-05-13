@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.vecmath.*;
 
-import android.util.Log;
+import ch.chnoch.thesis.renderer.box2d.*;
 
 /**
  * Represents a 3D shape. The shape currently just consists of its vertex data.
@@ -22,7 +22,7 @@ public class Shape {
 	private BoundingBox mBox;
 	private Vector3f mZeroVector;
 	private float mEpsilon;
-	private org.jbox2d.collision.Shape mBox2dShape;
+	private Box2DShape mBox2dShape;
 
 	public Shape(VertexBuffers vertexBuffers) {
 		mVertexBuffers = vertexBuffers;
@@ -60,12 +60,17 @@ public class Shape {
 	public Material getMaterial() {
 		return this.mMaterial;
 	}
+	
+	public void enableBox2D() {
+		mBox2dShape = new Box2DShape(mVertexBuffers.getVertexBuffer());
+	}
 
 	/**
-	 * 
-	 * @param ray
-	 * @param transformation
-	 * @return
+	 * Intersect the given Ray with this shape. Tests for every triangle of the shape.
+	 * Speed depends hence on the complexity of the shape.
+	 * @param Ray ray The Ray to be intersected
+	 * @param Matrix4f transformation The transformation of the Shape into its actual position
+	 * @return a RayShapeIntersection with the coordinates of the HitPoint if any.
 	 */
 	public RayShapeIntersection intersect(Ray ray, Matrix4f transformation) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
@@ -147,6 +152,10 @@ public class Shape {
 
 		return triangles;
 	}
+	
+	/*
+	 * Private Methods
+	 */
 
 	private RayShapeIntersection calculateIntersection(Ray ray,
 			Triangle triangle) {

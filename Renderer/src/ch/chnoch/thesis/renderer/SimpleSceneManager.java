@@ -5,98 +5,61 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Iterator;
 
+import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 /**
  * A simple scene manager that stores objects in a linked list.
  */
-public class SimpleSceneManager implements SceneManagerInterface {
+public class SimpleSceneManager extends AbstractSceneManager {
 
-	private LinkedList<Shape> shapes;
-	private List<Light> lights;
-	private Camera camera;
-	private Frustum frustum;
-	
-	public SimpleSceneManager()
-	{
-		shapes = new LinkedList<Shape>();
-		camera = new Camera();
-		frustum = new Frustum();
-		lights = new LinkedList<Light>();
+	private LinkedList<Shape> mShapes;
+
+	public SimpleSceneManager() {
+		super();
+		mShapes = new LinkedList<Shape>();
 	}
-	
-	public Camera getCamera()
-	{
-		return camera;
+
+	public void addShape(Shape shape) {
+		mShapes.add(shape);
 	}
-	
-	public Frustum getFrustum()
-	{
-		return frustum;
-	}
-	
-	public void addShape(Shape shape)
-	{
-		shapes.add(shape);
-	}
-	
-	public SceneManagerIterator iterator()
-	{
+
+	@Override
+	public SceneManagerIterator iterator() {
 		return new SimpleSceneManagerItr(this);
 	}
-	
-	/**
-	 * To be implemented in the "Textures and Shading" project.
-	 */
-	public Iterator<Light> lightIterator()
-	{
-		return lights.iterator();
+
+	public void enablePhysicsEngine() {
+
 	}
-	
-	public void addLight(Light light) {
-		if (!(lights.size()>=7)) {
-			this.lights.add(light);
-		}
+
+	public Box2DWorld getPhysicsWorld() {
+
+		return null;
 	}
 
 	private class SimpleSceneManagerItr implements SceneManagerIterator {
-		
-		public SimpleSceneManagerItr(SimpleSceneManager sceneManager)
-		{
-			itr = sceneManager.shapes.listIterator(0);
+
+		public SimpleSceneManagerItr(SimpleSceneManager sceneManager) {
+			itr = sceneManager.mShapes.listIterator(0);
 		}
-		
-		public boolean hasNext()
-		{
+
+		public boolean hasNext() {
 			return itr.hasNext();
 		}
-		
-		public RenderItem next()
-		{
+
+		public RenderItem next() {
 			Shape shape = itr.next();
-			// Here the transformation in the RenderItem is simply the 
-			// transformation matrix of the shape. More sophisticated 
-			// scene managers will set the transformation for the 
+			// Here the transformation in the RenderItem is simply the
+			// transformation matrix of the shape. More sophisticated
+			// scene managers will set the transformation for the
 			// RenderItem differently.
-			
-			//don't use that anymore!!!!!
+
+			// don't use that anymore!!!!!
 			return new RenderItem(null, shape.getTransformation());
 		}
-		
-		ListIterator<Shape> itr;
-	}
 
-	public RayShapeIntersection intersectRayNode(Ray ray) {
-		SceneManagerIterator it = this.iterator();
-		Node node;
-		while (it.hasNext()) {
-			node = it.next().getNode();
-			RayShapeIntersection intersection = node.intersect(ray);
-			if (intersection.hit) {
-				return intersection;
-			}
-		}
-		return null;
+		ListIterator<Shape> itr;
 	}
 }

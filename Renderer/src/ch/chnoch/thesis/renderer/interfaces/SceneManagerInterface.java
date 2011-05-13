@@ -1,14 +1,9 @@
 package ch.chnoch.thesis.renderer.interfaces;
 
 import java.util.Iterator;
-import java.util.List;
 
-import ch.chnoch.thesis.renderer.Camera;
-import ch.chnoch.thesis.renderer.Frustum;
-import ch.chnoch.thesis.renderer.Light;
-import ch.chnoch.thesis.renderer.Ray;
-import ch.chnoch.thesis.renderer.RayShapeIntersection;
-import ch.chnoch.thesis.renderer.SceneManagerIterator;
+import ch.chnoch.thesis.renderer.*;
+import ch.chnoch.thesis.renderer.box2d.*;
 
 /**
  * An interface declaration for scene managers. Scene managers 
@@ -27,9 +22,22 @@ public interface SceneManagerInterface {
 	
 	public Iterator<Light> lightIterator();
 	
+	public void addLight(Light light);
+	
 	public RayShapeIntersection intersectRayNode(Ray ray);
 
 	public Camera getCamera();
 	
 	public Frustum getFrustum();
+	
+	public void enablePhysicsEngine();
+	
+	public Box2DWorld getPhysicsWorld();
+	
+	/**
+	 * These methods will only be used, if the SceneManager is a Graph.
+	 * @param root
+	 */
+	public void setRoot(Node root);
+	public Node getRoot();
 }
