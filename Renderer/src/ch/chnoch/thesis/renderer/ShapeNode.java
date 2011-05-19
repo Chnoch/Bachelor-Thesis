@@ -82,6 +82,10 @@ public class ShapeNode extends Leaf {
 		return transform;
 	}
 	
+	@Override
+	public Box2DBody getPhysicsProperties() {
+		return mBox2DBody;
+	}
 
 	@Override
 	public void enablePhysicsProperties(Box2DWorld world) {

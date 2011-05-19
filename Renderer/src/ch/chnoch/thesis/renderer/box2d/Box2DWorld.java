@@ -45,7 +45,7 @@ public class Box2DWorld {
 	 */
 	
 	private void createGroundBody() {
-		Box2DBody groundBody = new Box2DBody(new Vector2f(0,-10), this);
+		Box2DBody groundBody = new Box2DBody(new Vector2f(0,0), this);
 		Box2DShape groundShape = new Box2DShape();
 		groundShape.setAsBox(50,1);
 		groundBody.createShape(groundShape);

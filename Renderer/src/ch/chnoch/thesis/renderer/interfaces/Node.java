@@ -5,6 +5,7 @@ import java.util.List;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import ch.chnoch.thesis.renderer.box2d.Box2DBody;
 import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
@@ -42,4 +43,5 @@ public interface Node {
     public RayShapeIntersection intersect(Ray ray);
 	public void enablePhysicsProperties(Box2DWorld world);
 	public void updatePhysics();
+	public Box2DBody getPhysicsProperties();
 }

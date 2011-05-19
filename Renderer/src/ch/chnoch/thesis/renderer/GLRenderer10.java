@@ -1,35 +1,19 @@
 package ch.chnoch.thesis.renderer;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.Shader;
-import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;
-import ch.chnoch.thesis.renderer.util.Util;
 
 import android.content.Context;
 import android.opengl.*;
@@ -37,15 +21,11 @@ import android.util.Log;
 
 public class GLRenderer10 implements RenderContext {
 
-	private Context mContext;
 	private SceneManagerInterface mSceneManager;
 	private Frustum mFrustum;
 	private Camera mCamera;
-	private Shader mShader;
 	private Matrix4f mViewportMatrix;
 	private GLViewer mViewer;
-
-	private int mProgram;
 
 	Matrix4f t = new Matrix4f();
 
@@ -68,7 +48,6 @@ public class GLRenderer10 implements RenderContext {
 	 *            this object.
 	 */
 	public GLRenderer10(Context context) {
-		mContext = context;
 
 		mViewportMatrix = new Matrix4f();
 	}
@@ -202,7 +181,7 @@ public class GLRenderer10 implements RenderContext {
 		gl.glMatrixMode(GLES10.GL_PROJECTION);
 		gl.glLoadMatrixf(
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
-		
+
 		setLights(gl);
 	}
 
@@ -231,17 +210,17 @@ public class GLRenderer10 implements RenderContext {
 		t.mul(renderItem.getT());
 
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
-		
+
 		setMaterial(renderItem.getNode().getMaterial(), gl);
 
 		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
 		gl.glFrontFace(GL10.GL_CW);
 		gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
-//		gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
+		// gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glNormalPointer(GL10.GL_FIXED, 0, mNormalBuffer);
-//		gl.glEnable(GL10.GL_TEXTURE_2D);
-//		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTexCoordsBuffer);
+		// gl.glEnable(GL10.GL_TEXTURE_2D);
+		// gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTexCoordsBuffer);
 		gl.glDrawElements(GL10.GL_TRIANGLES, mIndexBuffer.capacity(),
 				GL10.GL_UNSIGNED_SHORT, mIndexBuffer);
 		gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
@@ -254,7 +233,7 @@ public class GLRenderer10 implements RenderContext {
 
 		gl.glEnable(GL10.GL_LIGHTING);
 		gl.glLoadIdentity();
-		
+
 		Iterator<Light> iter = mSceneManager.lightIterator();
 
 		int i = 0;
@@ -264,10 +243,12 @@ public class GLRenderer10 implements RenderContext {
 			gl.glEnable(lightIndex[i]);
 
 			if (l.type == Light.Type.DIRECTIONAL) {
-				gl.glLightfv(lightIndex[i], GL10.GL_POSITION, l.createDirectionArray(), 0);
+				gl.glLightfv(lightIndex[i], GL10.GL_POSITION,
+						l.createDirectionArray(), 0);
 			}
 			if (l.type == Light.Type.POINT || l.type == Light.Type.SPOT) {
-				gl.glLightfv(lightIndex[i], GL10.GL_POSITION, l.createPositionArray(), 0);
+				gl.glLightfv(lightIndex[i], GL10.GL_POSITION,
+						l.createPositionArray(), 0);
 			}
 			if (l.type == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL10.GL_SPOT_DIRECTION,
@@ -277,30 +258,35 @@ public class GLRenderer10 implements RenderContext {
 				gl.glLightf(lightIndex[i], GL10.GL_SPOT_CUTOFF, l.spotCutoff);
 			}
 
-			gl.glLightfv(lightIndex[i], GL10.GL_DIFFUSE, l.createDiffuseArray(), 0);
-			gl.glLightfv(lightIndex[i], GL10.GL_AMBIENT, l.createAmbientArray(), 0);
-			gl.glLightfv(lightIndex[i], GL10.GL_SPECULAR, l.createSpecularArray(), 0);
+			gl.glLightfv(lightIndex[i], GL10.GL_DIFFUSE,
+					l.createDiffuseArray(), 0);
+			gl.glLightfv(lightIndex[i], GL10.GL_AMBIENT,
+					l.createAmbientArray(), 0);
+			gl.glLightfv(lightIndex[i], GL10.GL_SPECULAR,
+					l.createSpecularArray(), 0);
 
 			i++;
 		}
-		
+
 		gl.glEnable(GL10.GL_CCW);
 	}
-	
+
 	/**
 	 * Pass the material properties to OpenGL, including textures and shaders.
 	 */
-	private void setMaterial(Material m, GL10 gl)
-	{
-		if(m!=null)
-		{
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, m.createDiffuseArray(), 0);
-			
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, m.createAmbientArray(), 0);
+	private void setMaterial(Material m, GL10 gl) {
+		if (m != null) {
+			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE,
+					m.createDiffuseArray(), 0);
 
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, m.createSpecularArray(), 0);
+			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT,
+					m.createAmbientArray(), 0);
 
-			gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, m.shininess);
+			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR,
+					m.createSpecularArray(), 0);
+
+			gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS,
+					m.shininess);
 		}
 	}
 

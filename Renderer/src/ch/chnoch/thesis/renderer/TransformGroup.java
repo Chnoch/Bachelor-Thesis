@@ -3,6 +3,7 @@ package ch.chnoch.thesis.renderer;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import ch.chnoch.thesis.renderer.box2d.Box2DBody;
 import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.util.Util;
@@ -107,6 +108,12 @@ public class TransformGroup extends Group {
 	public void updatePhysics() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Box2DBody getPhysicsProperties() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

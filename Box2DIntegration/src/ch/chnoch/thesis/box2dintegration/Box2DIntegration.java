@@ -38,6 +38,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 				.setCenterOfProjection(new Vector3f(0, 15, 20));
 		mSceneManager.getFrustum().setFarPlane(300);
 		mShape = Util.loadCube(1);
+		Shape shape = Util.loadCube(1);
 
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
@@ -48,8 +49,15 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 
 		mNode = new ShapeNode(mShape);
 		Matrix4f trans = Util.getIdentityMatrix();
-		trans.setTranslation(new Vector3f(0, 10, 0));
+		trans.setTranslation(new Vector3f(0, 6, 0));
 		mNode.setTranslationMatrix(trans);
+		
+		Node node = new ShapeNode(shape);
+		trans = Util.getIdentityMatrix();
+		trans.setTranslation(new Vector3f(0.5f, 12,0));
+		node.setTranslationMatrix(trans);
+		
+		mRoot.addChild(node);
 		mRoot.addChild(mNode);
 
 		setContentView(mViewer);
@@ -90,6 +98,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager.enablePhysicsEngine();
 		mViewer.setOnClickListener(this);
 
+		node.getPhysicsProperties();
 	}
 
 	private class Simulation implements Runnable {
