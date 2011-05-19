@@ -109,6 +109,8 @@ public class ShapeNode extends Leaf {
 		trans.y = curPos.y - prevPos.y;
 		trans.z = 0;
 		move(trans);
+		Log.d("ShapeNode", "Translation: " + trans.toString());
+		Log.d("ShapeNode", "Rotation: " + mBox2DBody.getAngle());
 		
 		mBox2DBody.setPreviousPosition(curPos);
 		

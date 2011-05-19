@@ -26,8 +26,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private Node mNode, mRoot;
 	private RenderContext mRenderer;
 	private GLSurfaceView mViewer;
-	private World world;
-	private Body body;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -128,7 +126,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 						+ ", angle: " + angle);
 			} while (difference.x > 0.001f && difference.y > 0.001f);
 			*/
-			for (int i=0; i<100; i++) {
+			for (int i=0; i<10000; i++) {
 				mSceneManager.updateScene();
 				mViewer.requestRender();
 			}

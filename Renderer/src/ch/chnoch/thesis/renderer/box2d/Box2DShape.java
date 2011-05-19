@@ -32,11 +32,11 @@ public class Box2DShape {
 		}
 	}
 
-	public void setDensity(float dens) {
+	void setDensity(float dens) {
 		mBox2DShapeDef.density = dens;
 	}
 
-	public void setFriction(float friction) {
+	void setFriction(float friction) {
 		mBox2DShapeDef.friction = friction;
 	}
 

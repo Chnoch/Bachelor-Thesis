@@ -31,6 +31,24 @@ public class Box2DBody {
 		mPreviousPosition.set(pos);
 	}
 	
+	public void setType(TType type) {
+		int typeInt = 0;
+		switch (type) {
+		case DYNAMIC:  typeInt = Body.e_dynamicType; break;
+		case STATIC: typeInt = Body.e_staticType; break;
+		default: typeInt = Body.e_dynamicType; break;
+		}
+		mBox2DBody.m_type = typeInt;
+	}
+	
+	public void setDensity(float density) {
+		mBox2DBody.m_shapeList.m_density = density;
+	}
+	
+	public void setFriction(float friction) {
+		mBox2DBody.m_shapeList.m_friction = friction;
+	}
+	
 	public float getAngle() {
 		return mBox2DBody.getAngle();
 	}
@@ -39,6 +57,7 @@ public class Box2DBody {
 		mBox2DBody.createShape(shape.getPolygonDef());
 		mBox2DBody.setMassFromShapes();
 	}
+	
 	
 	/*
 	 * Package Scope
@@ -51,5 +70,9 @@ public class Box2DBody {
 
 	void setMassFromShapes() {
 		mBox2DBody.setMassFromShapes();
+	}
+	
+	public enum TType {
+		STATIC, DYNAMIC
 	}
 }

@@ -83,14 +83,13 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 			it.next().getNode().enablePhysicsProperties(mWorld);
 		}
 	}
-	
+		
 	@Override
 	public void updateScene() {
 		float dt = 1f/60f;
 		int iterations = 8;
 		// update the world
 		mWorld.step(dt, iterations);
-		
 		// reflect the updated values onto the Nodes
 		SceneManagerIterator it = this.iterator();
 		while (it.hasNext()) {
