@@ -83,6 +83,49 @@ public class Util {
 		// Make a shape and add the object
 		return new Shape(vertexBuffer);
 	}
+	
+	public static Shape loadGround() {
+		VertexBuffers vertexBuffer = new VertexBuffers(); 
+		float vertices[] = {-100*one, -one/10f, -100*one,
+							-100*one, -one/10f, -100*one,
+							-100*one, -one/10f, -100*one,
+							
+							100*one, -one/10f, -100*one,
+							100*one, -one/10f, -100*one,
+							100*one, -one/10f, -100*one,
+							
+							100*one, one/10f, -100*one, 
+							100*one, one/10f, -100*one,
+							100*one, one/10f, -100*one,
+							
+							-100*one, 0.1f*one, -100*one, 
+							-100*one, 0.1f*one, -100*one,
+							-100*one, 0.1f*one, -100*one,
+							
+							-100*one, -0.1f*one, 100*one, 
+							-100*one, -0.1f*one, 100*one,
+							-100*one, -0.1f*one, 100*one,
+							
+							100*one, -0.1f*one, 100*one,
+							100*one, -0.1f*one, 100*one,
+							100*one, -0.1f*one, 100*one,
+							
+							100*one, 0.1f*one, 100*one,
+							100*one, 0.1f*one, 100*one,
+							100*one, 0.1f*one, 100*one,
+							
+							-100*one, 0.1f*one, 100*one,
+							-100*one, 0.1f*one, 100*one,
+							-100*one, 0.1f*one, 100*one
+		};
+		
+		vertexBuffer.setVertexBuffer(vertices);
+		vertexBuffer.setColorBuffer(colors);
+		vertexBuffer.setIndexBuffer(indices);
+		vertexBuffer.setNormalBuffer(normals);
+		
+		return new Shape(vertexBuffer);
+	}
 
 	public static int one = 0x10000;
 	static float vertices[] = { -one, -one, -one,

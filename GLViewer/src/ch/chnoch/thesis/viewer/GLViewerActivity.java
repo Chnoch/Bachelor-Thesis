@@ -114,7 +114,9 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		Shape shapeBig = Util.loadCube(4);
 		Shape shapeSmall = Util.loadCube(1);
+//		Shape groundShape = Util.loadGround();
 
+		
 		Vector3f transY = new Vector3f(0, 5, 0);
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
 		Vector3f transRight = new Vector3f(2, 0, 0);
@@ -128,6 +130,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
+		
+//		mRoot.addChild(new ShapeNode(groundShape));
 
 		mShapeNodeBig = new ShapeNode(shapeBig);
 		mRoot.addChild(mShapeNodeBig);

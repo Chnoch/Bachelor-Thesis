@@ -9,6 +9,7 @@ import org.jbox2d.dynamics.*;
 
 import ch.chnoch.thesis.renderer.*;
 import ch.chnoch.thesis.renderer.Shape;
+import ch.chnoch.thesis.renderer.box2d.Box2DBody.TType;
 import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.*;
 
@@ -32,35 +33,82 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mSceneManager = new GraphSceneManager();
+		mRenderer = new GLRenderer10(getApplication());
+		mRenderer.setSceneManager(mSceneManager);
+		mViewer = new GLViewer(this, mRenderer);
+		
 		mSceneManager.getCamera()
 				.setCenterOfProjection(new Vector3f(0, 15, 20));
 		mSceneManager.getFrustum().setFarPlane(300);
-		mShape = Util.loadCube(1);
-		Shape shape = Util.loadCube(1);
+		
+		createLights();
+		
+		mShape = Util.loadCube(1); 
+		Shape shape = Util.loadCube(3);
+//		Shape ground = Util.loadGround();
 
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
 
-		mRenderer = new GLRenderer10(getApplication());
-		mRenderer.setSceneManager(mSceneManager);
-		mViewer = new GLViewer(this, mRenderer);
-
-		mNode = new ShapeNode(mShape);
+		TransformGroup group = new TransformGroup();
 		Matrix4f trans = Util.getIdentityMatrix();
-		trans.setTranslation(new Vector3f(0, 6, 0));
-		mNode.setTranslationMatrix(trans);
+		trans.setTranslation(new Vector3f(0, 3, 0));
+		group.setTranslationMatrix(trans);
+		mRoot.addChild(group);
 		
-		Node node = new ShapeNode(shape);
+		mNode = new ShapeNode(shape);
+		group.addChild(mNode);
+		
+		TransformGroup smallerGroup = new TransformGroup();
 		trans = Util.getIdentityMatrix();
-		trans.setTranslation(new Vector3f(0.5f, 12,0));
-		node.setTranslationMatrix(trans);
+		trans.setTranslation(new Vector3f(0,9,0));
+		smallerGroup.setTranslationMatrix(trans);
+		group.addChild(smallerGroup);
 		
-		mRoot.addChild(node);
-		mRoot.addChild(mNode);
+		Node node = new ShapeNode(mShape);
+		trans = Util.getIdentityMatrix();
+		trans.setTranslation(new Vector3f(1.5f, 0,0));
+		node.setTranslationMatrix(trans);
+		smallerGroup.addChild(node);
+		
+		Node node2 = new ShapeNode(mShape);
+		trans = Util.getIdentityMatrix();
+		trans.setTranslation(new Vector3f(-1.5f, 0,0));
+		node.setTranslationMatrix(trans);
+		smallerGroup.addChild(node2);
+		
+		Node node3 = new ShapeNode(mShape);
+		trans = Util.getIdentityMatrix();
+		trans.setTranslation(new Vector3f(0,1.5f,0));
+		node.setTranslationMatrix(trans);
+//		smallerGroup.addChild(node3);
 
+		
+		Node node4 = new ShapeNode(mShape);
+		trans = Util.getIdentityMatrix();
+		trans.setTranslation(new Vector3f(-0.5f,3,0));
+		node.setTranslationMatrix(trans);
+//		smallerGroup.addChild(node4);
+		
+		Material mat = new Material();
+
+		mat.shininess = 5;
+		mat.mAmbient.set(1, 0, 0);
+		mat.mDiffuse.set(1f, 0, 0);
+		mat.mSpecular.set(1f, 0f, 0f);
+
+		mNode.setMaterial(mat);
+		node.setMaterial(mat);
+		node2.setMaterial(mat);
+		
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
+		
+		mSceneManager.enablePhysicsEngine();
+		mViewer.setOnClickListener(this);
+		
+		mNode.getPhysicsProperties().setType(TType.STATIC);
 
 		/*
 		Vec2 gravity = new Vec2(0.0f, -10.0f);
@@ -91,12 +139,19 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		body.createShape(shapeDef);
 		body.setMassFromShapes();
 		*/
-		
-		
-		mSceneManager.enablePhysicsEngine();
-		mViewer.setOnClickListener(this);
+	}
+	
+	private void createLights() {
 
-		node.getPhysicsProperties();
+		Light light = new Light();
+		light.type = Light.Type.DIRECTIONAL;
+		light.position.set(5, 5, 5);
+		light.direction.set(1, 1, 1);
+		light.specular.set(1, 1, 1);
+		light.ambient.set(0.4f, 0.4f, 0.4f);
+		light.diffuse.set(0.3f, 0.3f, 0.3f);
+
+		mSceneManager.addLight(light);
 	}
 
 	private class Simulation implements Runnable {

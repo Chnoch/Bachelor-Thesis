@@ -160,14 +160,16 @@ public class ShapeNode extends Leaf {
 		Matrix4f move = new Matrix4f();
 		move.setTranslation(v);
 		t.add(move);
-		Log.d("Box2dIntegration", "Translation: " + t.toString());
+//		Log.d("Box2dIntegration", "Translation: " + t.toString());
 		setTranslationMatrix(t);
 	}
 	
 	private void rotZ(float angle) {
 		Matrix4f t = getRotationMatrix();
-		t.rotZ(angle);
-		setRotationMatrix(t);
-		Log.d("Box2dIntegration", "Rotation: " + t.toString());
+		Matrix4f rot = new Matrix4f();
+		rot.rotZ(angle);
+		rot.mul(t);
+		setRotationMatrix(rot);
+//		Log.d("Box2dIntegration", "Rotation: " + t.toString());
 	}
 }

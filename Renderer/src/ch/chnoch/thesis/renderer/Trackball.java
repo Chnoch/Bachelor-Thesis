@@ -5,8 +5,6 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import android.util.Log;
-
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
 public class Trackball {
@@ -22,7 +20,6 @@ public class Trackball {
 		mNode = node;
 
 		mCenter = mNode.getBoundingBox().getCenter();
-
 		mRadius = mNode.getBoundingBox().getRadius();
 		
 //		float width = mViewer.width();
@@ -39,25 +36,19 @@ public class Trackball {
 
 	public void update(Vector3f cur, Vector3f prev, float factor) {
 		Matrix4f t = mNode.getRotationMatrix();
-//		t.transform(cur);
-//		t.transform(prev);
 		
 		cur.sub(mCenter);
 		prev.sub(mCenter);
 		
 		Vector3f axisVector = new Vector3f();
-		
-		
 		axisVector.cross(cur, prev);
 		axisVector.normalize();
+		
 		float angle = prev.angle(cur) * factor;
-		Log.d("Trackball", "Axis: " + axisVector.toString());
-		Log.d("Trackball", "Angle: " + angle);
+		
 		AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
 		Matrix4f rot = new Matrix4f();
 		rot.set(axisAngle);
-//		Log.d("Trackball", "NodeRotation: " + t.toString());
-//		Log.d("Trackball", "Rotation: " + rot.toString());
 		rot.mul(t);
 		mNode.setRotationMatrix(rot);
 		
@@ -66,7 +57,6 @@ public class Trackball {
 	}
 	
 	public RayShapeIntersection intersect2(Ray ray) {
-		Log.d("Trackball", "Intersect2 called");
 		RayShapeIntersection intersection = new RayShapeIntersection();
 		intersection.node = mNode;
 		Vector3f diff = new Vector3f(ray.getOrigin());
@@ -89,27 +79,20 @@ public class Trackball {
 		}
 		
 		if (!intersection.hit) {
-			Log.d("Trackball", "No hit; Projecting on Trackball");
 			intersection = projectOnTrackball(ray);
 		}
 		
-		Log.d("Trackball", "Hit: " +  intersection.hit);
-		Log.d("Trackball", "Hitpoint: " + intersection.hitPoint.toString());
 		return intersection;
 	}
 	
 	public RayShapeIntersection projectOnTrackball(Ray ray) {
 
 		Vector3f center = new Vector3f(mCenter);
-		Log.d("Trackball", "Center: " + center.toString());
 		Vector3f dir = new Vector3f(ray.getDirection());
-		Log.d("Trackball", "direction: " + dir.toString());
 		Vector3f denom = new Vector3f(dir);
 		center.sub(ray.getOrigin());
 		float denominator = denom.dot(dir);
-		Log.d("Trackball", "Denominator: " + denominator);
 		float t = dir.dot(center)/denominator;
-		Log.d("Trackball", "t: " + t);
 		
 		Vector3f closestPoint = new Vector3f(ray.getDirection());
 		closestPoint.scale(t);
@@ -120,7 +103,6 @@ public class Trackball {
 		newDirection.sub(closestPoint);
 		newDirection.normalize();
 		Ray newRay = new Ray(closestPoint, newDirection);
-		Log.d("Trackball", "New Ray: " + closestPoint.toString() + ", dir: " + newDirection.toString());
 		
 		return intersect(newRay);
 	}
@@ -138,7 +120,6 @@ public class Trackball {
 		
 		RayShapeIntersection intersection = intersectHelper(ray);
 		if (!intersection.hit) {
-			Log.d("Trackball", "No hit; Projecting on Trackball");
 			intersection = projectOnTrackball(ray);
 		}
 		return intersection;
@@ -172,10 +153,8 @@ public class Trackball {
 
 		discr = a1 * a1 - a0;
 		if (discr < 0) {
-			Log.d("Trackball", "Below Zero");
 			return intersection;
 		} else if (discr > 0.001f) { // zero tolerance
-			Log.d("Trackball", "Above zero Tolerance");
 			root = (float) Math.sqrt(discr);
 			rayParm = -a1 - root;
 			rayParm2 = -a1 + root;
@@ -189,14 +168,12 @@ public class Trackball {
 			intersection.hitPoint.add(ray.getOrigin(), ray.getDirection());
 			intersection.hit = true;
 		} else {
-			Log.d("Trackball", "Within zero Tolerance");
 			rayParm = -a1;
 			intersection.hitPoint = new Vector3f();
 			ray.getDirection().scale(rayParm);
 			intersection.hitPoint.add(ray.getOrigin(), ray.getDirection());
 			intersection.hit = true;
 		}
-		Log.d("Trackball", "IntersectionPoint: " + intersection.hitPoint.toString());
 		return intersection;
 	}
 
