@@ -25,7 +25,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private GraphSceneManager mSceneManager;
 	private Shape mShape;
 	private Node mNode, mRoot;
-	private RenderContext mRenderer;
+	private GLRenderer10 mRenderer;
 	private GLSurfaceView mViewer;
 
 	/** Called when the activity is first created. */
@@ -35,11 +35,15 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager = new GraphSceneManager();
 		mRenderer = new GLRenderer10(getApplication());
 		mRenderer.setSceneManager(mSceneManager);
-		mViewer = new GLViewer(this, mRenderer);
-		
+		mViewer = new GLViewer(this);
+		mViewer.setEGLConfigChooser(true);
+		mRenderer.setViewer((GLViewer) mViewer);
+
+		mViewer.setRenderer(mRenderer);
+		mViewer.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);		
 		mSceneManager.getCamera()
 				.setCenterOfProjection(new Vector3f(0, 15, 20));
-		mSceneManager.getFrustum().setFarPlane(300);
+		mSceneManager.getFrustum().setFarPlane(50);
 		
 		createLights();
 		
@@ -181,6 +185,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 						+ ", angle: " + angle);
 			} while (difference.x > 0.001f && difference.y > 0.001f);
 			*/
+			
 			for (int i=0; i<10000; i++) {
 				mSceneManager.updateScene();
 				mViewer.requestRender();

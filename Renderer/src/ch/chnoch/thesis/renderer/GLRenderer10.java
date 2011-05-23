@@ -159,6 +159,11 @@ public class GLRenderer10 implements RenderContext {
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		Log.d(TAG, "onsurfacecreated method called");
+		
+		int[] depthbits = new int[1];
+		gl.glGetIntegerv(GL10.GL_DEPTH_BUFFER_BIT, depthbits, 0);
+		Log.d(TAG, "Depth Bits: " + depthbits[0]);
+		
 
 		/*
 		 * By default, OpenGL enables features that improve quality but reduce

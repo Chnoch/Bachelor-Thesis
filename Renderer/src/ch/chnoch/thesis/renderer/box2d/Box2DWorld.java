@@ -6,6 +6,7 @@ import org.jbox2d.collision.*;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 
+import ch.chnoch.thesis.renderer.box2d.Box2DBody.TType;
 import ch.chnoch.thesis.renderer.interfaces.*;
 
 public class Box2DWorld {
@@ -49,6 +50,7 @@ public class Box2DWorld {
 		Box2DShape groundShape = new Box2DShape();
 		groundShape.setAsBox(50,1);
 		groundBody.createShape(groundShape);
+		groundBody.setType(TType.STATIC);
 		
 		groundBody.setMassFromShapes();
 	}
