@@ -13,7 +13,7 @@ import android.test.mock.MockContext;
 public class ExtendedPickingTest extends AndroidTestCase {
 	GraphSceneManager mSceneManager;
 	GLViewer mViewer;
-	GLRenderer10 mRenderer;
+	GLES11Renderer mRenderer;
 	Context context;
 	
 	Matrix4f mIdentity, mMove;
@@ -30,7 +30,7 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		context = new MockContext();
 		
 		mSceneManager = new GraphSceneManager();
-		mRenderer = new GLRenderer10(context);
+		mRenderer = new GLES11Renderer();
 		mRenderer.setSceneManager(mSceneManager);
 		mIdentity = Util.getIdentityMatrix();
 		zero = new Vector3f(0,0,0);

@@ -33,11 +33,11 @@ public class ShapeNode extends Leaf {
 	public Shape getShape() {
 		return this.mShape;
 	}
-	
+
 	public void setMaterial(Material material) {
 		mMaterial = material;
 	}
-	
+
 	public Material getMaterial() {
 		return mMaterial;
 	}
@@ -81,7 +81,7 @@ public class ShapeNode extends Leaf {
 
 		return transform;
 	}
-	
+
 	@Override
 	public Box2DBody getPhysicsProperties() {
 		return mBox2DBody;
@@ -94,56 +94,67 @@ public class ShapeNode extends Leaf {
 		position.x = trans.m03;
 		position.y = trans.m13;
 		mBox2DBody = new Box2DBody(position, world);
-		
+
 		Box2DShape shape = mShape.enableBox2D();
 		mBox2DBody.createShape(shape);
 	}
-	
+
 	@Override
 	public void updatePhysics() {
+		Log.d("ShapeNode", "Updating Physics");
 		Vector2f prevPos = mBox2DBody.getPreviousPosition();
 		Vector2f curPos = mBox2DBody.getCurrentPosition();
-		
+
 		Vector3f trans = new Vector3f();
 		trans.x = curPos.x - prevPos.x;
 		trans.y = curPos.y - prevPos.y;
 		trans.z = 0;
+		
+		
+		
+		
+		
+		
+		// Log.d("ShapeNode", "Translation: " + trans.toString());
 		move(trans);
 		Log.d("ShapeNode", "Translation: " + trans.toString());
 		Log.d("ShapeNode", "Rotation: " + mBox2DBody.getAngle());
-		
+
 		mBox2DBody.setPreviousPosition(curPos);
-		
+		// Log.d("ShapeNode", "Angle: " + mBox2DBody.getAngle());
 		rotZ(mBox2DBody.getAngle());
 	}
-	
 
 	public void setParent(Node parent) {
 		this.parent = parent;
 	}
-	
+
 	/**
-	 * For now this only tests on the Shape as a cube. Will need
-	 * to generalize that to work with any shape.
+	 * For now this only tests on the Shape as a cube. Will need to generalize
+	 * that to work with any shape.
+	 * 
 	 * @param ray
 	 * @return the intersection
 	 */
 	public RayShapeIntersection intersect(Ray ray) {
 		RayShapeIntersection intersection;
-		
+
 		// Test against BoundingBox for fast check
 		intersection = this.getBoundingBox().hitPoint(ray);
 		if (intersection.hit) {
-			Log.d("ShapeNode", "Hit Bounding Box: " + getBoundingBox().toString());
+			Log.d("ShapeNode", "Hit Bounding Box: "
+					+ getBoundingBox().toString());
 			// Test against Shape if BoundingBox is hit
-			intersection = mShape.intersect(ray, getCompleteTransformationMatrix());
+			intersection = mShape.intersect(ray,
+					getCompleteTransformationMatrix());
 			// if shape ist hit
 			if (intersection.hit) {
-				Log.d("ShapeNode", "Hit Shape at: " + intersection.hitPoint.toString());
+				Log.d("ShapeNode",
+						"Hit Shape at: " + intersection.hitPoint.toString());
 				intersection.node = this;
 			}
-		} 
-		
+		}
+
 		return intersection;
 	}
 
@@ -160,16 +171,14 @@ public class ShapeNode extends Leaf {
 		Matrix4f move = new Matrix4f();
 		move.setTranslation(v);
 		t.add(move);
-//		Log.d("Box2dIntegration", "Translation: " + t.toString());
 		setTranslationMatrix(t);
 	}
-	
+
 	private void rotZ(float angle) {
-		Matrix4f t = getRotationMatrix();
+		Matrix4f t = Util.getIdentityMatrix();
 		Matrix4f rot = new Matrix4f();
 		rot.rotZ(angle);
 		rot.mul(t);
 		setRotationMatrix(rot);
-//		Log.d("Box2dIntegration", "Rotation: " + t.toString());
 	}
 }

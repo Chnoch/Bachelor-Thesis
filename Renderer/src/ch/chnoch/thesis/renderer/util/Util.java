@@ -203,33 +203,6 @@ public class Util {
 							0,0,one
 	};
 
-	public static Ray unproject(float x, float y, RenderContext renderer) {
-
-		Matrix4f staticMatrix = renderer.createMatrices();
-		Matrix4f inverse;
-
-		Vector3f origin = new Vector3f(x, y, 1);
-		Vector3f direction = new Vector3f(x, y, -1);
-		inverse = new Matrix4f(staticMatrix);
-		try {
-			inverse.invert();
-
-			Util.transform(inverse, origin);
-			Util.transform(inverse, direction);
-
-			direction.sub(origin);
-			direction.normalize();
-
-			return new Ray(origin, direction);
-
-		} catch (RuntimeException exc) {
-			// Matrix not invertable, therefore no action.
-			Log.e("UNPROJECT", "Matrix can't be inverted");
-		}
-
-		return null;
-	}
-
 	public static void transform(Matrix4f m, Vector3f point) {
 		float x, y, z, w;
 		x = m.m00 * point.x + m.m01 * point.y + m.m02 * point.z + m.m03;

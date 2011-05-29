@@ -1,6 +1,8 @@
 package ch.chnoch.thesis.renderer.interfaces;
 
 import javax.vecmath.Matrix4f;
+
+import ch.chnoch.thesis.renderer.GLViewer;
 import android.opengl.GLSurfaceView;
 
 /**
@@ -12,26 +14,29 @@ public interface RenderContext extends GLSurfaceView.Renderer {
 	/**
 	 * Set a scene manager that will be rendered.
 	 */
-	void setSceneManager(SceneManagerInterface sceneManager);
+	public void setSceneManager(SceneManagerInterface sceneManager);
 	
 	/**
 	 * Make a shader.
+	 * @param fragmentShader 
+	 * @param vertexShader 
 	 * 
 	 * @return the shader
+	 * @throws Exception 
 	 */
-	Shader makeShader();
+	public Shader makeShader(String vertexShader, String fragmentShader) throws Exception;
 	
 	/**
 	 * Make a texture.
 	 * 
 	 * @return the texture
 	 */
-	Texture makeTexture();
+	public Texture makeTexture();
 	
 	public Matrix4f getViewportMatrix();
 	
 	public SceneManagerInterface getSceneManager();
 	
-	public Matrix4f createMatrices();
+	public void setViewer(GLViewer viewer);
 
 }

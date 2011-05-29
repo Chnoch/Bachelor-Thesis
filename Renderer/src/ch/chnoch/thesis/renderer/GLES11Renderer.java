@@ -16,18 +16,10 @@ import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
 import android.content.Context;
-import android.opengl.*;
 import android.util.Log;
+import static android.opengl.GLES10.*;
 
-public class GLRenderer10 implements RenderContext {
-
-	private SceneManagerInterface mSceneManager;
-	private Frustum mFrustum;
-	private Camera mCamera;
-	private Matrix4f mViewportMatrix;
-	private GLViewer mViewer;
-
-	Matrix4f t = new Matrix4f();
+public class GLES11Renderer extends AbstractRenderer {
 
 	private ShortBuffer mIndexBuffer;
 	private IntBuffer mVertexBuffer;
@@ -35,10 +27,7 @@ public class GLRenderer10 implements RenderContext {
 	private IntBuffer mColorBuffer;
 	private IntBuffer mNormalBuffer;
 
-	public float mAngleX = 0;
-	public float mAngleY = 0;
-
-	private final String TAG = "GLRenderer10";
+	private final String TAG = "GLES11Renderer";
 
 	/**
 	 * This constructor is called by {@link GLRenderPanel}.
@@ -47,46 +36,22 @@ public class GLRenderer10 implements RenderContext {
 	 *            the OpenGL rendering context. All OpenGL calls are directed to
 	 *            this object.
 	 */
-	public GLRenderer10(Context context) {
-
-		mViewportMatrix = new Matrix4f();
+	public GLES11Renderer() {
+		super();
 	}
+	
+
+	public GLES11Renderer(SceneManagerInterface sceneManager) {
+		super(sceneManager);
+	}
+	
 
 	/*
 	 * Public Methods
 	 */
 
-	public void setSceneManager(SceneManagerInterface sceneManager) {
-		mSceneManager = sceneManager;
-		mCamera = mSceneManager.getCamera();
-		mFrustum = mSceneManager.getFrustum();
-	}
-
-	public SceneManagerInterface getSceneManager() {
-		return mSceneManager;
-	}
-
-	public void setViewer(GLViewer viewer) {
-		mViewer = viewer;
-	}
-
-	public Matrix4f getViewportMatrix() {
-		return mViewportMatrix;
-	}
-
-	public void setViewportMatrix(int width, int height) {
-		// reset the viewport matrix
-		mViewportMatrix.setM00(width / 2.f);
-		mViewportMatrix.setM03((width - 1) / 2.f);
-
-		mViewportMatrix.setM11(height / 2.f);
-		mViewportMatrix.setM13((height - 1) / 2.f);
-
-		mViewportMatrix.setM22(1);
-		mViewportMatrix.setM33(1);
-	}
-
-	public Shader makeShader() {
+	@Override
+	public Shader makeShader(String vertexShader, String fragmentShader) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -94,18 +59,6 @@ public class GLRenderer10 implements RenderContext {
 	public Texture makeTexture() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public Matrix4f createMatrices() {
-		SceneManagerInterface sceneManager = getSceneManager();
-		Camera camera = sceneManager.getCamera();
-		Frustum frustum = sceneManager.getFrustum();
-
-		Matrix4f staticMatrix = new Matrix4f(getViewportMatrix());
-		staticMatrix.mul(frustum.getProjectionMatrix());
-		staticMatrix.mul(camera.getCameraMatrix());
-
-		return staticMatrix;
 	}
 
 	/*
@@ -122,13 +75,7 @@ public class GLRenderer10 implements RenderContext {
 		 * Usually, the first thing one might want to do is to clear the screen.
 		 * The most efficient way of doing this is to use glClear().
 		 */
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-
-		/*
-		 * Now we're ready to draw some 3D objects
-		 */
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		while (shapeIterator.hasNext()) {
 			draw(shapeIterator.next(), gl);
@@ -137,7 +84,7 @@ public class GLRenderer10 implements RenderContext {
 		long newTime = System.currentTimeMillis();
 
 		long diff = newTime - oldTime;
-		Log.d("RendererFrame", "Rendering single frame: " + diff + " ms");
+//		Log.d("RendererFrame", "Rendering single frame: " + diff + " ms");
 
 	}
 
@@ -151,7 +98,7 @@ public class GLRenderer10 implements RenderContext {
 		 * draw, but usually a new projection needs to be set when the viewport
 		 * is resized.
 		 */
-		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadMatrixf(
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 		gl.glViewport(0, 0, width, height);
@@ -161,7 +108,7 @@ public class GLRenderer10 implements RenderContext {
 		Log.d(TAG, "onsurfacecreated method called");
 		
 		int[] depthbits = new int[1];
-		gl.glGetIntegerv(GL10.GL_DEPTH_BUFFER_BIT, depthbits, 0);
+		gl.glGetIntegerv(GL_DEPTH_BITS, depthbits, 0);
 		Log.d(TAG, "Depth Bits: " + depthbits[0]);
 		
 
@@ -170,20 +117,24 @@ public class GLRenderer10 implements RenderContext {
 		 * performance. One might want to tweak that especially on software
 		 * renderer.
 		 */
-		gl.glDisable(GL10.GL_DITHER);
-
+		gl.glDisable(GL_DITHER);
+		
 		/*
 		 * Some one-time OpenGL initialization can be made here probably based
 		 * on features of this particular context
 		 */
-		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
+		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
 		gl.glClearColor(1, 1, 1, 1);
-		gl.glEnable(GL10.GL_CULL_FACE);
-		gl.glShadeModel(GL10.GL_SMOOTH);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
+		gl.glClearDepthf(1f);
+		gl.glEnable(GL_CULL_FACE);
+		gl.glShadeModel(GL_SMOOTH);
+		gl.glEnable(GL_DEPTH_TEST);
+		gl.glDepthFunc(GL_LEQUAL);
+		gl.glDepthMask(true);
+//		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-		gl.glMatrixMode(GLES10.GL_PROJECTION);
+		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadMatrixf(
 				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 
@@ -210,7 +161,7 @@ public class GLRenderer10 implements RenderContext {
 		mTexCoordsBuffer = buffers.getTexCoordsBuffer();
 		mNormalBuffer = buffers.getNormalBuffer();
 
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		gl.glMatrixMode(GL_MODELVIEW);
 		t.set(mCamera.getCameraMatrix());
 		t.mul(renderItem.getT());
 
@@ -218,25 +169,26 @@ public class GLRenderer10 implements RenderContext {
 
 		setMaterial(renderItem.getNode().getMaterial(), gl);
 
-		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
-		gl.glFrontFace(GL10.GL_CW);
-		gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
-		// gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
-		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-		gl.glNormalPointer(GL10.GL_FIXED, 0, mNormalBuffer);
-		// gl.glEnable(GL10.GL_TEXTURE_2D);
-		// gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTexCoordsBuffer);
-		gl.glDrawElements(GL10.GL_TRIANGLES, mIndexBuffer.capacity(),
-				GL10.GL_UNSIGNED_SHORT, mIndexBuffer);
-		gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL_VERTEX_ARRAY);
+		gl.glFrontFace(GL_CCW);
+		gl.glVertexPointer(3, GL_FIXED, 0, mVertexBuffer);
+		// gl.glColorPointer(4, GL_FIXED, 0, mColorBuffer);
+		gl.glEnableClientState(GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL_FIXED, 0, mNormalBuffer);
+		// gl.glEnable(GL_TEXTURE_2D);
+		// gl.glTexCoordPointer(2, GL_FLOAT, 0, mTexCoordsBuffer);
+		gl.glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
+				GL_UNSIGNED_SHORT, mIndexBuffer);
+		gl.glDisableClientState(GL_NORMAL_ARRAY);
+		gl.glDisableClientState(GL_VERTEX_ARRAY);
 	}
 
 	private void setLights(GL10 gl) {
-		int lightIndex[] = { GL10.GL_LIGHT0, GL10.GL_LIGHT1, GL10.GL_LIGHT2,
-				GL10.GL_LIGHT3, GL10.GL_LIGHT4, GL10.GL_LIGHT5, GL10.GL_LIGHT6,
-				GL10.GL_LIGHT7 };
+		int lightIndex[] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2,
+				GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6,
+				GL_LIGHT7 };
 
-		gl.glEnable(GL10.GL_LIGHTING);
+		gl.glEnable(GL_LIGHTING);
 		gl.glLoadIdentity();
 
 		Iterator<Light> iter = mSceneManager.lightIterator();
@@ -248,32 +200,32 @@ public class GLRenderer10 implements RenderContext {
 			gl.glEnable(lightIndex[i]);
 
 			if (l.type == Light.Type.DIRECTIONAL) {
-				gl.glLightfv(lightIndex[i], GL10.GL_POSITION,
+				gl.glLightfv(lightIndex[i], GL_POSITION,
 						l.createDirectionArray(), 0);
 			}
 			if (l.type == Light.Type.POINT || l.type == Light.Type.SPOT) {
-				gl.glLightfv(lightIndex[i], GL10.GL_POSITION,
+				gl.glLightfv(lightIndex[i], GL_POSITION,
 						l.createPositionArray(), 0);
 			}
 			if (l.type == Light.Type.SPOT) {
-				gl.glLightfv(lightIndex[i], GL10.GL_SPOT_DIRECTION,
+				gl.glLightfv(lightIndex[i], GL_SPOT_DIRECTION,
 						l.createSpotDirectionArray(), 0);
-				gl.glLightf(lightIndex[i], GL10.GL_SPOT_EXPONENT,
+				gl.glLightf(lightIndex[i], GL_SPOT_EXPONENT,
 						l.spotExponent);
-				gl.glLightf(lightIndex[i], GL10.GL_SPOT_CUTOFF, l.spotCutoff);
+				gl.glLightf(lightIndex[i], GL_SPOT_CUTOFF, l.spotCutoff);
 			}
 
-			gl.glLightfv(lightIndex[i], GL10.GL_DIFFUSE,
+			gl.glLightfv(lightIndex[i], GL_DIFFUSE,
 					l.createDiffuseArray(), 0);
-			gl.glLightfv(lightIndex[i], GL10.GL_AMBIENT,
+			gl.glLightfv(lightIndex[i], GL_AMBIENT,
 					l.createAmbientArray(), 0);
-			gl.glLightfv(lightIndex[i], GL10.GL_SPECULAR,
+			gl.glLightfv(lightIndex[i], GL_SPECULAR,
 					l.createSpecularArray(), 0);
 
 			i++;
 		}
-
-		gl.glEnable(GL10.GL_CCW);
+		
+		gl.glEnable(GL10.GL_CW);
 	}
 
 	/**
@@ -281,16 +233,16 @@ public class GLRenderer10 implements RenderContext {
 	 */
 	private void setMaterial(Material m, GL10 gl) {
 		if (m != null) {
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE,
+			gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,
 					m.createDiffuseArray(), 0);
 
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT,
+			gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,
 					m.createAmbientArray(), 0);
 
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR,
+			gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,
 					m.createSpecularArray(), 0);
 
-			gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS,
+			gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,
 					m.shininess);
 		}
 	}
@@ -316,7 +268,9 @@ public class GLRenderer10 implements RenderContext {
 
 			frameCount = 0;
 
-			Log.d("Renderer", "Rendertime per Frame: " + fps + " ms");
+//			Log.d("Renderer", "Rendertime per Frame: " + fps + " ms");
 		}
 	}
+
+
 }

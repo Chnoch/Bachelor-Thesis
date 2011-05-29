@@ -14,7 +14,7 @@ public class SimplePickingTest extends AndroidTestCase {
 
 	GraphSceneManager mSceneManager;
 	GLViewer mViewer;
-	GLRenderer10 mRenderer;
+	GLES11Renderer mRenderer;
 	
 	Matrix4f mIdentity;
 	
@@ -27,7 +27,7 @@ public class SimplePickingTest extends AndroidTestCase {
 	
 	public void setUp() {
 		mSceneManager = new GraphSceneManager();
-		mRenderer = new GLRenderer10(getContext());
+		mRenderer = new GLES11Renderer();
 		mRenderer.setSceneManager(mSceneManager);
 		mIdentity = Util.getIdentityMatrix();
 		

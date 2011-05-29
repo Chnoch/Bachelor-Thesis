@@ -37,6 +37,7 @@ public class Box2DWorld {
 	 */
 	
 	Body createBody(Box2DBody body) {
+		mBox2DWorld.createDynamicBody();
 		return mBox2DWorld.createBody(body.getDefinition());
 	}
 	

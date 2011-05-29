@@ -7,7 +7,7 @@ import javax.vecmath.Vector3f;
 
 import android.test.AndroidTestCase;
 
-import ch.chnoch.thesis.renderer.GLRenderer10;
+import ch.chnoch.thesis.renderer.GLES11Renderer;
 import ch.chnoch.thesis.renderer.GraphSceneManager;
 import ch.chnoch.thesis.renderer.Plane;
 import ch.chnoch.thesis.renderer.Ray;
@@ -18,7 +18,7 @@ import ch.chnoch.thesis.renderer.util.Util;
 
 public class TranslationTest extends AndroidTestCase {
 	GraphSceneManager mSceneManager;
-	GLRenderer10 mRenderer;
+	GLES11Renderer mRenderer;
 	Matrix4f mIdentity;
 	Shape shape;
 	ShapeNode root;
@@ -33,7 +33,7 @@ public class TranslationTest extends AndroidTestCase {
 
 	public void setUp() {
 		mSceneManager = new GraphSceneManager();
-		mRenderer = new GLRenderer10(getContext());
+		mRenderer = new GLES11Renderer();
 		mRenderer.setSceneManager(mSceneManager);
 		mIdentity = Util.getIdentityMatrix();
 

@@ -23,12 +23,10 @@ import android.opengl.GLUtils;
  */
 public class GLTexture implements Texture {
 	
-	private Context mContext;
 	private int mTextureID;	// Stores the OpenGL texture identifier
 	
-	public GLTexture(Context context) 
+	public GLTexture() 
 	{
-		mContext = context;
 	}
 
 	/**

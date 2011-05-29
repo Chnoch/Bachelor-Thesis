@@ -4,11 +4,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
+import javax.vecmath.Vector3f;
+
+import android.util.Log;
 
 import ch.chnoch.thesis.renderer.box2d.*;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.util.Util;
 
 public abstract class AbstractSceneManager implements SceneManagerInterface {
 	protected Camera mCamera;
@@ -72,7 +77,7 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 
 	@Override
 	public void enablePhysicsEngine() {
-		Vector2f low = new Vector2f(-100,-100);
+		Vector2f low = new Vector2f(-100,-5);
 		Vector2f high = new Vector2f(100,100);
 		Vector2f gravity = new Vector2f(0,-10);
 		
@@ -87,13 +92,14 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 	@Override
 	public void updateScene() {
 		float dt = 1f/60f;
-		int iterations = 8;
+		int iterations = 5;
 		// update the world
 		mWorld.step(dt, iterations);
+		Log.d("AbstractSceneManager", "Updated World, now going through scene");
 		// reflect the updated values onto the Nodes
 		SceneManagerIterator it = this.iterator();
 		while (it.hasNext()) {
-			it.next().getNode().updatePhysics();;
+			it.next().getNode().updatePhysics();
 		}
 	}
 
@@ -101,6 +107,7 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 	public Box2DWorld getPhysicsWorld() {
 		return mWorld;
 	}
+	
 	
 	/**
 	 * These methods do nothing except if the scene manager is a graph

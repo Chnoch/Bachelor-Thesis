@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.microedition.khronos.egl.EGLContext;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
@@ -14,10 +15,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import android.opengl.GLSurfaceView.EGLContextFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import javax.microedition.khronos.egl.*;
 
 public class GLViewerActivity extends Activity implements OnClickListener {
 
@@ -41,26 +45,25 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		createLights();
 		setMaterial();
 
-		// boolean openGlES20 = detectOpenGLES20();
-		// if (false) {
-		// Tell the surface view we want to create an OpenGL ES
-		// 2.0-compatible
-		// context, and set an OpenGL ES 2.0-compatible renderer.
+		boolean openGlES20 = detectOpenGLES20();
+		if (openGlES20) {
+			Log.d(TAG, "Using OpenGL ES 2.0");
+			// Tell the surface view we want to create an OpenGL ES
+			// 2.0-compatible
+			// context, and set an OpenGL ES 2.0-compatible renderer.
+			mRenderer = new GLES20Renderer();
+			Shader shader = createShaders();
+			// exit if the shaders couldn't be loaded
+			if (shader.getProgram() == 0)
+				return;
 
-		// mRenderer = new GLRenderer(getApplication());
-
-		// Shader shader = createShaders();
-		// exit if the shaders couldn't be loaded
-		// if (shader.getProgram() == 0)
-		// return;
-		//
-		// Material material = new Material();
-		// material.setShader(shader);
-
-		// shape.setMaterial(material);
-		// } else {
-		mRenderer = new GLRenderer10(getApplication());
-		// }
+			// Material material = new Material();
+			// material.setShader(shader);
+			// shape.setMaterial(material);
+		} else {
+			Log.d(TAG, "Using OpenGL ES 1.1");
+			mRenderer = new GLES11Renderer();
+		}
 
 		mViewer = new GLViewer(this, mRenderer);
 		// Set the OpenGL Context to version 2.0
@@ -79,8 +82,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 
-		
-//		enablePhysics();
+		// enablePhysics();
 	}
 
 	@Override
@@ -95,16 +97,22 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mViewer.onResume();
 	}
 
-	/*
-	 * private Shader createShaders() { String vertexShader =
-	 * readRawText(R.raw.simplevert); String fragmentShader =
-	 * readRawText(R.raw.simplefrag);
-	 * 
-	 * Shader shader = mRenderer.makeShader(); int program = 0; try { program =
-	 * shader.load(vertexShader, fragmentShader); if (program == 0) { throw new
-	 * RuntimeException(); } } catch (Exception e) { Log.e(TAG,
-	 * "Error loading Shaders", e); } return shader; }
-	 */
+	private Shader createShaders() {
+		String vertexShader = readRawText(R.raw.simplevert);
+		String fragmentShader = readRawText(R.raw.simplefrag);
+		Shader shader = null;
+		try {
+			((EGL10)EGLContext.getEGL()).eglMakeCurrent(EGL11.EGL_NO_DISPLAY, EGL11.EGL_NO_SURFACE, EGL11.EGL_NO_SURFACE, EGL11.EGL_NO_CONTEXT);
+			 shader = mRenderer.makeShader(vertexShader, fragmentShader);
+
+			if (shader.getProgram() == 0) {
+				throw new RuntimeException();
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Error loading Shaders", e);
+		}
+		return shader;
+	}
 
 	/*
 	 * Private Methods
@@ -114,10 +122,10 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		Shape shapeBig = Util.loadCube(4);
 		Shape shapeSmall = Util.loadCube(1);
-//		Shape groundShape = Util.loadGround();
+		// Shape groundShape = Util.loadGround();
 
-		
 		Vector3f transY = new Vector3f(0, 5, 0);
+		
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
 		Vector3f transRight = new Vector3f(2, 0, 0);
 
@@ -130,8 +138,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
-		
-//		mRoot.addChild(new ShapeNode(groundShape));
+
+		// mRoot.addChild(new ShapeNode(groundShape));
 
 		mShapeNodeBig = new ShapeNode(shapeBig);
 		mRoot.addChild(mShapeNodeBig);
@@ -220,7 +228,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		return (info.reqGlEsVersion >= 0x20000);
 	}
 
-	
 	/*
 	 * Used for the physics Simulation
 	 */

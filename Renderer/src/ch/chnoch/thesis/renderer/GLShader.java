@@ -1,5 +1,7 @@
 package ch.chnoch.thesis.renderer;
 
+import javax.microedition.khronos.egl.EGLContext;
+
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
@@ -31,6 +33,7 @@ public class GLShader implements Shader {
 			return 0;
 		}
 
+		
 		mProgram = GLES20.glCreateProgram();
 		if (mProgram != 0) {
 			GLES20.glAttachShader(mProgram, vertexShader);

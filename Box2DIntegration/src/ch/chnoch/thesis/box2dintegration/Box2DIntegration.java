@@ -25,7 +25,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private GraphSceneManager mSceneManager;
 	private Shape mShape;
 	private Node mNode, mRoot;
-	private GLRenderer10 mRenderer;
+	private RenderContext mRenderer;
 	private GLSurfaceView mViewer;
 
 	/** Called when the activity is first created. */
@@ -33,21 +33,26 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mSceneManager = new GraphSceneManager();
-		mRenderer = new GLRenderer10(getApplication());
-		mRenderer.setSceneManager(mSceneManager);
-		mViewer = new GLViewer(this);
-		mViewer.setEGLConfigChooser(true);
-		mRenderer.setViewer((GLViewer) mViewer);
-
-		mViewer.setRenderer(mRenderer);
-		mViewer.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);		
 		mSceneManager.getCamera()
-				.setCenterOfProjection(new Vector3f(0, 15, 20));
+		.setCenterOfProjection(new Vector3f(0, 15, 20));
+		mSceneManager.getFrustum().setNearPlane(5);
 		mSceneManager.getFrustum().setFarPlane(50);
+		
+		mRenderer = new GLES11Renderer();
+		mRenderer.setSceneManager(mSceneManager);
+		
+		
+		
+		mViewer = new GLViewer(this, mRenderer);
+//		mViewer.setEGLConfigChooser(true);
+//		mRenderer.setViewer((GLViewer) mViewer);
+
+//		mViewer.setRenderer(mRenderer);
+//		mViewer.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);		
 		
 		createLights();
 		
-		mShape = Util.loadCube(1); 
+		mShape = Util.loadCube(1f); 
 		Shape shape = Util.loadCube(3);
 //		Shape ground = Util.loadGround();
 
@@ -63,6 +68,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mNode = new ShapeNode(shape);
 		group.addChild(mNode);
 		
+		
 		TransformGroup smallerGroup = new TransformGroup();
 		trans = Util.getIdentityMatrix();
 		trans.setTranslation(new Vector3f(0,9,0));
@@ -75,11 +81,13 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		node.setTranslationMatrix(trans);
 		smallerGroup.addChild(node);
 		
+		
 		Node node2 = new ShapeNode(mShape);
 		trans = Util.getIdentityMatrix();
 		trans.setTranslation(new Vector3f(-1.5f, 0,0));
 		node.setTranslationMatrix(trans);
-		smallerGroup.addChild(node2);
+//		smallerGroup.addChild(node2);
+		
 		
 		Node node3 = new ShapeNode(mShape);
 		trans = Util.getIdentityMatrix();
@@ -114,12 +122,14 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		
 		mNode.getPhysicsProperties().setType(TType.STATIC);
 
+		
 		/*
 		Vec2 gravity = new Vec2(0.0f, -10.0f);
 		boolean doSleep = true;
 		AABB completeBoundingBox = new AABB(new Vec2(-100f, -100f), new Vec2(
 				100f, 100f));
 		world = new World(completeBoundingBox, gravity, doSleep);
+
 
 		BodyDef groundBodyDef = new BodyDef();
 		groundBodyDef.position.set(0.0f, -10.0f);
@@ -139,6 +149,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		shapeDef.setAsBox(1.f, 1.f);
 
 		org.jbox2d.collision.Shape dynamicBox = body.createShape(shapeDef);
+
 
 		body.createShape(shapeDef);
 		body.setMassFromShapes();
@@ -186,10 +197,11 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 			} while (difference.x > 0.001f && difference.y > 0.001f);
 			*/
 			
-			for (int i=0; i<10000; i++) {
+			for (int i=0; i<1000; i++) {
 				mSceneManager.updateScene();
 				mViewer.requestRender();
 			}
+			
 		}
 	}
 

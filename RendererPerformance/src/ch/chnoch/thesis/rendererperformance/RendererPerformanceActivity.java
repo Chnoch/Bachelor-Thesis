@@ -39,7 +39,7 @@ public class RendererPerformanceActivity extends Activity {
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
 
-		mRenderer = new GLRenderer10(getApplication());
+		mRenderer = new GLES11Renderer();
 		mRenderer.setSceneManager(mSceneManager);
 		mViewer = new GLViewer(this, mRenderer);
 

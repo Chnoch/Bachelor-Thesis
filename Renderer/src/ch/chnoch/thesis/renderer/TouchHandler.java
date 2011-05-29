@@ -58,9 +58,8 @@ public class TouchHandler implements OnTouchListener {
 						|| (mIsTranslation && !mRotate)) {
 					Log.d("TouchHandler", "Moving Object");
 					// Long Press occured: Manipulate object by moving it
-					Ray prevRay = Util.unproject(mPreviousX, mPreviousY,
-							mRenderer);
-					Ray curRay = Util.unproject(x, y, mRenderer);
+					Ray prevRay = mViewer.unproject(mPreviousX, mPreviousY);
+					Ray curRay = mViewer.unproject(x, y);
 					
 //					mPlane = findClosestPlane(prevRay);
 					RayShapeIntersection startIntersection = mIntersection.node.intersect(prevRay);
@@ -80,9 +79,8 @@ public class TouchHandler implements OnTouchListener {
 
 					mTrackball.setNode(mIntersection.node);
 
-					Ray startRay = Util.unproject(mPreviousX, mPreviousY,
-							mRenderer);
-					Ray endRay = Util.unproject(x, y, mRenderer);
+					Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
+					Ray endRay = mViewer.unproject(x, y);
 					RayShapeIntersection startIntersection = mTrackball
 							.intersect(startRay);
 					RayShapeIntersection endIntersection = mTrackball
@@ -104,7 +102,7 @@ public class TouchHandler implements OnTouchListener {
 
 			mEventStart = e.getEventTime();
 
-			Ray ray = Util.unproject(x, y, mRenderer);
+			Ray ray = mViewer.unproject(x, y);
 			RayShapeIntersection intersect = mRenderer.getSceneManager()
 					.intersectRayNode(ray);
 			if (intersect.hit) {
