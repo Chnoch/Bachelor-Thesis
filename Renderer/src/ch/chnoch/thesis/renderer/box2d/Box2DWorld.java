@@ -24,7 +24,7 @@ public class Box2DWorld {
 		mBox2DsurroundingBox = new AABB(new Vec2(low.x, low.y), new Vec2(high.x, high.y));
 		mBox2DWorld = new World(mBox2DsurroundingBox, new Vec2(gravity.x, gravity.y), true);
 		
-		createGroundBody();
+//		createGroundBody();
 	}
 	
 	public void step(float dt, int iterations){

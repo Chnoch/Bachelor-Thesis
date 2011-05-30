@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
 import javax.vecmath.Matrix4f;
 
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
@@ -26,6 +27,7 @@ public class GLES11Renderer extends AbstractRenderer {
 	private FloatBuffer mTexCoordsBuffer;
 	private IntBuffer mColorBuffer;
 	private IntBuffer mNormalBuffer;
+	private int width, height;
 
 	private final String TAG = "GLES11Renderer";
 
@@ -75,33 +77,49 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * Usually, the first thing one might want to do is to clear the screen.
 		 * The most efficient way of doing this is to use glClear().
 		 */
+		gl.glViewport(0, 0, width, height);
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		int count = 0;
 		while (shapeIterator.hasNext()) {
+			Log.d("Renderer", "count: " + count);
+			count++;
 			draw(shapeIterator.next(), gl);
 		}
 
 		long newTime = System.currentTimeMillis();
 
 		long diff = newTime - oldTime;
+		int error = gl.glGetError();
+		if (error!=GL10.GL_NO_ERROR){
+			Log.d("GLError", "Error: " +error);
+		}
 //		Log.d("RendererFrame", "Rendering single frame: " + diff + " ms");
 
 	}
 
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
+		Log.d(TAG, "width: " + width + " height: " + height);
 		mViewer.surfaceHasChanged(width, height);
-		setViewportMatrix(width, height);
+//		setViewportMatrix(width, height);
 
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
 		 * draw, but usually a new projection needs to be set when the viewport
 		 * is resized.
 		 */
+		float ratio = (float)width/height;
 		gl.glMatrixMode(GL_PROJECTION);
-		gl.glLoadMatrixf(
-				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
-		gl.glViewport(0, 0, width, height);
+		gl.glLoadIdentity();
+		gl.glFrustumf(-ratio, ratio, -1, 1, 2, 50);
+		float[] projectionMat = new float[16];
+		((GL11)gl).glGetFloatv(GL11.GL_PROJECTION_MATRIX, projectionMat, 0);
+		Log.d("Projection Matrix", new Matrix4f(projectionMat).toString());
+		this.width = width;
+		this.height = height;
+//		gl.glLoadMatrixf(
+//				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
+//		gl.glViewport(0, 0, width, height);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -110,6 +128,8 @@ public class GLES11Renderer extends AbstractRenderer {
 		int[] depthbits = new int[1];
 		gl.glGetIntegerv(GL_DEPTH_BITS, depthbits, 0);
 		Log.d(TAG, "Depth Bits: " + depthbits[0]);
+		
+		Log.d(TAG, "Version: " + gl.glGetString(GL_VERSION));
 		
 
 		/*
@@ -125,18 +145,18 @@ public class GLES11Renderer extends AbstractRenderer {
 		 */
 		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-		gl.glClearColor(1, 1, 1, 1);
+		gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		gl.glClearDepthf(1f);
-		gl.glEnable(GL_CULL_FACE);
+//		gl.glEnable(GL_CULL_FACE);
 		gl.glShadeModel(GL_SMOOTH);
 		gl.glEnable(GL_DEPTH_TEST);
-		gl.glDepthFunc(GL_LEQUAL);
-		gl.glDepthMask(true);
+//		gl.glDepthFunc(GL_LEQUAL);
+//		gl.glDepthMask(true);
 //		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-		gl.glMatrixMode(GL_PROJECTION);
-		gl.glLoadMatrixf(
-				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
+//		gl.glMatrixMode(GL_PROJECTION);
+//		gl.glLoadMatrixf(
+//				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 
 		setLights(gl);
 	}
@@ -153,6 +173,7 @@ public class GLES11Renderer extends AbstractRenderer {
 	 */
 	private void draw(RenderItem renderItem, GL10 gl) {
 
+		Log.d("Renderer", "Called draw method");
 		Shape shape = renderItem.getNode().getShape();
 		VertexBuffers buffers = shape.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
@@ -165,6 +186,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		t.set(mCamera.getCameraMatrix());
 		t.mul(renderItem.getT());
 
+		Log.d("ModelView", t.toString());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 
 		setMaterial(renderItem.getNode().getMaterial(), gl);
@@ -179,6 +201,8 @@ public class GLES11Renderer extends AbstractRenderer {
 		// gl.glTexCoordPointer(2, GL_FLOAT, 0, mTexCoordsBuffer);
 		gl.glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 				GL_UNSIGNED_SHORT, mIndexBuffer);
+//		gl.glPointSize(3);
+//		gl.glDrawArrays(GL_POINTS, 0, 24);
 		gl.glDisableClientState(GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL_VERTEX_ARRAY);
 	}

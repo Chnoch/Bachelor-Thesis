@@ -38,6 +38,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager.getFrustum().setNearPlane(5);
 		mSceneManager.getFrustum().setFarPlane(50);
 		
+		
 		mRenderer = new GLES11Renderer();
 //		mRenderer = new GL2DRenderer();
 		mRenderer.setSceneManager(mSceneManager);
@@ -60,6 +61,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
 
+		
 		TransformGroup group = new TransformGroup();
 		Matrix4f trans = Util.getIdentityMatrix();
 		trans.setTranslation(new Vector3f(0, 3, 0));
@@ -94,7 +96,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		trans = Util.getIdentityMatrix();
 		trans.setTranslation(new Vector3f(0,2.5f,0));
 		node.setTranslationMatrix(trans);
-		smallerGroup.addChild(node3);
+//		smallerGroup.addChild(node3);
 
 		
 		Node node4 = new ShapeNode(mShape);
@@ -110,6 +112,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mat.mDiffuse.set(1f, 0, 0);
 		mat.mSpecular.set(1f, 0f, 0f);
 
+		
 		mNode.setMaterial(mat);
 		node.setMaterial(mat);
 		node2.setMaterial(mat);
@@ -118,12 +121,10 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 		
-		
 		mSceneManager.enablePhysicsEngine();
-		mViewer.setOnTouchListener(new TouchHandler(mRenderer, (GLViewer)mViewer));
+		mViewer.setOnClickListener(this);
 		
 		mNode.getPhysicsProperties().setType(TType.STATIC);
-		
 		/*
 		Vec2 gravity = new Vec2(0.0f, -10.0f);
 		boolean doSleep = true;
@@ -137,7 +138,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		PolygonDef groundBox = new PolygonDef();
 		groundBox.setAsBox(50f, 10f);
 		groundBody.createShape(groundBox);
-
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(0.0f, 4.0f);
 		body = world.createBody(bodyDef);
@@ -154,7 +154,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		body.setMassFromShapes();
 		*/
 	}
-	
 	
 	private void createLights() {
 
