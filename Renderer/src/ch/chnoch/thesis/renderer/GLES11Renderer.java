@@ -41,19 +41,18 @@ public class GLES11Renderer extends AbstractRenderer {
 	public GLES11Renderer() {
 		super();
 	}
-	
 
 	public GLES11Renderer(SceneManagerInterface sceneManager) {
 		super(sceneManager);
 	}
-	
 
 	/*
 	 * Public Methods
 	 */
 
 	@Override
-	public Shader makeShader(String vertexShader, String fragmentShader) throws Exception {
+	public Shader makeShader(String vertexShader, String fragmentShader)
+			throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -90,10 +89,10 @@ public class GLES11Renderer extends AbstractRenderer {
 
 		long diff = newTime - oldTime;
 		int error = gl.glGetError();
-		if (error!=GL10.GL_NO_ERROR){
-			Log.d("GLError", "Error: " +error);
+		if (error != GL10.GL_NO_ERROR) {
+			Log.d("GLError", "Error: " + error);
 		}
-//		Log.d("RendererFrame", "Rendering single frame: " + diff + " ms");
+		// Log.d("RendererFrame", "Rendering single frame: " + diff + " ms");
 
 	}
 
@@ -101,36 +100,41 @@ public class GLES11Renderer extends AbstractRenderer {
 		Log.d(TAG, "onsurfacechanged method called");
 		Log.d(TAG, "width: " + width + " height: " + height);
 		mViewer.surfaceHasChanged(width, height);
-//		setViewportMatrix(width, height);
+		 setViewportMatrix(width, height);
 
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
 		 * draw, but usually a new projection needs to be set when the viewport
 		 * is resized.
 		 */
-		float ratio = (float)width/height;
+		float ratio = (float) width / height;
 		gl.glMatrixMode(GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glFrustumf(-ratio, ratio, -1, 1, 2, 50);
-		float[] projectionMat = new float[16];
-		((GL11)gl).glGetFloatv(GL11.GL_PROJECTION_MATRIX, projectionMat, 0);
-		Log.d("Projection Matrix", new Matrix4f(projectionMat).toString());
+//		gl.glLoadIdentity();
+//		gl.glFrustumf(-ratio, ratio, -1, 1, 2, 50);
+//		float[] projectionMat = new float[16];
+		mFrustum.setAspectRatio(ratio);
+		mFrustum.setLeft(-ratio);
+		mFrustum.setRight(ratio);
+//		((GL11) gl).glGetFloatv(GL11.GL_PROJECTION_MATRIX, projectionMat, 0);
+//		Log.d("Projection Matrix", new Matrix4f(projectionMat).toString());
+		Log.d("Projection Matrix", "Frustum: "
+				+ mFrustum.getProjectionMatrix().toString());
 		this.width = width;
 		this.height = height;
-//		gl.glLoadMatrixf(
-//				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
-//		gl.glViewport(0, 0, width, height);
+		
+		 gl.glLoadMatrixf(
+		 GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
+		// gl.glViewport(0, 0, width, height);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		Log.d(TAG, "onsurfacecreated method called");
-		
+
 		int[] depthbits = new int[1];
 		gl.glGetIntegerv(GL_DEPTH_BITS, depthbits, 0);
 		Log.d(TAG, "Depth Bits: " + depthbits[0]);
-		
+
 		Log.d(TAG, "Version: " + gl.glGetString(GL_VERSION));
-		
 
 		/*
 		 * By default, OpenGL enables features that improve quality but reduce
@@ -138,7 +142,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * renderer.
 		 */
 		gl.glDisable(GL_DITHER);
-		
+
 		/*
 		 * Some one-time OpenGL initialization can be made here probably based
 		 * on features of this particular context
@@ -147,16 +151,16 @@ public class GLES11Renderer extends AbstractRenderer {
 
 		gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		gl.glClearDepthf(1f);
-//		gl.glEnable(GL_CULL_FACE);
+		// gl.glEnable(GL_CULL_FACE);
 		gl.glShadeModel(GL_SMOOTH);
 		gl.glEnable(GL_DEPTH_TEST);
-//		gl.glDepthFunc(GL_LEQUAL);
-//		gl.glDepthMask(true);
-//		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+		// gl.glDepthFunc(GL_LEQUAL);
+		// gl.glDepthMask(true);
+		// gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-//		gl.glMatrixMode(GL_PROJECTION);
-//		gl.glLoadMatrixf(
-//				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
+		// gl.glMatrixMode(GL_PROJECTION);
+		// gl.glLoadMatrixf(
+		// GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 
 		setLights(gl);
 	}
@@ -201,16 +205,15 @@ public class GLES11Renderer extends AbstractRenderer {
 		// gl.glTexCoordPointer(2, GL_FLOAT, 0, mTexCoordsBuffer);
 		gl.glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 				GL_UNSIGNED_SHORT, mIndexBuffer);
-//		gl.glPointSize(3);
-//		gl.glDrawArrays(GL_POINTS, 0, 24);
+		// gl.glPointSize(3);
+		// gl.glDrawArrays(GL_POINTS, 0, 24);
 		gl.glDisableClientState(GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL_VERTEX_ARRAY);
 	}
 
 	private void setLights(GL10 gl) {
-		int lightIndex[] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2,
-				GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6,
-				GL_LIGHT7 };
+		int lightIndex[] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3,
+				GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7 };
 
 		gl.glEnable(GL_LIGHTING);
 		gl.glLoadIdentity();
@@ -234,21 +237,17 @@ public class GLES11Renderer extends AbstractRenderer {
 			if (l.type == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL_SPOT_DIRECTION,
 						l.createSpotDirectionArray(), 0);
-				gl.glLightf(lightIndex[i], GL_SPOT_EXPONENT,
-						l.spotExponent);
+				gl.glLightf(lightIndex[i], GL_SPOT_EXPONENT, l.spotExponent);
 				gl.glLightf(lightIndex[i], GL_SPOT_CUTOFF, l.spotCutoff);
 			}
 
-			gl.glLightfv(lightIndex[i], GL_DIFFUSE,
-					l.createDiffuseArray(), 0);
-			gl.glLightfv(lightIndex[i], GL_AMBIENT,
-					l.createAmbientArray(), 0);
-			gl.glLightfv(lightIndex[i], GL_SPECULAR,
-					l.createSpecularArray(), 0);
+			gl.glLightfv(lightIndex[i], GL_DIFFUSE, l.createDiffuseArray(), 0);
+			gl.glLightfv(lightIndex[i], GL_AMBIENT, l.createAmbientArray(), 0);
+			gl.glLightfv(lightIndex[i], GL_SPECULAR, l.createSpecularArray(), 0);
 
 			i++;
 		}
-		
+
 		gl.glEnable(GL10.GL_CCW);
 	}
 
@@ -266,8 +265,7 @@ public class GLES11Renderer extends AbstractRenderer {
 			gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,
 					m.createSpecularArray(), 0);
 
-			gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,
-					m.shininess);
+			gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m.shininess);
 		}
 	}
 
@@ -292,9 +290,8 @@ public class GLES11Renderer extends AbstractRenderer {
 
 			frameCount = 0;
 
-//			Log.d("Renderer", "Rendertime per Frame: " + fps + " ms");
+			// Log.d("Renderer", "Rendertime per Frame: " + fps + " ms");
 		}
 	}
-
 
 }

@@ -17,20 +17,26 @@ import ch.chnoch.thesis.renderer.util.Util;
  */
 public class Frustum {
 
-	private Matrix4f projectionMatrix;
-	private float nearPlane, farPlane, aspectRatio, vertFOV;
+	private Matrix4f mProjectionMatrix;
+	private float mNearPlane, mFarPlane, mAspectRatio, mVertFOV;
+	private float mTop, mBottom, mLeft, mRight;
 
 	/**
 	 * Construct a default viewing frustum. The frustum is given by a default
 	 * 4x4 projection matrix.
 	 */
 	public Frustum() {
-		projectionMatrix = new Matrix4f();
+		mProjectionMatrix = new Matrix4f();
 		// Aspect Ratio is 1 on init
-		this.aspectRatio = 1;
-		this.vertFOV = 60;
-		this.nearPlane = 1;
-		this.farPlane = 50;
+		this.mAspectRatio = 1;
+		this.mVertFOV = 30;
+		this.mNearPlane = 2;
+		this.mFarPlane = 30;
+		mTop = 1;
+		mBottom = -1;
+		mLeft = -100;
+		mRight = 100;
+		
 		this.updateFrustum();
 		
 //		projectionMatrix = Util.getIdentityMatrix();
@@ -43,66 +49,91 @@ public class Frustum {
 	 * @return the 4x4 projection matrix
 	 */
 	public Matrix4f getProjectionMatrix() {
-		return projectionMatrix;
+		return mProjectionMatrix;
 	}
 
 	public float getNearPlane() {
-		return nearPlane;
+		return mNearPlane;
 	}
 
 	public void setNearPlane(float nearPlane) {
-		this.nearPlane = nearPlane;
+		this.mNearPlane = nearPlane;
 		this.updateFrustum();
 	}
 
 	public float getFarPlane() {
-		return farPlane;
+		return mFarPlane;
 	}
 
 	public void setFarPlane(float farPlane) {
-		this.farPlane = farPlane;
+		this.mFarPlane = farPlane;
 		this.updateFrustum();
 	}
 
 	public float getAspectRatio() {
-		return aspectRatio;
+		return mAspectRatio;
 	}
 
 	public void setAspectRatio(float aspectRatio) {
-		this.aspectRatio = aspectRatio;
+		this.mAspectRatio = aspectRatio;
 		updateFrustum();
 	}
 
 	public float getVertFOV() {
-		return vertFOV;
+		return mVertFOV;
 	}
 
 	public void setVertFOV(float vertFOV) {
-		this.vertFOV = vertFOV;
+		this.mVertFOV = vertFOV;
+		updateFrustum();
+	}
+	
+	public void setLeft(float left) {
+		mLeft = left;
+		updateFrustum();
+	}
+	
+	public void setRight(float right) {
+		mRight = right;
 		updateFrustum();
 	}
 
 	private void updateFrustum() {
+		// This is the old version used to calculate the frustum
+		/*
 		final float DEG2RAD = 3.14159265f / 180;
 
-		float halfFov = vertFOV * 0.5f * DEG2RAD;
-		float deltaZ = farPlane - nearPlane;
+		float halfFov = mVertFOV * DEG2RAD;
+		float deltaZ = mFarPlane - mNearPlane;
 		float sine = (float)Math.sin(halfFov);
 		float cotangent = (float) Math.cos(halfFov) / sine;
 		
 //		float temp = (float) (1 / (aspectRatio * Math.tan(vertFOV * DEG2RAD / 2)));
-		this.projectionMatrix.setM00(cotangent);
+		this.mProjectionMatrix.setM00(cotangent);
 
 //		temp = (float) (1 / Math.tan(vertFOV * DEG2RAD / 2));
-		this.projectionMatrix.setM11(cotangent * aspectRatio);
+		this.mProjectionMatrix.setM11(cotangent * mAspectRatio);
 
 //		temp = (nearPlane + farPlane) / (nearPlane - farPlane);
-		this.projectionMatrix.setM22((farPlane + nearPlane)/deltaZ);
+		this.mProjectionMatrix.setM22(-(mFarPlane + mNearPlane)/deltaZ);
 
 //		temp = (2 * nearPlane * farPlane) / (nearPlane - farPlane);
-		this.projectionMatrix.setM23(2 * nearPlane * farPlane / deltaZ);
+		this.mProjectionMatrix.setM32(-2 * mNearPlane * mFarPlane / deltaZ);
 		
-		this.projectionMatrix.setM32(-1);
+		this.mProjectionMatrix.setM23(-1);
+		*/
+		
+		// The new version, that should correspond with how opengl is handling
+		// the projection matrix
+		
+		this.mProjectionMatrix.setM00(2*mNearPlane/(mRight- mLeft));
+		this.mProjectionMatrix.setM02((mRight+mLeft)/(mRight- mLeft));
+		this.mProjectionMatrix.setM11(2*mNearPlane/(mTop - mBottom));
+		this.mProjectionMatrix.setM12((mTop+mBottom)/(mTop-mBottom));
+		this.mProjectionMatrix.setM22(- ((mFarPlane+mNearPlane) / (mFarPlane - mNearPlane)));
+		this.mProjectionMatrix.setM23(- ((2*mFarPlane*mNearPlane )/(mFarPlane-mNearPlane)));
+		this.mProjectionMatrix.setM32(-1);
+		
 	}
 
 }

@@ -35,15 +35,14 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager = new GraphSceneManager();
 		mSceneManager.getCamera()
 		.setCenterOfProjection(new Vector3f(0, 15, 20));
-		mSceneManager.getFrustum().setNearPlane(5);
+		mSceneManager.getFrustum().setNearPlane(2);
 		mSceneManager.getFrustum().setFarPlane(50);
+		mSceneManager.getFrustum().setVertFOV(46.3648f);
 		
 		
 		mRenderer = new GLES11Renderer();
 //		mRenderer = new GL2DRenderer();
 		mRenderer.setSceneManager(mSceneManager);
-		
-		
 		
 		mViewer = new GLViewer(this, mRenderer);
 //		mViewer.setEGLConfigChooser(true);
@@ -111,11 +110,11 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mat.mAmbient.set(1, 0, 0);
 		mat.mDiffuse.set(1f, 0, 0);
 		mat.mSpecular.set(1f, 0f, 0f);
-
 		
 		mNode.setMaterial(mat);
 		node.setMaterial(mat);
 		node2.setMaterial(mat);
+		
 		
 		setContentView(mViewer);
 		mViewer.requestFocus();
@@ -168,6 +167,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager.addLight(light);
 	}
 
+	
 	private class Simulation implements Runnable {
 		public void run() {
 			/*
@@ -195,6 +195,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 						+ ", angle: " + angle);
 			} while (difference.x > 0.001f && difference.y > 0.001f);
 			*/
+			
 			
 			for (int i=0; i<1000; i++) {
 				mSceneManager.updateScene();

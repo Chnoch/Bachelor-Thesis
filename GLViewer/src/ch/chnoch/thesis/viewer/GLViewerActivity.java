@@ -41,6 +41,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mSceneManager = new GraphSceneManager();
 		// Shape shape = loadTeapot();
 
+		
 		createShapes();
 		createLights();
 		setMaterial();
@@ -65,8 +66,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			mRenderer = new GLES11Renderer();
 		
 //	}
-
-			
 		mViewer = new GLViewer(this, mRenderer);
 		// Set the OpenGL Context to version 2.0
 		// Has to be done after the Viewer is initialized
