@@ -96,12 +96,12 @@ public class ShapeNode extends Leaf {
 		mBox2DBody = new Box2DBody(position, world);
 
 		Box2DShape shape = mShape.enableBox2D();
-		mBox2DBody.createShape(shape);
+		mBox2DBody.createShape(shape, true);
 	}
 
 	@Override
 	public void updatePhysics() {
-		Log.d("ShapeNode", "Updating Physics");
+//		Log.d("ShapeNode", "Updating Physics");
 		Vector2f prevPos = mBox2DBody.getPreviousPosition();
 		Vector2f curPos = mBox2DBody.getCurrentPosition();
 
@@ -117,8 +117,8 @@ public class ShapeNode extends Leaf {
 		
 		// Log.d("ShapeNode", "Translation: " + trans.toString());
 		move(trans);
-		Log.d("ShapeNode", "Translation: " + trans.toString());
-		Log.d("ShapeNode", "Rotation: " + mBox2DBody.getAngle());
+//		Log.d("ShapeNode", "Translation: " + trans.toString());
+//		Log.d("ShapeNode", "Rotation: " + mBox2DBody.getAngle());
 
 		mBox2DBody.setPreviousPosition(curPos);
 		// Log.d("ShapeNode", "Angle: " + mBox2DBody.getAngle());

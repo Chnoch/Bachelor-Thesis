@@ -67,15 +67,14 @@ public class GL2DRenderer extends AbstractRenderer {
 		while (shapeIterator.hasNext()) {
 			draw(shapeIterator.next(), gl);
 		}
-
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int x, int y) {
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		gl.glOrthof(0, 0, x, y, 0, 1);
-		gl.glDisable(GL_DEPTH_TEST);
+		gl.glOrthof(0, 0, 5, 5, 0, 1);
+		gl.glViewport(0, 0, x, y);
 //		gl.glMatrixMode(GL10.GL_MODELVIEW);
 //		gl.glLoadIdentity();
 
@@ -86,6 +85,9 @@ public class GL2DRenderer extends AbstractRenderer {
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		gl.glClearColor(1, 1, 1, 1);
+		gl.glDisable(GL_DEPTH_TEST);
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
 	}
 
 	/**

@@ -39,6 +39,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager.getFrustum().setFarPlane(50);
 		
 		mRenderer = new GLES11Renderer();
+//		mRenderer = new GL2DRenderer();
 		mRenderer.setSceneManager(mSceneManager);
 		
 		
@@ -86,19 +87,19 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		trans = Util.getIdentityMatrix();
 		trans.setTranslation(new Vector3f(-1.5f, 0,0));
 		node.setTranslationMatrix(trans);
-//		smallerGroup.addChild(node2);
+		smallerGroup.addChild(node2);
 		
 		
 		Node node3 = new ShapeNode(mShape);
 		trans = Util.getIdentityMatrix();
-		trans.setTranslation(new Vector3f(0,1.5f,0));
+		trans.setTranslation(new Vector3f(0,2.5f,0));
 		node.setTranslationMatrix(trans);
-//		smallerGroup.addChild(node3);
+		smallerGroup.addChild(node3);
 
 		
 		Node node4 = new ShapeNode(mShape);
 		trans = Util.getIdentityMatrix();
-		trans.setTranslation(new Vector3f(-0.5f,3,0));
+		trans.setTranslation(new Vector3f(-0.5f,5,0));
 		node.setTranslationMatrix(trans);
 //		smallerGroup.addChild(node4);
 		
@@ -117,11 +118,11 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 		
+		
 		mSceneManager.enablePhysicsEngine();
-		mViewer.setOnClickListener(this);
+		mViewer.setOnTouchListener(new TouchHandler(mRenderer, (GLViewer)mViewer));
 		
 		mNode.getPhysicsProperties().setType(TType.STATIC);
-
 		
 		/*
 		Vec2 gravity = new Vec2(0.0f, -10.0f);
@@ -129,7 +130,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		AABB completeBoundingBox = new AABB(new Vec2(-100f, -100f), new Vec2(
 				100f, 100f));
 		world = new World(completeBoundingBox, gravity, doSleep);
-
 
 		BodyDef groundBodyDef = new BodyDef();
 		groundBodyDef.position.set(0.0f, -10.0f);
@@ -150,11 +150,11 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 
 		org.jbox2d.collision.Shape dynamicBox = body.createShape(shapeDef);
 
-
 		body.createShape(shapeDef);
 		body.setMassFromShapes();
 		*/
 	}
+	
 	
 	private void createLights() {
 

@@ -37,7 +37,6 @@ public class Box2DWorld {
 	 */
 	
 	Body createBody(Box2DBody body) {
-		mBox2DWorld.createDynamicBody();
 		return mBox2DWorld.createBody(body.getDefinition());
 	}
 	
@@ -47,12 +46,12 @@ public class Box2DWorld {
 	 */
 	
 	private void createGroundBody() {
-		Box2DBody groundBody = new Box2DBody(new Vector2f(0,0), this);
+		Box2DBody groundBody = new Box2DBody(new Vector2f(0,-10), this);
 		Box2DShape groundShape = new Box2DShape();
 		groundShape.setAsBox(50,1);
-		groundBody.createShape(groundShape);
-		groundBody.setType(TType.STATIC);
+		groundBody.createShape(groundShape, false);
+//		groundBody.setType(TType.STATIC);
 		
-		groundBody.setMassFromShapes();
+//		groundBody.setMassFromShapes();
 	}
 }

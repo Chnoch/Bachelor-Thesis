@@ -170,7 +170,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		setMaterial(renderItem.getNode().getMaterial(), gl);
 
 		gl.glEnableClientState(GL_VERTEX_ARRAY);
-		gl.glFrontFace(GL_CCW);
+		gl.glFrontFace(GL_CW);
 		gl.glVertexPointer(3, GL_FIXED, 0, mVertexBuffer);
 		// gl.glColorPointer(4, GL_FIXED, 0, mColorBuffer);
 		gl.glEnableClientState(GL_NORMAL_ARRAY);
@@ -225,7 +225,7 @@ public class GLES11Renderer extends AbstractRenderer {
 			i++;
 		}
 		
-		gl.glEnable(GL10.GL_CW);
+		gl.glEnable(GL10.GL_CCW);
 	}
 
 	/**

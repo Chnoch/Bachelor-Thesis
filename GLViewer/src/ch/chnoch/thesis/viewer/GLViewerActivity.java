@@ -46,7 +46,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		setMaterial();
 
 		boolean openGlES20 = detectOpenGLES20();
-		if (openGlES20) {
+		/*if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");
 			// Tell the surface view we want to create an OpenGL ES
 			// 2.0-compatible
@@ -60,11 +60,13 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			// Material material = new Material();
 			// material.setShader(shader);
 			// shape.setMaterial(material);
-		} else {
+		} else {*/
 			Log.d(TAG, "Using OpenGL ES 1.1");
 			mRenderer = new GLES11Renderer();
-		}
+		
+//	}
 
+			
 		mViewer = new GLViewer(this, mRenderer);
 		// Set the OpenGL Context to version 2.0
 		// Has to be done after the Viewer is initialized

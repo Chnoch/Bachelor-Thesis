@@ -77,7 +77,7 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 
 	@Override
 	public void enablePhysicsEngine() {
-		Vector2f low = new Vector2f(-100,-5);
+		Vector2f low = new Vector2f(-100,-100);
 		Vector2f high = new Vector2f(100,100);
 		Vector2f gravity = new Vector2f(0,-10);
 		
@@ -91,11 +91,11 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 		
 	@Override
 	public void updateScene() {
-		float dt = 1f/60f;
-		int iterations = 5;
+		float dt = 1f/20f;
+		int iterations = 8;
 		// update the world
 		mWorld.step(dt, iterations);
-		Log.d("AbstractSceneManager", "Updated World, now going through scene");
+//		Log.d("AbstractSceneManager", "Updated World, now going through scene");
 		// reflect the updated values onto the Nodes
 		SceneManagerIterator it = this.iterator();
 		while (it.hasNext()) {
