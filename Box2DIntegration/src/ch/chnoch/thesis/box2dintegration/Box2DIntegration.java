@@ -44,7 +44,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 //		mRenderer = new GL2DRenderer();
 		mRenderer.setSceneManager(mSceneManager);
 		
-		mViewer = new GLViewer(this, mRenderer);
+		mViewer = new GLViewer(this, mRenderer, false);
 //		mViewer.setEGLConfigChooser(true);
 //		mRenderer.setViewer((GLViewer) mViewer);
 

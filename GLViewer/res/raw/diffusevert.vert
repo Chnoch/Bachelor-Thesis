@@ -7,6 +7,9 @@
 // shader as varying variables.
 
 varying vec3 normal, lightDir;
+uniform mat4 u_MVPMatrix;
+attribute vec4 a_position;
+attribute vec4 a_normal;
 
 void main()
 {	
@@ -19,5 +22,5 @@ void main()
 	// ftransform() is a built-in function that applies all
 	// transformations (i.e., modelview and 
 	// projection) to a vertex.
-	gl_Position = ftransform();
+	gl_Position = u_MVPMatrix * a_position;
 }

@@ -31,4 +31,16 @@ public class Ray {
 	public Vector3f getOrigin() {
 		return mOrigin;
 	}
+	
+	public String toString() {
+		return "Origin: " + mOrigin.toString() + " Direction: " + mDirection.toString();
+	}
+	
+	public boolean equals(Object ray) {
+		if (ray instanceof Ray) {
+			return this.mOrigin.equals(((Ray)ray).mOrigin) && this.mDirection.equals(((Ray) ray).mDirection);
+		} else {
+			return false;
+		}
+	}
 }

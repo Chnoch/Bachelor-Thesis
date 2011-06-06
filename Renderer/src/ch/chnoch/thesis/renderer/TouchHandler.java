@@ -87,11 +87,14 @@ public class TouchHandler implements OnTouchListener {
 
 					Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
 					Ray endRay = mViewer.unproject(x, y);
+					
+					Log.d("TouchHandler", "startRay: " + startRay.toString());
+					Log.d("TouchHandler", "endRay: " + endRay.toString());
 					RayShapeIntersection startIntersection = mTrackball
 							.intersect(startRay);
 					RayShapeIntersection endIntersection = mTrackball
 							.intersect(endRay);
-
+					
 					mTrackball.update(startIntersection.hitPoint,
 							endIntersection.hitPoint, TOUCH_SCALE_FACTOR);
 					mRotate = true;

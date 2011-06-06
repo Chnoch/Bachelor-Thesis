@@ -44,9 +44,9 @@ public class GL2DRenderer extends AbstractRenderer {
 	}
 
 	@Override
-	public Shader makeShader(String vertexShader, String fragmentShader)
+	public void createShader(Shader shader, String vertexShader, String fragmentShader)
 			throws Exception {
-		return null;
+		throw new GLException("OpenGL ES 1.1 does not support shaders");
 	}
 
 	@Override

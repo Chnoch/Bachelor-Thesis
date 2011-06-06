@@ -5,6 +5,8 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import android.util.Log;
+
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
 public class Trackball {
@@ -21,41 +23,44 @@ public class Trackball {
 
 		mCenter = mNode.getBoundingBox().getCenter();
 		mRadius = mNode.getBoundingBox().getRadius();
-		
-//		float width = mViewer.width();
-//		float height = mViewer.height();
-//		
-//		mCenter = new Vector3f(width/2, height/2, 0);
-//		mRadius = (float) Math.sqrt(height*height/4 + width*width/4);
+
+		// float width = mViewer.width();
+		// float height = mViewer.height();
+		//
+		// mCenter = new Vector3f(width/2, height/2, 0);
+		// mRadius = (float) Math.sqrt(height*height/4 + width*width/4);
 	}
-	
 
 	public Node getNode() {
 		return mNode;
 	}
 
 	public void update(Vector3f cur, Vector3f prev, float factor) {
-		Matrix4f t = mNode.getRotationMatrix();
-		
-		cur.sub(mCenter);
-		prev.sub(mCenter);
-		
-		Vector3f axisVector = new Vector3f();
-		axisVector.cross(cur, prev);
-		axisVector.normalize();
-		
-		float angle = prev.angle(cur) * factor;
-		
-		AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
-		Matrix4f rot = new Matrix4f();
-		rot.set(axisAngle);
-		rot.mul(t);
-		mNode.setRotationMatrix(rot);
-		
-		mCenter = mNode.getBoundingBox().getCenter();
-		mRadius = mNode.getBoundingBox().getRadius();
+		if (!cur.epsilonEquals(prev, 0.01f)) {
+			Matrix4f t = mNode.getRotationMatrix();
+
+			cur.sub(mCenter);
+			prev.sub(mCenter);
+
+			Vector3f axisVector = new Vector3f();
+			axisVector.cross(cur, prev);
+			axisVector.normalize();
+
+			float angle = prev.angle(cur) * factor;
+			Log.d("Trackball", "Axis: " + axisVector.toString());
+			Log.d("Trackball", "Angle: " + angle);
+			
+			AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
+			Matrix4f rot = new Matrix4f();
+			rot.set(axisAngle);
+			rot.mul(t);
+			mNode.setRotationMatrix(rot);
+
+			mCenter = mNode.getBoundingBox().getCenter();
+			mRadius = mNode.getBoundingBox().getRadius();
+		}
 	}
-	
+
 	public RayShapeIntersection intersect2(Ray ray) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
 		intersection.node = mNode;
@@ -64,27 +69,27 @@ public class Trackball {
 		Vector3f dir = new Vector3f(ray.getDirection());
 		dir.normalize();
 		float v = diff.dot(dir);
-		
-		float disc = mRadius * mRadius - (diff.dot(diff) - v*v);
-		
+
+		float disc = mRadius * mRadius - (diff.dot(diff) - v * v);
+
 		if (disc < 0) {
 			intersection.hit = false;
 		} else {
 			float d = (float) Math.sqrt(disc);
-			dir.scale(v-d);
+			dir.scale(v - d);
 			Vector3f point = new Vector3f();
 			point.add(ray.getOrigin(), dir);
 			intersection.hit = true;
 			intersection.hitPoint = point;
 		}
-		
+
 		if (!intersection.hit) {
 			intersection = projectOnTrackball(ray);
 		}
-		
+
 		return intersection;
 	}
-	
+
 	public RayShapeIntersection projectOnTrackball(Ray ray) {
 
 		Vector3f center = new Vector3f(mCenter);
@@ -92,21 +97,19 @@ public class Trackball {
 		Vector3f denom = new Vector3f(dir);
 		center.sub(ray.getOrigin());
 		float denominator = denom.dot(dir);
-		float t = dir.dot(center)/denominator;
-		
+		float t = dir.dot(center) / denominator;
+
 		Vector3f closestPoint = new Vector3f(ray.getDirection());
 		closestPoint.scale(t);
 		closestPoint.add(ray.getOrigin());
-			
-		
+
 		Vector3f newDirection = new Vector3f(mCenter);
 		newDirection.sub(closestPoint);
 		newDirection.normalize();
 		Ray newRay = new Ray(closestPoint, newDirection);
-		
+
 		return intersect(newRay);
 	}
-	
 
 	/**
 	 * Intersects this trackball (sphere) with the given ray and returns either
@@ -117,14 +120,14 @@ public class Trackball {
 	 * @return the RayShapeIntersection object
 	 */
 	public RayShapeIntersection intersect(Ray ray) {
-		
+
 		RayShapeIntersection intersection = intersectHelper(ray);
 		if (!intersection.hit) {
 			intersection = projectOnTrackball(ray);
 		}
 		return intersection;
 	}
-	
+
 	private RayShapeIntersection intersectHelper(Ray ray) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
 		intersection.node = mNode;

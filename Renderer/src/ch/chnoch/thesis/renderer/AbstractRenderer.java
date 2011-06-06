@@ -69,7 +69,7 @@ public abstract class AbstractRenderer implements RenderContext {
 	
 	public abstract void onSurfaceCreated(GL10 gl, EGLConfig config);
 	
-	public abstract Shader makeShader(String vertexShader, String fragmentShader)
+	public abstract void createShader(Shader shader, String vertexShader, String fragmentShader)
 	throws Exception;
 	
 	public abstract Texture makeTexture();

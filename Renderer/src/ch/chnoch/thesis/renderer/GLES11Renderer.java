@@ -51,10 +51,9 @@ public class GLES11Renderer extends AbstractRenderer {
 	 */
 
 	@Override
-	public Shader makeShader(String vertexShader, String fragmentShader)
+	public void createShader(Shader shader, String vertexShader, String fragmentShader)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		throw new GLException("OpenGL ES 1.1 does not support shaders");
 	}
 
 	public Texture makeTexture() {
@@ -80,7 +79,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		int count = 0;
 		while (shapeIterator.hasNext()) {
-			Log.d("Renderer", "count: " + count);
+//			Log.d("Renderer", "count: " + count);
 			count++;
 			draw(shapeIterator.next(), gl);
 		}
@@ -117,8 +116,8 @@ public class GLES11Renderer extends AbstractRenderer {
 		mFrustum.setRight(ratio);
 //		((GL11) gl).glGetFloatv(GL11.GL_PROJECTION_MATRIX, projectionMat, 0);
 //		Log.d("Projection Matrix", new Matrix4f(projectionMat).toString());
-		Log.d("Projection Matrix", "Frustum: "
-				+ mFrustum.getProjectionMatrix().toString());
+//		Log.d("Projection Matrix", "Frustum: "
+//				+ mFrustum.getProjectionMatrix().toString());
 		this.width = width;
 		this.height = height;
 		
@@ -177,7 +176,7 @@ public class GLES11Renderer extends AbstractRenderer {
 	 */
 	private void draw(RenderItem renderItem, GL10 gl) {
 
-		Log.d("Renderer", "Called draw method");
+//		Log.d("Renderer", "Called draw method");
 		Shape shape = renderItem.getNode().getShape();
 		VertexBuffers buffers = shape.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
@@ -190,7 +189,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		t.set(mCamera.getCameraMatrix());
 		t.mul(renderItem.getT());
 
-		Log.d("ModelView", t.toString());
+//		Log.d("ModelView", t.toString());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 
 		setMaterial(renderItem.getNode().getMaterial(), gl);

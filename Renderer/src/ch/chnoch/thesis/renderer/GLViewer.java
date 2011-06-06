@@ -19,18 +19,23 @@ public class GLViewer extends GLSurfaceView {
 	public GLViewer(Context context) {
 		super(context);
 		// Turn on error-checking and logging
-//	    setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR | GLSurfaceView.DEBUG_LOG_GL_CALLS);
+		// setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR |
+		// GLSurfaceView.DEBUG_LOG_GL_CALLS);
 	}
 
-	public GLViewer(Context context, RenderContext renderer) {
+	public GLViewer(Context context, RenderContext renderer, boolean openGLES20) {
 		super(context);
 		mRenderer = renderer;
 		mRenderer.setViewer(this);
-		
+
 		setEGLConfigChooser(true);
 		// Turn on error-checking and logging
-//	    setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR | GLSurfaceView.DEBUG_LOG_GL_CALLS);
-
+		// setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR |
+		// GLSurfaceView.DEBUG_LOG_GL_CALLS);
+		if (openGLES20){
+			setEGLContextClientVersion(2);
+		}
+			
 		setRenderer(mRenderer);
 		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
@@ -39,19 +44,15 @@ public class GLViewer extends GLSurfaceView {
 		mWidth = width;
 		mHeight = height;
 	}
-	
+
 	public int width() {
 		return mWidth;
 	}
-	
+
 	public int height() {
 		return mHeight;
 	}
 
-	public Shader makeShader(String vertexShader, String fragmentShader) throws Exception {
-		return mRenderer.makeShader(vertexShader, fragmentShader);
-	}
-	
 	public Ray unproject(float x, float y) {
 
 		Matrix4f staticMatrix = createMatrices();
@@ -63,30 +64,30 @@ public class GLViewer extends GLSurfaceView {
 		try {
 			inverse.invert();
 
-			Util.transform(inverse, origin);
-			Util.transform(inverse, direction);
-
-			direction.sub(origin);
-			direction.normalize();
-
-			return new Ray(origin, direction);
-
 		} catch (RuntimeException exc) {
 			// Matrix not invertable, therefore no action.
 			Log.e("UNPROJECT", "Matrix can't be inverted");
+			return null;
 		}
 
-		return null;
+		Util.transform(inverse, origin);
+		Util.transform(inverse, direction);
+
+		direction.sub(origin);
+		direction.normalize();
+
+		return new Ray(origin, direction);
 	}
-	
-	
+
 	private Matrix4f createMatrices() {
 
 		Matrix4f staticMatrix = new Matrix4f(mRenderer.getViewportMatrix());
-		staticMatrix.mul(mRenderer.getSceneManager().getFrustum().getProjectionMatrix());
-		staticMatrix.mul(mRenderer.getSceneManager().getCamera().getCameraMatrix());
+		staticMatrix.mul(mRenderer.getSceneManager().getFrustum()
+				.getProjectionMatrix());
+		staticMatrix.mul(mRenderer.getSceneManager().getCamera()
+				.getCameraMatrix());
 
 		return staticMatrix;
 	}
-	
+
 }

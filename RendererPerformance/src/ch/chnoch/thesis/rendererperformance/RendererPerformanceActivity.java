@@ -41,7 +41,7 @@ public class RendererPerformanceActivity extends Activity {
 
 		mRenderer = new GLES11Renderer();
 		mRenderer.setSceneManager(mSceneManager);
-		mViewer = new GLViewer(this, mRenderer);
+		mViewer = new GLViewer(this, mRenderer, false);
 
 		mRotation = Util.getIdentityMatrix();
 		mAxisAngle = new AxisAngle4f(new Vector3f(1,1,1), 0.01f);

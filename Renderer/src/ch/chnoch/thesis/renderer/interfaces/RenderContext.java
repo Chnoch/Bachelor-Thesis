@@ -24,7 +24,7 @@ public interface RenderContext extends GLSurfaceView.Renderer {
 	 * @return the shader
 	 * @throws Exception 
 	 */
-	public Shader makeShader(String vertexShader, String fragmentShader) throws Exception;
+	public void createShader(Shader shader, String vertexShader, String fragmentShader) throws Exception;
 	
 	/**
 	 * Make a texture.

@@ -330,6 +330,7 @@ public class BoundingBox {
 	 * 
 	 * @param trans
 	 */
+	@Deprecated
 	public void transform(Matrix4f trans) {
 		mLow.sub(getCenter());
 		mHigh.sub(getCenter());

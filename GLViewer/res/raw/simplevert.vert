@@ -1,4 +1,7 @@
+uniform mat4 u_MVPMatrix;
+attribute vec4 a_position;
+
 void main()
 {	
-	gl_Position = ftransform();
+	gl_Position = u_MVPMatrix * a_position;
 }
