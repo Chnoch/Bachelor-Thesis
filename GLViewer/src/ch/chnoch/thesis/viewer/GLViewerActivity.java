@@ -43,10 +43,11 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mSceneManager = new GraphSceneManager();
 		// Shape shape = loadTeapot();
 
-		mSceneManager.getCamera().getCenterOfProjection().set(0, 10, 20);
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 10, 20));
 
+		
 		createShapes();
-		createLights();
+//		createLights();
 		setMaterial();
 
 		boolean openGlES20 = detectOpenGLES20();
@@ -100,8 +101,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.lightvert);
-		String fragmentShader = readRawText(R.raw.lightfrag);
+		String vertexShader = readRawText(R.raw.simplevert);
+		String fragmentShader = readRawText(R.raw.simplefrag);
 		Shader shader = null;
 		try {
 			mRenderer.createShader(shader, vertexShader, fragmentShader);

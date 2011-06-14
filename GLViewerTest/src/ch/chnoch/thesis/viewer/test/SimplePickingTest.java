@@ -91,11 +91,11 @@ public class SimplePickingTest extends AndroidTestCase {
 		assertEquals(shape.getBoundingBox().getLow(), minusOne);
 	}*/
 	
-	/*
+	
 	public void testPicking() {
-		RayBoxIntersection inter = Util.unproject(160, 240, mRenderer);
-		assertTrue(inter.hit);
-		assertEquals(inter.node, root);
+		Ray inter = mViewer.unproject(160, 240);
+//		assertTrue(inter.hit);
+//		assertEquals(inter.node, root);
 //		assertNotNull(inter.hitPoint);
 		
 //		inter = Util.unproject(81, 240, mRenderer);
@@ -107,18 +107,18 @@ public class SimplePickingTest extends AndroidTestCase {
 //		assertEquals(inter.node, root);
 ////		assertNotNull(inter.hitPoint);
 		
-		/*inter = Util.unproject(-1, -1, mRenderer);
-		assertTrue(inter.hit);
-		assertEquals(inter.node, root);
-		assertNotNull(inter.hitPoint);
-		
-		assertFalse(Util.unproject(-1, 0, mRenderer).hit);
-		assertFalse(Util.unproject(0, -1, mRenderer).hit);
-		assertFalse(Util.unproject(79, 240, mRenderer).hit);
-//		assertFalse(Util.unproject(-2, -72, mRenderer).hit);
+		inter = mViewer.unproject(-1, -1);
+//		assertTrue(inter.hit);
+//		assertEquals(inter.node, root);
+//		assertNotNull(inter.hitPoint);
+//		
+//		assertFalse(mViewer.unproject(-1, 0).hit);
+//		assertFalse(mViewer.unproject(0, -1).hit);
+//		assertFalse(mViewer.unproject(79, 240).hit);
+////		assertFalse(Util.unproject(-2, -72, mRenderer).hit);
 //		assertFalse(Util.unproject(10, 0, mRenderer).hit);
 	}
-	*/
+	
 	public void BoundingBox() {
 		Ray ray = new Ray(new Vector3f(0.003125012f, -0.0041407943f, 16f), new Vector3f(0,0,-2));
 //		BoundingBox box = new BoundingBox(new Vector3f(-0.5f,-0.5f,-0.5f), new Vector3f(0.5f,0.5f,0.5f));

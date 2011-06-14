@@ -51,8 +51,8 @@ public class GLES11Renderer extends AbstractRenderer {
 	 */
 
 	@Override
-	public void createShader(Shader shader, String vertexShader, String fragmentShader)
-			throws Exception {
+	public void createShader(Shader shader, String vertexShader,
+			String fragmentShader) throws Exception {
 		throw new GLException("OpenGL ES 1.1 does not support shaders");
 	}
 
@@ -75,11 +75,11 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * Usually, the first thing one might want to do is to clear the screen.
 		 * The most efficient way of doing this is to use glClear().
 		 */
-		gl.glViewport(0, 0, width, height);
+//		gl.glViewport(0, 0, width, height);
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		int count = 0;
 		while (shapeIterator.hasNext()) {
-//			Log.d("Renderer", "count: " + count);
+			// Log.d("Renderer", "count: " + count);
 			count++;
 			draw(shapeIterator.next(), gl);
 		}
@@ -99,7 +99,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		Log.d(TAG, "onsurfacechanged method called");
 		Log.d(TAG, "width: " + width + " height: " + height);
 		mViewer.surfaceHasChanged(width, height);
-		 setViewportMatrix(width, height);
+		setViewportMatrix(width, height);
 
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
@@ -107,23 +107,23 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * is resized.
 		 */
 		float ratio = (float) width / height;
-		gl.glMatrixMode(GL_PROJECTION);
-//		gl.glLoadIdentity();
-//		gl.glFrustumf(-ratio, ratio, -1, 1, 2, 50);
-//		float[] projectionMat = new float[16];
-		mFrustum.setAspectRatio(ratio);
-		mFrustum.setLeft(-ratio);
-		mFrustum.setRight(ratio);
-//		((GL11) gl).glGetFloatv(GL11.GL_PROJECTION_MATRIX, projectionMat, 0);
-//		Log.d("Projection Matrix", new Matrix4f(projectionMat).toString());
-//		Log.d("Projection Matrix", "Frustum: "
-//				+ mFrustum.getProjectionMatrix().toString());
+		// gl.glLoadIdentity();
+		// gl.glFrustumf(-ratio, ratio, -1, 1, 2, 50);
+		// float[] projectionMat = new float[16];
+//		mFrustum.setAspectRatio(ratio);
+//		mFrustum.setLeft(-ratio);
+//		mFrustum.setRight(ratio);
+		// ((GL11) gl).glGetFloatv(GL11.GL_PROJECTION_MATRIX, projectionMat, 0);
+		// Log.d("Projection Matrix", new Matrix4f(projectionMat).toString());
+		// Log.d("Projection Matrix", "Frustum: "
+		// + mFrustum.getProjectionMatrix().toString());
 		this.width = width;
 		this.height = height;
-		
+
+		gl.glMatrixMode(GL_PROJECTION);
 		 gl.glLoadMatrixf(
 		 GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
-		// gl.glViewport(0, 0, width, height);
+		gl.glViewport(0, 0, width, height);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -176,7 +176,7 @@ public class GLES11Renderer extends AbstractRenderer {
 	 */
 	private void draw(RenderItem renderItem, GL10 gl) {
 
-//		Log.d("Renderer", "Called draw method");
+		// Log.d("Renderer", "Called draw method");
 		Shape shape = renderItem.getNode().getShape();
 		VertexBuffers buffers = shape.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
@@ -189,7 +189,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		t.set(mCamera.getCameraMatrix());
 		t.mul(renderItem.getT());
 
-//		Log.d("ModelView", t.toString());
+		// Log.d("ModelView", t.toString());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 
 		setMaterial(renderItem.getNode().getMaterial(), gl);

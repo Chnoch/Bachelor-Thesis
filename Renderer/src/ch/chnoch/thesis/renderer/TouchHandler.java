@@ -29,7 +29,7 @@ public class TouchHandler implements OnTouchListener {
 	private GLViewer mViewer;
 
 	private final float TOUCH_SCALE_FACTOR = 1;
-	private final float TRANSLATION_SCALE_FACTOR = 0.05f;
+	private final float TRANSLATION_SCALE_FACTOR = 1;
 
 	public TouchHandler(RenderContext renderer, GLViewer viewer) {
 		mRenderer = renderer;
@@ -112,6 +112,7 @@ public class TouchHandler implements OnTouchListener {
 			mEventStart = e.getEventTime();
 
 			Ray ray = mViewer.unproject(x, y);
+			Log.d("TouchHandler", "Ray: " + ray.toString());
 			RayShapeIntersection intersect = mRenderer.getSceneManager()
 					.intersectRayNode(ray);
 			if (intersect.hit) {

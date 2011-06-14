@@ -280,6 +280,7 @@ public class GLES20Renderer extends AbstractRenderer {
 				t.mul(renderItem.getT());
 				glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
 						GLUtil.matrix4fToFloat16(t), 0);
+				GLUtil.checkGlError("glUniformMatrix4fv muMVPMatrixHandle", TAG);
 			}
 			
 			// Ignore the passed-in GL10 interface, and use the GLES20
