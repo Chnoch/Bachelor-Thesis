@@ -3,6 +3,7 @@ package ch.chnoch.thesis.renderer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -18,12 +19,17 @@ public class GLES20Renderer extends AbstractRenderer {
 
 	private Shader mShader;
 	private String mVertexShaderFileName, mFragmentShaderFileName;
+	
+	private GLLight mLight;
 
 	private int mProgram;
 	private int mTextureID;
 	private int muMVPMatrixHandle;
 	private int maVertexHandle;
 	private int maTextureHandle;
+	private int maNormalHandle;
+	private int maLightHandle;
+	private int maMaterialHandle;
 
 	private ShortBuffer mIndexBuffer;
 	private IntBuffer mVertexBuffer;
@@ -220,28 +226,22 @@ public class GLES20Renderer extends AbstractRenderer {
 				return;
 			}
 
-			Log.d(TAG,"Vertex Handler");
-			maVertexHandle = glGetAttribLocation(mProgram, "a_position");
-			GLUtil.checkGlError("glGetAttribLocation aPosition", TAG);
-			if (maVertexHandle == -1) {
-				throw new RuntimeException(
-						"Could not get attrib location for aPosition");
-			}
+			Log.d(TAG, "Vertex Handle");
+			maVertexHandle = glGetAttribLocation(mProgram, "aPosition");
 
-//			Log.d(TAG,"Texture Handler");
-//			maTextureHandle = glGetAttribLocation(mProgram, "aTextureCoord");
-//			GLUtil.checkGlError("glGetAttribLocation aTextureCoord", TAG);
-//			if (maTextureHandle == -1) {
-//				throw new RuntimeException(
-//						"Could not get attrib location for aTextureCoord");
-//			}
+			Log.d(TAG, "Texture Handle");
+			maTextureHandle = glGetAttribLocation(mProgram, "aTextureCoord");
 
-			Log.d(TAG,"MVP Handler");
-			muMVPMatrixHandle = glGetUniformLocation(mProgram, "u_MVPMatrix");
-			GLUtil.checkGlError("glGetUniformLocation uMVPMatrix", TAG);
-			if (muMVPMatrixHandle == -1) {
-				throw new RuntimeException(
-						"Could not get attrib location for uMVPMatrix");
+			Log.d(TAG, "Normal Handle");
+			maNormalHandle = glGetAttribLocation(mProgram, "aNormal");
+			
+			Log.d(TAG, "MVP Handle");
+			muMVPMatrixHandle = glGetUniformLocation(mProgram, "uMVPMatrix");
+			
+			Iterator<Light> lights =mSceneManager.lightIterator(); 
+			if (lights.hasNext()) {
+				mLight = new GLLight(lights.next());
+				mLight.getHandles(mProgram);
 			}
 
 		} catch (Exception exc) {
@@ -258,27 +258,30 @@ public class GLES20Renderer extends AbstractRenderer {
 	private void draw(RenderItem renderItem) {
 		// Set the material
 		// setMaterial(renderItem.getShape().getMaterial());
-
-		// Set the modelview matrix by multiplying the camera matrix and the
-		// transformation matrix of the object
-		t.set(mSceneManager.getCamera().getCameraMatrix());
-		t.mul(renderItem.getT());
-		glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
-				GLUtil.matrix4fToFloat16(t), 0);
-
 		// Read geometry from the vertex element into array lists.
 		// These lists will be used to create the buffers.
 		VertexBuffers buffers = renderItem.getNode().getShape()
-				.getVertexBuffers();
+		.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
 		mColorBuffer = buffers.getColorBuffer();
 		mIndexBuffer = buffers.getIndexBuffer();
 		mTexCoordsBuffer = buffers.getTexCoordsBuffer();
 		mNormalBuffer = buffers.getNormalBuffer();
 
+
+
 		// cleanMaterial(renderItem.getShape().getMaterial());
 
 		try {
+			// Set the modelview matrix by multiplying the camera matrix and the
+			// transformation matrix of the object
+			if (muMVPMatrixHandle != -1) {
+				t.set(mSceneManager.getCamera().getCameraMatrix());
+				t.mul(renderItem.getT());
+				glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
+						GLUtil.matrix4fToFloat16(t), 0);
+			}
+			
 			// Ignore the passed-in GL10 interface, and use the GLES20
 			// class's static methods instead.
 			glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
@@ -287,22 +290,50 @@ public class GLES20Renderer extends AbstractRenderer {
 			// glActiveTexture(GL_TEXTURE0);
 			// glBindTexture(GL_TEXTURE_2D, mTextureID);
 
-			Log.d(TAG, "Vertex Pointers");
-			glVertexAttribPointer(maVertexHandle, 3, GL_FLOAT, false,
-					TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mVertexBuffer);
-			GLUtil.checkGlError("glVertexAttribPointer maPosition", TAG);
-			glEnableVertexAttribArray(maVertexHandle);
-//			Log.d(TAG, "Texture Pointers");
-//			glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT, false,
-//					TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mColorBuffer);
-//			GLUtil.checkGlError("glVertexAttribPointer maTextureHandle", TAG);
-//			glEnableVertexAttribArray(maTextureHandle);
-//			GLUtil.checkGlError("glEnableVertexAttribArray maTextureHandle",
-//					TAG);
+			if (maVertexHandle != -1) {
+				Log.d(TAG, "Vertex Pointers");
+				glVertexAttribPointer(maVertexHandle, 3, GL_UNSIGNED_SHORT,
+						false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES,
+						mVertexBuffer);
+				GLUtil.checkGlError("glVertexAttribPointer maPosition", TAG);
+				glEnableVertexAttribArray(maVertexHandle);
+			}
 
+			if (maTextureHandle != -1) {
+				Log.d(TAG, "Texture Pointers");
+				glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT, false,
+						TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mColorBuffer);
+				GLUtil.checkGlError("glVertexAttribPointer maTextureHandle",
+						TAG);
+				glEnableVertexAttribArray(maTextureHandle);
+				GLUtil.checkGlError(
+						"glEnableVertexAttribArray maTextureHandle", TAG);
+			}
+
+			if (maNormalHandle != -1) {
+				Log.d(TAG, "Normal Pointers");
+				glVertexAttribPointer(maNormalHandle, 3, GL_UNSIGNED_SHORT,
+						true, TRIANGLE_VERTICES_DATA_STRIDE_BYTES,
+						mNormalBuffer);
+				GLUtil.checkGlError("glVertexAttribPointer maNormalHandle", TAG);
+				glEnableVertexAttribArray(maNormalHandle);
+				GLUtil.checkGlError("glEnableVertexAttribArray maNormalHandle",
+						TAG);
+			}
+			
+			//Light
+			if (mLight != null) {
+				mLight.draw();
+			}
+			
+			//Material
+			GLMaterial mat = new GLMaterial(renderItem.getNode().getMaterial());
+			mat.getHandles(mProgram);
+			mat.draw();
+			
 			Log.d(TAG, "Draw");
-			glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(), GL_UNSIGNED_SHORT, mIndexBuffer);
-//			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
+					GL_UNSIGNED_SHORT, mIndexBuffer);
 			GLUtil.checkGlError("glDrawArrays", TAG);
 		} catch (Exception exc) {
 			Log.e(TAG, "Exception drawing item", exc);

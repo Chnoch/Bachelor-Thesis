@@ -156,13 +156,13 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	
 	private void createLights() {
 
-		Light light = new Light();
-		light.type = Light.Type.DIRECTIONAL;
-		light.position.set(5, 5, 5);
-		light.direction.set(1, 1, 1);
-		light.specular.set(1, 1, 1);
-		light.ambient.set(0.4f, 0.4f, 0.4f);
-		light.diffuse.set(0.3f, 0.3f, 0.3f);
+		Light light = new Light(mSceneManager.getCamera());
+		light.mType = Light.Type.DIRECTIONAL;
+		light.mPosition.set(5, 5, 5);
+		light.mDirection.set(1, 1, 1);
+		light.mSpecular.set(1, 1, 1);
+		light.mAmbient.set(0.4f, 0.4f, 0.4f);
+		light.mDiffuse.set(0.3f, 0.3f, 0.3f);
 
 		mSceneManager.addLight(light);
 	}

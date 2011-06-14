@@ -5,7 +5,7 @@
 // The shader computes the unit light direction and unit
 // surface normal, which are passed to the fragment
 // shader as varying variables.
-
+	
 varying vec3 normal, lightDir;
 uniform mat4 u_MVPMatrix;
 attribute vec4 a_position;

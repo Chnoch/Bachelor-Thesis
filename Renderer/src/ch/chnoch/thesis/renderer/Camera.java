@@ -18,8 +18,8 @@ import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
  */
 public class Camera {
 
-	private Matrix4f cameraMatrix;
-	private Vector3f centerOfProjection, lookAtPoint, upVector;
+	private Matrix4f mCameraMatrix;
+	private Vector3f mCenterOfProjection, mLookAtPoint, mUpVector;
 
 	/**
 	 * Construct a camera with a default camera matrix. The camera matrix
@@ -28,10 +28,10 @@ public class Camera {
 	 * of world space, i.e., towards the negative z-axis.
 	 */
 	public Camera() {
-		centerOfProjection = new Vector3f(0, 0, 15);
-		lookAtPoint = new Vector3f(0, 0, 0);
-		upVector = new Vector3f(0, 1, 0);
-		cameraMatrix = new Matrix4f();
+		mCenterOfProjection = new Vector3f(0, 0, 15);
+		mLookAtPoint = new Vector3f(0, 0, 0);
+		mUpVector = new Vector3f(0, 1, 0);
+		mCameraMatrix = new Matrix4f();
 		this.update();
 	}
 
@@ -42,51 +42,62 @@ public class Camera {
 	 * @return the 4x4 world-to-camera transform matrix
 	 */
 	public Matrix4f getCameraMatrix() {
-		return cameraMatrix;
+		return mCameraMatrix;
 	}
 
 	public Vector3f getCenterOfProjection() {
-		return centerOfProjection;
+		return mCenterOfProjection;
 	}
 
 	public void setCenterOfProjection(Vector3f centerOfProjection) {
-		this.centerOfProjection = centerOfProjection;
+		this.mCenterOfProjection = centerOfProjection;
 		this.update();
 	}
 
 	public Vector3f getLookAtPoint() {
-		return lookAtPoint;
+		return mLookAtPoint;
 	}
 
 	public void setLookAtPoint(Vector3f lookAtPoint) {
-		this.lookAtPoint = lookAtPoint;
+		this.mLookAtPoint = lookAtPoint;
 		this.update();
 	}
 
 	public Vector3f getUpVector() {
-		return upVector;
+		return mUpVector;
 	}
 
 	public void setUpVector(Vector3f upVector) {
-		this.upVector = upVector;
+		this.mUpVector = upVector;
 		this.update();
 	}
 
 	public void update() {
 		updateCamera();
 	}
+	
+	public Vector3f createHalfwayVector(Light light) {
+		Vector3f halfway;
+		Vector3f eyeVec = new Vector3f(mCenterOfProjection);
+		eyeVec.sub(mLookAtPoint);
+		Vector3f lightSource = light.mDirection;
+		halfway = new Vector3f(eyeVec);
+		halfway.add(lightSource);
+		halfway.normalize();
+		return halfway;
+	}
 
 	private void updateCamera() {
 		Vector3f x = new Vector3f();
 		Vector3f y = new Vector3f();
 		Vector3f z = new Vector3f();
-		Vector3f temp = new Vector3f(this.centerOfProjection);
+		Vector3f temp = new Vector3f(this.mCenterOfProjection);
 
-		temp.sub(this.lookAtPoint);
+		temp.sub(this.mLookAtPoint);
 		temp.normalize();
 		z.set(temp);
 
-		temp.set(this.upVector);
+		temp.set(this.mUpVector);
 		temp.cross(temp, z);
 		temp.normalize();
 		x.set(temp);
@@ -97,10 +108,10 @@ public class Camera {
 		newMatrix.setColumn(0, x.getX(), x.getY(), x.getZ(), 0);
 		newMatrix.setColumn(1, y.getX(), y.getY(), y.getZ(), 0);
 		newMatrix.setColumn(2, z.getX(), z.getY(), z.getZ(), 0);
-		newMatrix.setColumn(3, centerOfProjection.getX(),
-				centerOfProjection.getY(), centerOfProjection.getZ(), 1);
+		newMatrix.setColumn(3, mCenterOfProjection.getX(),
+				mCenterOfProjection.getY(), mCenterOfProjection.getZ(), 1);
 		newMatrix.invert();
-		this.cameraMatrix.set(newMatrix);
+		this.mCameraMatrix.set(newMatrix);
 	}
 
 	private void updateCamera2() {
@@ -108,9 +119,9 @@ public class Camera {
 		float upx, upy, upz;
 		float sidex, sidey, sidez;
 
-		forwardx = centerOfProjection.x - lookAtPoint.x;
-		forwardy = centerOfProjection.y - lookAtPoint.y;
-		forwardz = centerOfProjection.z - lookAtPoint.z;
+		forwardx = mCenterOfProjection.x - mLookAtPoint.x;
+		forwardy = mCenterOfProjection.y - mLookAtPoint.y;
+		forwardz = mCenterOfProjection.z - mLookAtPoint.z;
 
 		invMag = (float) (1.0 / Math.sqrt(forwardx * forwardx + forwardy * forwardy
 				+ forwardz * forwardz));
@@ -118,11 +129,11 @@ public class Camera {
 		forwardy = forwardy * invMag;
 		forwardz = forwardz * invMag;
 
-		invMag = (float) (1.0 / Math.sqrt(upVector.x * upVector.x + upVector.y
-				* upVector.y + upVector.z * upVector.z));
-		upx = upVector.x * invMag;
-		upy = upVector.y * invMag;
-		upz = upVector.z * invMag;
+		invMag = (float) (1.0 / Math.sqrt(mUpVector.x * mUpVector.x + mUpVector.y
+				* mUpVector.y + mUpVector.z * mUpVector.z));
+		upx = mUpVector.x * invMag;
+		upy = mUpVector.y * invMag;
+		upz = mUpVector.z * invMag;
 
 		// side = up cross forward
 		sidex = upy * forwardz - forwardy * upz;
@@ -153,13 +164,13 @@ public class Camera {
 		mat[9] = forwardy;
 		mat[10] = forwardz;
 
-		mat[3] = -centerOfProjection.x * mat[0] + -centerOfProjection.y * mat[1] + -centerOfProjection.z * mat[2];
-		mat[7] = -centerOfProjection.x * mat[4] + -centerOfProjection.y * mat[5] + -centerOfProjection.z * mat[6];
-		mat[11] = -centerOfProjection.x * mat[8] + -centerOfProjection.y * mat[9] + -centerOfProjection.z * mat[10];
+		mat[3] = -mCenterOfProjection.x * mat[0] + -mCenterOfProjection.y * mat[1] + -mCenterOfProjection.z * mat[2];
+		mat[7] = -mCenterOfProjection.x * mat[4] + -mCenterOfProjection.y * mat[5] + -mCenterOfProjection.z * mat[6];
+		mat[11] = -mCenterOfProjection.x * mat[8] + -mCenterOfProjection.y * mat[9] + -mCenterOfProjection.z * mat[10];
 
 		mat[12] = mat[13] = mat[14] = 0;
 		mat[15] = 1;
 		
-		cameraMatrix.set(mat);
+		mCameraMatrix.set(mat);
 	}
 }

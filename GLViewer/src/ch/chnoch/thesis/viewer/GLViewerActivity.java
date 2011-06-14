@@ -32,7 +32,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 	private Node mRoot, mSmallGroup, mShapeNodeBig, mShapeNodeSmallOne,
 			mShapeNodeSmallTwo;
-	
+
 	private Shape mShapeSmall, mShapeBig;
 
 	/** Called when the activity is first created. */
@@ -41,10 +41,10 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		mSceneManager = new GraphSceneManager();
-		// Shape shape = loadTeapot();§
+		// Shape shape = loadTeapot();
 
 		mSceneManager.getCamera().getCenterOfProjection().set(0, 10, 20);
-		
+
 		createShapes();
 		createLights();
 		setMaterial();
@@ -57,15 +57,15 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			// context, and set an OpenGL ES 2.0-compatible renderer.
 			mRenderer = new GLES20Renderer();
 			Shader shader = createShaders();
-			 Material material = new Material();
-			 material.setShader(shader);
-			 mShapeBig.setMaterial(material);
-			 mShapeSmall.setMaterial(material);
+			Material material = new Material();
+			material.setShader(shader);
+			mShapeBig.setMaterial(material);
+			mShapeSmall.setMaterial(material);
 		} else {
 			Log.d(TAG, "Using OpenGL ES 1.1");
 			mRenderer = new GLES11Renderer();
-		
-	}
+
+		}
 		mViewer = new GLViewer(this, mRenderer, openGlES20);
 		mRenderer.setSceneManager(mSceneManager);
 
@@ -92,17 +92,24 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		super.onResume();
 		mViewer.onResume();
 	}
+	
+	@Override
+	public void onBackPressed() {
+		Log.d(TAG, "OnBackPressed");
+		this.finish();
+	}
 
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.diffusevert);
-		String fragmentShader = readRawText(R.raw.diffusefrag);
-		Shader shader=null;
+		String vertexShader = readRawText(R.raw.lightvert);
+		String fragmentShader = readRawText(R.raw.lightfrag);
+		Shader shader = null;
 		try {
-			 mRenderer.createShader(shader, vertexShader, fragmentShader);
-			 return shader;
-//			if (shader.getProgram() == 0) {
-//				throw new RuntimeException();
-//			}
+			mRenderer.createShader(shader, vertexShader, fragmentShader);
+			return shader;
+			// if (shader.getProgram() == 0) {
+			// throw new RuntimeException();
+			// }
+			
 		} catch (GLException exc) {
 			Log.e(TAG, exc.getError());
 		} catch (Exception e) {
@@ -111,6 +118,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		return null;
 	}
 
+	
 	/*
 	 * Private Methods
 	 */
@@ -122,7 +130,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		// Shape groundShape = Util.loadGround();
 
 		Vector3f transY = new Vector3f(0, 5, 0);
-		
+
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
 		Vector3f transRight = new Vector3f(2, 0, 0);
 
@@ -156,13 +164,13 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 	private void createLights() {
 
-		Light light = new Light();
-		light.type = Light.Type.DIRECTIONAL;
-		light.position.set(5, 5, 5);
-		light.direction.set(1, 1, 1);
-		light.specular.set(1, 1, 1);
-		light.ambient.set(0.4f, 0.4f, 0.4f);
-		light.diffuse.set(0.3f, 0.3f, 0.3f);
+		Light light = new Light(mSceneManager.getCamera());
+		light.mType = Light.Type.DIRECTIONAL;
+		light.mPosition.set(5, 5, 5);
+		light.mDirection.set(1, 1, 1);
+		light.mSpecular.set(1, 1, 1);
+		light.mAmbient.set(0.4f, 0.4f, 0.4f);
+		light.mDiffuse.set(0.3f, 0.3f, 0.3f);
 
 		mSceneManager.addLight(light);
 	}
@@ -236,7 +244,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			}
 		}
 	}
-	
 
 	public void onClick(View v) {
 		Log.d("Box2dIntegration", "onClick");
