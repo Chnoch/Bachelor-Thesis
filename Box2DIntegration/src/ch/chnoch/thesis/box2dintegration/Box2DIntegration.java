@@ -3,10 +3,6 @@ package ch.chnoch.thesis.box2dintegration;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import org.jbox2d.collision.*;
-import org.jbox2d.common.*;
-import org.jbox2d.dynamics.*;
-
 import ch.chnoch.thesis.renderer.*;
 import ch.chnoch.thesis.renderer.Shape;
 import ch.chnoch.thesis.renderer.box2d.Box2DBody.TType;
@@ -122,6 +118,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		
 		mSceneManager.enablePhysicsEngine();
 		mViewer.setOnClickListener(this);
+		
 		
 		mNode.getPhysicsProperties().setType(TType.STATIC);
 		/*

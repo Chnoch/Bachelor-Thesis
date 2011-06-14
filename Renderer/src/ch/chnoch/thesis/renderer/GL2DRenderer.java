@@ -8,6 +8,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Matrix4f;
 
+import android.opengl.GLException;
+
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
@@ -46,7 +48,7 @@ public class GL2DRenderer extends AbstractRenderer {
 	@Override
 	public void createShader(Shader shader, String vertexShader, String fragmentShader)
 			throws Exception {
-		throw new GLException("OpenGL ES 1.1 does not support shaders");
+		throw new GLException(0, "OpenGL ES 1.1 does not support shaders");
 	}
 
 	@Override
