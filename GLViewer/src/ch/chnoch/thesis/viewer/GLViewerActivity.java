@@ -47,9 +47,10 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		
 		createShapes();
-//		createLights();
+		createLights();
 		setMaterial();
 
+		
 		boolean openGlES20 = detectOpenGLES20();
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");

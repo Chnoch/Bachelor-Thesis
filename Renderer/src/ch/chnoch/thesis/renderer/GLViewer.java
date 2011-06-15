@@ -83,7 +83,7 @@ public class GLViewer extends GLSurfaceView {
 
 		Matrix4f staticMatrix = new Matrix4f(mRenderer.getViewportMatrix());
 		Matrix4f projMatrix = mRenderer.getSceneManager().getFrustum()
-		.getProjectionMatrix();
+		.getProjectionMatrix(true);
 		staticMatrix.mul(projMatrix);
 		Matrix4f cameraMatrix = mRenderer.getSceneManager().getCamera()
 		.getCameraMatrix();

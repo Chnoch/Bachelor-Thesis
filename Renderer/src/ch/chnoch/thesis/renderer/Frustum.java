@@ -49,51 +49,54 @@ public class Frustum {
 	 * 
 	 * @return the 4x4 projection matrix
 	 */
-	public Matrix4f getProjectionMatrix() {
+	public Matrix4f getProjectionMatrix(boolean picking) {
 
 		// VERSION NUMBER ONE: Wrong depth, right picking
 		final float DEG2RAD = 3.14159265f / 180;
 
 		Matrix4f numberOne = new Matrix4f();
-		float halfFov = mVertFOV *0.5f* DEG2RAD;
-//		float deltaZ = mFarPlane - mNearPlane;
-		float deltaZ = mNearPlane - mFarPlane;
+		float halfFov = mVertFOV * 0.5f * DEG2RAD;
+		// float deltaZ = mFarPlane - mNearPlane;
+		float deltaZ = 0;
+		if (picking) {
+			deltaZ = mFarPlane - mNearPlane;
+		} else {
+			deltaZ = mNearPlane - mFarPlane;
+		}
 		float sine = (float) Math.sin(halfFov);
 		float cotangent = (float) Math.cos(halfFov) / sine;
 
-//		 float temp = (float) (1 / (mAspectRatio * Math.tan(mVertFOV *DEG2RAD / 2)));
+		// float temp = (float) (1 / (mAspectRatio * Math.tan(mVertFOV *DEG2RAD
+		// / 2)));
 		numberOne.setM00(cotangent);
-//		numberOne.setM00(temp);
-//		numberOne.setM02(0);
+		// numberOne.setM00(temp);
+		// numberOne.setM02(0);
 
-//		 temp = (float) (1 / Math.tan(mVertFOV * DEG2RAD / 2));
+		// temp = (float) (1 / Math.tan(mVertFOV * DEG2RAD / 2));
 		numberOne.setM11(cotangent * mAspectRatio);
-//		numberOne.setM11(temp);
+		// numberOne.setM11(temp);
 
-//		 temp = (mNearPlane + mFarPlane) / (mNearPlane - mFarPlane);
+		// temp = (mNearPlane + mFarPlane) / (mNearPlane - mFarPlane);
 		numberOne.setM22((mFarPlane + mNearPlane) / deltaZ);
-//		numberOne.setM22(temp);
+		// numberOne.setM22(temp);
 
-//		 temp = (2 * mNearPlane * mFarPlane) / (mNearPlane - mFarPlane);
+		// temp = (2 * mNearPlane * mFarPlane) / (mNearPlane - mFarPlane);
 		numberOne.setM23(2 * mNearPlane * mFarPlane / deltaZ);
-//		numberOne.setM23(temp);
+		// numberOne.setM23(temp);
 
 		numberOne.setM32(-1);
-		
-		
-		Matrix4f numberTwo = new Matrix4f();
-		
-		// VERSION NUMBER TWO
-		numberTwo.setM00(2 * mNearPlane / (mRight - mLeft));
-		numberTwo.setM02((mRight + mLeft) / (mRight - mLeft));
-		numberTwo.setM11(2 * mNearPlane / (mTop - mBottom));
-		numberTwo.setM12((mTop + mBottom) / (mTop - mBottom));
-		numberTwo
-				.setM22(((mFarPlane + mNearPlane) / (mFarPlane - mNearPlane)));
-		numberTwo
-				.setM23(((2 * mFarPlane * mNearPlane) / (mFarPlane - mNearPlane)));
-		numberTwo.setM32(-1);
 
+		/*
+		 * Matrix4f numberTwo = new Matrix4f();
+		 * 
+		 * // VERSION NUMBER TWO numberTwo.setM00(2 * mNearPlane / (mRight -
+		 * mLeft)); numberTwo.setM02((mRight + mLeft) / (mRight - mLeft));
+		 * numberTwo.setM11(2 * mNearPlane / (mTop - mBottom));
+		 * numberTwo.setM12((mTop + mBottom) / (mTop - mBottom)); numberTwo
+		 * .setM22(((mFarPlane + mNearPlane) / (mFarPlane - mNearPlane)));
+		 * numberTwo .setM23(((2 * mFarPlane * mNearPlane) / (mFarPlane -
+		 * mNearPlane))); numberTwo.setM32(-1);
+		 */
 		return numberOne;
 	}
 
