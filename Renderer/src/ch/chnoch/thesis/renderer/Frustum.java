@@ -58,7 +58,7 @@ public class Frustum {
 		float halfFov = mVertFOV * 0.5f * DEG2RAD;
 		// float deltaZ = mFarPlane - mNearPlane;
 		float deltaZ = 0;
-		if (picking) {
+		if (false) {
 			deltaZ = mFarPlane - mNearPlane;
 		} else {
 			deltaZ = mNearPlane - mFarPlane;

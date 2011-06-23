@@ -44,14 +44,14 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		// Shape shape = loadTeapot();
 
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 10, 20));
-
 		
 		createShapes();
 		createLights();
 		setMaterial();
 
+//		boolean openGlES20 = detectOpenGLES20();
+		boolean openGlES20 = false;
 		
-		boolean openGlES20 = detectOpenGLES20();
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");
 			// Tell the surface view we want to create an OpenGL ES
@@ -66,11 +66,10 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		} else {
 			Log.d(TAG, "Using OpenGL ES 1.1");
 			mRenderer = new GLES11Renderer();
-
 		}
 		mViewer = new GLViewer(this, mRenderer, openGlES20);
 		mRenderer.setSceneManager(mSceneManager);
-
+		
 		TouchHandler touchHandler = new TouchHandler(mRenderer, mViewer);
 		mViewer.setOnTouchListener(touchHandler);
 		KeyHandler keyHandler = new KeyHandler(mRenderer);
@@ -80,8 +79,10 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 
+		
 		// enablePhysics();
 	}
+	
 
 	@Override
 	public void onPause() {
@@ -105,13 +106,14 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		String vertexShader = readRawText(R.raw.simplevert);
 		String fragmentShader = readRawText(R.raw.simplefrag);
 		Shader shader = null;
+		Log.d(TAG, "VertexShader: " + vertexShader);
+		Log.d(TAG, "FragmentShader: " + fragmentShader);
 		try {
 			mRenderer.createShader(shader, vertexShader, fragmentShader);
 			return shader;
 			// if (shader.getProgram() == 0) {
 			// throw new RuntimeException();
 			// }
-			
 		} catch (GLException exc) {
 			Log.e(TAG, exc.getError());
 		} catch (Exception e) {
@@ -131,11 +133,12 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mShapeSmall = Util.loadCube(1);
 		// Shape groundShape = Util.loadGround();
 
-		Vector3f transY = new Vector3f(0, 5, 0);
+		Vector3f transY = new Vector3f(0, 8, 0);
 
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
 		Vector3f transRight = new Vector3f(2, 0, 0);
 
+		
 		Matrix4f smallTrans = Util.getIdentityMatrix();
 		smallTrans.setTranslation(transY);
 		Matrix4f leftTrans = Util.getIdentityMatrix();

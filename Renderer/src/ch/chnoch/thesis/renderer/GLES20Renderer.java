@@ -7,11 +7,14 @@ import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
+import javax.vecmath.Matrix4f;
 
 import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
 import android.opengl.*;
+import static android.opengl.GLES10.GL_PROJECTION;
 import static android.opengl.GLES20.*;
 import android.util.Log;
 
@@ -195,7 +198,7 @@ public class GLES20Renderer extends AbstractRenderer {
 
 		mViewer.surfaceHasChanged(width, height);
 		setViewportMatrix(width, height);
-
+		
 		glViewport(0, 0, width, height);
 	}
 
@@ -237,6 +240,9 @@ public class GLES20Renderer extends AbstractRenderer {
 			
 			Log.d(TAG, "MVP Handle");
 			muMVPMatrixHandle = glGetUniformLocation(mProgram, "uMVPMatrix");
+			if (muMVPMatrixHandle==-1){
+				throw new RuntimeException("No MVPMatrix Handle");
+			}
 			
 			Iterator<Light> lights =mSceneManager.lightIterator(); 
 			if (lights.hasNext()) {
@@ -275,17 +281,18 @@ public class GLES20Renderer extends AbstractRenderer {
 		try {
 			// Set the modelview matrix by multiplying the camera matrix and the
 			// transformation matrix of the object
-			if (muMVPMatrixHandle != -1) {
-				t.set(mSceneManager.getCamera().getCameraMatrix());
+//			if (muMVPMatrixHandle != -1) {
+				t.set(mSceneManager.getFrustum().getProjectionMatrix(false));
+				t.mul(mSceneManager.getCamera().getCameraMatrix());
 				t.mul(renderItem.getT());
 				glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
 						GLUtil.matrix4fToFloat16(t), 0);
 				GLUtil.checkGlError("glUniformMatrix4fv muMVPMatrixHandle", TAG);
-			}
+//			}
 			
 			// Ignore the passed-in GL10 interface, and use the GLES20
 			// class's static methods instead.
-			glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 			// glActiveTexture(GL_TEXTURE0);
@@ -293,7 +300,7 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			if (maVertexHandle != -1) {
 				Log.d(TAG, "Vertex Pointers");
-				glVertexAttribPointer(maVertexHandle, 3, GL_UNSIGNED_SHORT,
+				glVertexAttribPointer(maVertexHandle, 3, GL_FLOAT,
 						false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES,
 						mVertexBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maPosition", TAG);
