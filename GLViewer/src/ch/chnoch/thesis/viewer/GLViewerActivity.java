@@ -45,6 +45,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 10, 20));
 		
+		
 		createShapes();
 		createLights();
 		setMaterial();

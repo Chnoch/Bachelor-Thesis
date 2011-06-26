@@ -75,7 +75,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * Usually, the first thing one might want to do is to clear the screen.
 		 * The most efficient way of doing this is to use glClear().
 		 */
-//		gl.glViewport(0, 0, width, height);
+		// gl.glViewport(0, 0, width, height);
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		int count = 0;
 		while (shapeIterator.hasNext()) {
@@ -101,59 +101,20 @@ public class GLES11Renderer extends AbstractRenderer {
 		mViewer.surfaceHasChanged(width, height);
 		setViewportMatrix(width, height);
 
+		this.width = width;
+		this.height = height;
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
 		 * draw, but usually a new projection needs to be set when the viewport
 		 * is resized.
 		 */
-		int error = gl.glGetError();
-		if (error != GL10.GL_NO_ERROR) {
-			Log.d("GLError", "Error: preProjection");
-		}
 		gl.glMatrixMode(GL_PROJECTION);
-		float ratio = (float) width / height;
-		 gl.glLoadIdentity();
-		 gl.glFrustumf(-ratio, ratio, -1, 1, 2, 50);
-		 error = gl.glGetError();
-			if (error != GL10.GL_NO_ERROR) {
-				Log.d("GLError", "Error: postFrustum");
-			}
-		 float[] projectionMat = new float[16];
-//		mFrustum.setAspectRatio(ratio);
-//		mFrustum.setLeft(-ratio);
-//		mFrustum.setRight(ratio);
-		 ((GL11) gl).glGetFloatv(GL11.GL_PROJECTION_MATRIX, projectionMat, 0);
-		 error = gl.glGetError();
-			if (error != GL10.GL_NO_ERROR) {
-				Log.d("GLError", "Error: postProjMat");
-			}
-		 Log.d("Projection Matrix", new Matrix4f(projectionMat).toString());
-		 Log.d("Projection Matrix", "Frustum: "
-		 + mFrustum.getProjectionMatrix(false).toString());
-		this.width = width;
-		this.height = height;
 
-		 gl.glLoadMatrixf(
-		 GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix(false)), 0);
-		 error = gl.glGetError();
-			if (error != GL10.GL_NO_ERROR) {
-				Log.d("GLError", "Error: Post Load of Frustum Proj Mat" );
-			}
+		gl.glLoadMatrixf(
+				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix(false)),
+				0);
+		
 		gl.glViewport(0, 0, width, height);
-		
-		error = gl.glGetError();
-		if (error != GL10.GL_NO_ERROR) {
-			Log.d("GLError", "Error: Post Viewport");
-		}
-		float[] viewportMat = new float[16];
-		((GL11) gl).glGetFloatv(GL11.GL_VIEWPORT, viewportMat,0);
-		
-		error = gl.glGetError();
-		if (error != GL10.GL_NO_ERROR) {
-			Log.d("GLError", "Error: Post getting Viewport");
-		}
-		Log.d("Viewport Matrix", new Matrix4f(viewportMat).toString());
-		Log.d("Viewport Matrix", "Viewport: " + mViewportMatrix.toString());
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
