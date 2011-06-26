@@ -48,7 +48,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		createShapes();
 		createLights();
 		setMaterial();
-
+		
 //		boolean openGlES20 = detectOpenGLES20();
 		boolean openGlES20 = false;
 		
@@ -78,7 +78,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
-
 		
 		// enablePhysics();
 	}

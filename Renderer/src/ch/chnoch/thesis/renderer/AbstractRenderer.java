@@ -54,13 +54,13 @@ public abstract class AbstractRenderer implements RenderContext {
 	public void setViewportMatrix(int width, int height) {
 		// reset the viewport matrix
 		mViewportMatrix.setM00(width / 2.f);
-		mViewportMatrix.setM03((width - 1) / 2.f);
+		mViewportMatrix.setM03((width) / 2.f);
 
 		mViewportMatrix.setM11(height / 2.f);
-		mViewportMatrix.setM13((height - 1) / 2.f);
+		mViewportMatrix.setM13((height) / 2.f);
 
-		mViewportMatrix.setM22(1/2f);
-		mViewportMatrix.setM23(1/2f);
+		mViewportMatrix.setM22(1/2.f);
+//		mViewportMatrix.setM23(1f);
 		mViewportMatrix.setM33(1);
 	}
 	
