@@ -3,6 +3,7 @@ package ch.chnoch.thesis.viewer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLContext;
 import javax.vecmath.Matrix4f;
@@ -43,15 +44,15 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mSceneManager = new GraphSceneManager();
 		// Shape shape = loadTeapot();
 
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 10, 20));
 		
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 10, 20));
 		
 		createShapes();
 		createLights();
 		setMaterial();
 		
-//		boolean openGlES20 = detectOpenGLES20();
-		boolean openGlES20 = false;
+		boolean openGlES20 = detectOpenGLES20();
+//		boolean openGlES20 = false;
 		
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");
@@ -103,8 +104,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.simplevert);
-		String fragmentShader = readRawText(R.raw.simplefrag);
+		String vertexShader = readRawText(R.raw.lightvert);
+		String fragmentShader = readRawText(R.raw.lightfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -128,9 +129,10 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	 */
 
 	private void createShapes() {
-
 		mShapeBig = Util.loadCube(4);
 		mShapeSmall = Util.loadCube(1);
+//		mShapeBig = loadStructure(R.raw.cube, 1);
+//		mShapeSmall = loadStructure(R.raw.cube, 1);
 		// Shape groundShape = Util.loadGround();
 
 		Vector3f transY = new Vector3f(0, 8, 0);
@@ -138,7 +140,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
 		Vector3f transRight = new Vector3f(2, 0, 0);
 
-		
 		Matrix4f smallTrans = Util.getIdentityMatrix();
 		smallTrans.setTranslation(transY);
 		Matrix4f leftTrans = Util.getIdentityMatrix();
@@ -154,6 +155,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mShapeNodeBig = new ShapeNode(mShapeBig);
 		mRoot.addChild(mShapeNodeBig);
 
+		
 		mSmallGroup = new TransformGroup();
 		mSmallGroup.initTranslationMatrix(smallTrans);
 		mRoot.addChild(mSmallGroup);
@@ -177,12 +179,14 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		light.mAmbient.set(0.4f, 0.4f, 0.4f);
 		light.mDiffuse.set(0.3f, 0.3f, 0.3f);
 
+		
 		mSceneManager.addLight(light);
 	}
 
 	private void setMaterial() {
 		Material mat = new Material();
 
+		
 		mat.shininess = 5;
 		mat.mAmbient.set(1, 0, 0);
 		mat.mDiffuse.set(1f, 0, 0);
@@ -198,21 +202,30 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mViewer.setOnClickListener(this);
 	}
 
-	private Shape loadTeapot() {
+	private Shape loadStructure(int resource, int size) {
 		// Construct a data structure that stores the vertices, their
 		// attributes, and the triangle mesh connectivity
 		VertexBuffers vertexBuffer = null;
 		try {
 			InputStream teapotSrc = getApplication().getResources()
-					.openRawResource(R.raw.teapot);
+					.openRawResource(resource);
 			vertexBuffer = ObjReader.read(teapotSrc, 1);
+			
+			if (size != 1) {
+				IntBuffer buffer = vertexBuffer.getVertexBuffer();
+				buffer.position(0);
+				for (int i=0; i< buffer.limit()-1; i++){
+					int value = buffer.get();
+					buffer.put( value * size);
+				}
+			}
 		} catch (IOException exc) {
 			Log.e(TAG, "Error loading Vertex data", exc);
 		}
 
 		return new Shape(vertexBuffer);
 	}
-
+	
 	private String readRawText(int id) {
 		InputStream raw = getApplication().getResources().openRawResource(id);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

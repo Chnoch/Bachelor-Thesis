@@ -33,7 +33,6 @@ public class GLShader implements Shader {
 			return 0;
 		}
 
-		
 		mProgram = GLES20.glCreateProgram();
 		if (mProgram != 0) {
 			GLES20.glAttachShader(mProgram, vertexShader);
@@ -77,7 +76,12 @@ public class GLShader implements Shader {
 	 * pixel that is rendered.
 	 */
 	public void use() {
-		GLES20.glUseProgram(mProgram);
+		try {
+			GLES20.glUseProgram(mProgram);
+			GLUtil.checkGlError("glUseProgram", TAG);
+		} catch (Exception exc) {
+			Log.d(TAG, "Couldn't use program: " + exc.getMessage());
+		}
 	}
 
 	/**
@@ -85,9 +89,14 @@ public class GLShader implements Shader {
 	 * process vertices and fragments/pixels.
 	 */
 	public void disable() {
-		GLES20.glUseProgram(0);
+		try {
+			GLES20.glUseProgram(0);
+			GLUtil.checkGlError("glUseProgram", TAG);
+		} catch (Exception exc) {
+			Log.d(TAG, "Couldn't use program: " + exc.getMessage());
+		}
 	}
-	
+
 	public int getProgram() {
 		return mProgram;
 	}

@@ -28,11 +28,10 @@ public class Light {
 
 
 	public float[] createDirectionArray() {
-		float[] dir = new float[4];
+		float[] dir = new float[3];
 		dir[0] = mDirection.x;
 		dir[1] = mDirection.y;
 		dir[2] = mDirection.z;
-		dir[3] = 0.f;
 		return dir;
 	}
 
@@ -46,7 +45,6 @@ public class Light {
 	}
 
 	public float[] createHalfplaneArray() {
-		
 		float[] halfplane = new float[3];
 		halfplane[0] = mHalfPlane.x;
 		halfplane[1] = mHalfPlane.y;
@@ -55,7 +53,6 @@ public class Light {
 	}
 	
 	public float[] createSpotDirectionArray() {
-
 		float[] spotDir = new float[3];
 		spotDir[0] = mSpotDirection.x;
 		spotDir[1] = mSpotDirection.y;

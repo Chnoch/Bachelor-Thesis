@@ -22,7 +22,7 @@ public class GLES20Renderer extends AbstractRenderer {
 
 	private Shader mShader;
 	private String mVertexShaderFileName, mFragmentShaderFileName;
-	
+
 	private GLLight mLight;
 
 	private int mProgram;
@@ -46,6 +46,8 @@ public class GLES20Renderer extends AbstractRenderer {
 
 	private static final int FLOAT_SIZE_BYTES = 4;
 	private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
+	private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
+	private static final int TRIANGLE_VERTICES_DATA_POS_OFFSET = 0;
 
 	/**
 	 * This constructor is called by {@link GLRenderPanel}.
@@ -198,7 +200,7 @@ public class GLES20Renderer extends AbstractRenderer {
 
 		mViewer.surfaceHasChanged(width, height);
 		setViewportMatrix(width, height);
-		
+
 		glViewport(0, 0, width, height);
 	}
 
@@ -236,15 +238,15 @@ public class GLES20Renderer extends AbstractRenderer {
 			maTextureHandle = glGetAttribLocation(mProgram, "aTextureCoord");
 
 			Log.d(TAG, "Normal Handle");
-			maNormalHandle = glGetAttribLocation(mProgram, "aNormal");
-			
+			maNormalHandle = glGetAttribLocation(mProgram, "aNormals");
+
 			Log.d(TAG, "MVP Handle");
 			muMVPMatrixHandle = glGetUniformLocation(mProgram, "uMVPMatrix");
-			if (muMVPMatrixHandle==-1){
+			if (muMVPMatrixHandle == -1) {
 				throw new RuntimeException("No MVPMatrix Handle");
 			}
-			
-			Iterator<Light> lights =mSceneManager.lightIterator(); 
+
+			Iterator<Light> lights = mSceneManager.lightIterator();
 			if (lights.hasNext()) {
 				mLight = new GLLight(lights.next());
 				mLight.getHandles(mProgram);
@@ -267,29 +269,27 @@ public class GLES20Renderer extends AbstractRenderer {
 		// Read geometry from the vertex element into array lists.
 		// These lists will be used to create the buffers.
 		VertexBuffers buffers = renderItem.getNode().getShape()
-		.getVertexBuffers();
+				.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
 		mColorBuffer = buffers.getColorBuffer();
 		mIndexBuffer = buffers.getIndexBuffer();
 		mTexCoordsBuffer = buffers.getTexCoordsBuffer();
 		mNormalBuffer = buffers.getNormalBuffer();
 
-
-
 		// cleanMaterial(renderItem.getShape().getMaterial());
 
 		try {
 			// Set the modelview matrix by multiplying the camera matrix and the
 			// transformation matrix of the object
-//			if (muMVPMatrixHandle != -1) {
-				t.set(mSceneManager.getFrustum().getProjectionMatrix(false));
-				t.mul(mSceneManager.getCamera().getCameraMatrix());
-				t.mul(renderItem.getT());
-				glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
-						GLUtil.matrix4fToFloat16(t), 0);
-				GLUtil.checkGlError("glUniformMatrix4fv muMVPMatrixHandle", TAG);
-//			}
-			
+			// if (muMVPMatrixHandle != -1) {
+			t.set(mSceneManager.getFrustum().getProjectionMatrix(false));
+			t.mul(mSceneManager.getCamera().getCameraMatrix());
+			t.mul(renderItem.getT());
+			glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
+					GLUtil.matrix4fToFloat16(t), 0);
+			GLUtil.checkGlError("glUniformMatrix4fv muMVPMatrixHandle", TAG);
+			// }
+
 			// Ignore the passed-in GL10 interface, and use the GLES20
 			// class's static methods instead.
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -300,17 +300,17 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			if (maVertexHandle != -1) {
 				Log.d(TAG, "Vertex Pointers");
-				glVertexAttribPointer(maVertexHandle, 3, GL_FLOAT,
-						false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES,
+				glVertexAttribPointer(maVertexHandle, 3, GL_FIXED, false, 0,
 						mVertexBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maPosition", TAG);
+				// mVertexBuffer.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
 				glEnableVertexAttribArray(maVertexHandle);
 			}
 
 			if (maTextureHandle != -1) {
 				Log.d(TAG, "Texture Pointers");
-				glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT, false,
-						TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mColorBuffer);
+				glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT, false, 0,
+						mColorBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maTextureHandle",
 						TAG);
 				glEnableVertexAttribArray(maTextureHandle);
@@ -320,25 +320,24 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			if (maNormalHandle != -1) {
 				Log.d(TAG, "Normal Pointers");
-				glVertexAttribPointer(maNormalHandle, 3, GL_UNSIGNED_SHORT,
-						true, TRIANGLE_VERTICES_DATA_STRIDE_BYTES,
-						mNormalBuffer);
+				glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT,
+						true, 0, mNormalBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maNormalHandle", TAG);
 				glEnableVertexAttribArray(maNormalHandle);
 				GLUtil.checkGlError("glEnableVertexAttribArray maNormalHandle",
 						TAG);
 			}
-			
-			//Light
+
+			// Light
 			if (mLight != null) {
 				mLight.draw();
 			}
-			
-			//Material
+
+			// Material
 			GLMaterial mat = new GLMaterial(renderItem.getNode().getMaterial());
 			mat.getHandles(mProgram);
 			mat.draw();
-			
+
 			Log.d(TAG, "Draw");
 			glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 					GL_UNSIGNED_SHORT, mIndexBuffer);

@@ -128,7 +128,7 @@ public class Util {
 	}
 
 	public static int one = 0x10000;
-//	public static int one = 1;
+	public static int oneNormal = 1;
 	static float vertices[] = { -one, -one, -one,
 								-one, -one, -one,
 								-one, -one, -one,
@@ -171,37 +171,37 @@ public class Util {
 	static int indices[] = { 0, 12, 15, 0, 15, 3, 4, 17, 19, 4, 19, 8, 6, 18, 21, 6, 21,
 		9, 10, 22, 13, 10, 13, 2, 14, 23, 20, 14, 20, 16, 11, 1, 5, 11, 5, 7 };
 	
-	static int normals[] = { 0, -one, 0, 
-							0, 0, -one, 
-							-one, 0,0,
+	static int normals[] = { 0, -oneNormal, 0, 
+							0, 0, -oneNormal, 
+							-oneNormal, 0,0,
 							
-							0, -one, 0,
-							one, 0,0,
-							0, 0, -one,
+							0, -oneNormal, 0,
+							oneNormal, 0,0,
+							0, 0, -oneNormal,
 							
-							0,one,0,
-							0,0,-one,
-							one,0,0,
+							0,oneNormal,0,
+							0,0,-oneNormal,
+							oneNormal,0,0,
 							
-							0, one, 0,
-							-one, 0,0,
-							0,0,-one,
+							0, oneNormal, 0,
+							-oneNormal, 0,0,
+							0,0,-oneNormal,
 							
-							0,-one,0,
-							-one,0,0,
-							0,0,one,
+							0,-oneNormal,0,
+							-oneNormal,0,0,
+							0,0,oneNormal,
 							
-							0,-one,0,
-							0,0,one,
-							one,0,0,
+							0,-oneNormal,0,
+							0,0,oneNormal,
+							oneNormal,0,0,
 							
-							0,one,0,
-							one,0,0,
-							0,0,one,
+							0,oneNormal,0,
+							oneNormal,0,0,
+							0,0,oneNormal,
 							
-							0,one,0,
-							-one,0,0,
-							0,0,one
+							0,oneNormal,0,
+							-oneNormal,0,0,
+							0,0,oneNormal
 	};
 
 	public static void transform(Matrix4f m, Vector3f point) {
