@@ -111,7 +111,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		gl.glMatrixMode(GL_PROJECTION);
 
 		gl.glLoadMatrixf(
-				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix(false)),
+				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()),
 				0);
 		
 		gl.glViewport(0, 0, width, height);
@@ -190,7 +190,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		gl.glVertexPointer(3, GL_FIXED, 0, mVertexBuffer);
 		// gl.glColorPointer(4, GL_FIXED, 0, mColorBuffer);
 		gl.glEnableClientState(GL_NORMAL_ARRAY);
-		gl.glNormalPointer(GL_FLOAT, 0, mNormalBuffer);
+		gl.glNormalPointer(GL_FIXED, 0, mNormalBuffer);
 		// gl.glEnable(GL_TEXTURE_2D);
 		// gl.glTexCoordPointer(2, GL_FLOAT, 0, mTexCoordsBuffer);
 		gl.glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),

@@ -282,7 +282,7 @@ public class GLES20Renderer extends AbstractRenderer {
 			// Set the modelview matrix by multiplying the camera matrix and the
 			// transformation matrix of the object
 			// if (muMVPMatrixHandle != -1) {
-			t.set(mSceneManager.getFrustum().getProjectionMatrix(false));
+			t.set(mSceneManager.getFrustum().getProjectionMatrix());
 			t.mul(mSceneManager.getCamera().getCameraMatrix());
 			t.mul(renderItem.getT());
 			glUniformMatrix4fv(muMVPMatrixHandle, 1, false,

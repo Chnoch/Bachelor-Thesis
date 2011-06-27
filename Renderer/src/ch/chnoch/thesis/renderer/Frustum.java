@@ -41,7 +41,7 @@ public class Frustum {
 	 * 
 	 * @return the 4x4 projection matrix
 	 */
-	public Matrix4f getProjectionMatrix(boolean picking) {
+	public Matrix4f getProjectionMatrix() {
 		return mProjectionMatrix;
 	}
 

@@ -128,7 +128,7 @@ public class Util {
 	}
 
 	public static int one = 0x10000;
-	public static int oneNormal = 1;
+	public static int oneNormal = 0x10000;
 	static float vertices[] = { -one, -one, -one,
 								-one, -one, -one,
 								-one, -one, -one,
