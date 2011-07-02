@@ -44,7 +44,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mSceneManager = new GraphSceneManager();
 		// Shape shape = loadTeapot();
 
-		
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 10, 40));
 		
 		createShapes();
@@ -53,6 +52,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		
 		boolean openGlES20 = detectOpenGLES20();
 //		boolean openGlES20 = false;
+		
 		
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");

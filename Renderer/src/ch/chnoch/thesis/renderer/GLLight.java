@@ -27,7 +27,7 @@ public class GLLight {
 		dir = mLight.createDirectionArray();
 		glUniform3f(muDirectionHandle, dir[0], dir[1], dir[2]);
 		GLUtil.checkGlError("glUniform3f muDirectionHandle",TAG);
-		
+
 		float[] halfPlane = new float[3];
 		halfPlane = mLight.createHalfplaneArray();
 		glUniform3f(muHalfplaneHandle, halfPlane[0], halfPlane[1], halfPlane[2]);

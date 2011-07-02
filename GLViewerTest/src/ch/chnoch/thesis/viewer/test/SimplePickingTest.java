@@ -53,7 +53,7 @@ public class SimplePickingTest extends AndroidTestCase {
 	}
 
 	public void ProjectionInverse() {
-		Matrix4f proj = mSceneManager.getFrustum().getProjectionMatrix(true);
+		Matrix4f proj = mSceneManager.getFrustum().getProjectionMatrix();
 		proj.mul(mSceneManager.getCamera().getCameraMatrix());
 		Matrix4f proj_inv = new Matrix4f(mIdentity);
 		proj.invert(proj_inv);

@@ -14,7 +14,10 @@ import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
 import android.opengl.*;
+import static android.opengl.GLES10.GL_FASTEST;
+import static android.opengl.GLES10.GL_PERSPECTIVE_CORRECTION_HINT;
 import static android.opengl.GLES10.GL_PROJECTION;
+import static android.opengl.GLES10.GL_SMOOTH;
 import static android.opengl.GLES20.*;
 import android.util.Log;
 
@@ -200,7 +203,6 @@ public class GLES20Renderer extends AbstractRenderer {
 
 		mViewer.surfaceHasChanged(width, height);
 		setViewportMatrix(width, height);
-
 		glViewport(0, 0, width, height);
 	}
 
@@ -218,10 +220,12 @@ public class GLES20Renderer extends AbstractRenderer {
 		}
 
 		glDisable(GL_DITHER);
+		
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-		glClearColor(1, 1, 1, 1);
+		glClearColor(0.5f,0.5f,0.5f, 1);
 		glClearDepthf(1);
-		glEnable(GL_CULL_FACE);
+//		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 
