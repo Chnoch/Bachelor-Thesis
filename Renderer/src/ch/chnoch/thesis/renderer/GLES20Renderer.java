@@ -67,90 +67,6 @@ public class GLES20Renderer extends AbstractRenderer {
 		super(sceneManager);
 	}
 
-	/**
-	 * Pass the material properties to OpenGL, including textures and shaders.
-	 */
-	/*
-	 * private void setMaterial(Material m) { if (m != null) { float diffuse[] =
-	 * new float[4]; diffuse[0] = m.diffuse.x; diffuse[1] = m.diffuse.y;
-	 * diffuse[2] = m.diffuse.z; diffuse[3] = 1.f;
-	 * GLES20.glMaterialfv(GLES20.GL_FRONT_AND_BACK, GLES11.GL_DIFFUSE, diffuse,
-	 * 0);
-	 * 
-	 * float ambient[] = new float[4]; ambient[0] = m.ambient.x; ambient[1] =
-	 * m.ambient.y; ambient[2] = m.ambient.z; ambient[3] = 1.f;
-	 * GLES20.glMaterialfv(GLES20.GL_FRONT_AND_BACK, GLES11.GL_AMBIENT, ambient,
-	 * 0);
-	 * 
-	 * float specular[] = new float[4]; specular[0] = m.specular.x; specular[1]
-	 * = m.specular.y; specular[2] = m.specular.z; specular[3] = 1.f;
-	 * GLES20.glMaterialfv(GLES20.GL_FRONT_AND_BACK, GLES11.GL_SPECULAR,
-	 * specular, 0);
-	 * 
-	 * GLES20.glMaterialf(GLES20.GL_FRONT_AND_BACK, GLES20.GL_SHININESS,
-	 * m.shininess);
-	 * 
-	 * GLTexture tex = (GLTexture) (m.getTexture()); if (tex != null) {
-	 * GLES20.glEnable(GLES20.GL_TEXTURE_2D);
-	 * GLES20.glTexEnvf(GLES20.GL_TEXTURE_ENV, GLES20.GL_TEXTURE_ENV_MODE,
-	 * GLES20.GL_MODULATE); GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
-	 * tex.getId()); GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-	 * GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	 * GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-	 * GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR); } if (m.getShader() !=
-	 * null) { m.getShader().use(); } } }
-	 */
-
-	/**
-	 * Pass the light properties to OpenGL. This assumes the list of lights in
-	 * the scene manager is accessible via a method Iterator<Light>
-	 * lightIterator().
-	 */
-	// TODO: Figure out lights
-	/*
-	 * void setLights() { int lightIndex[] = { GLES20.GL_LIGHT0, GL2.GL_LIGHT1,
-	 * GL2.GL_LIGHT2, GL2.GL_LIGHT3, GL2.GL_LIGHT4, GL2.GL_LIGHT5,
-	 * GL2.GL_LIGHT6, GL2.GL_LIGHT7 };
-	 * 
-	 * gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glLoadIdentity();
-	 * 
-	 * Iterator<Light> iter = mSceneManager.lightIterator();
-	 * 
-	 * if (iter.hasNext()) { // Lighting gl.glEnable(GL2.GL_LIGHTING); }
-	 * 
-	 * int i = 0; Light l; while (iter.hasNext() && i < 8) { l = iter.next();
-	 * 
-	 * gl.glEnable(lightIndex[i]);
-	 * 
-	 * if (l.type == Light.Type.DIRECTIONAL) { float[] direction = new float[4];
-	 * direction[0] = l.direction.x; direction[1] = l.direction.y; direction[2]
-	 * = l.direction.z; direction[3] = 0.f; gl.glLightfv(lightIndex[i],
-	 * GL2.GL_POSITION, direction, 0); } if (l.type == Light.Type.POINT ||
-	 * l.type == Light.Type.SPOT) { float[] position = new float[4]; position[0]
-	 * = l.position.x; position[1] = l.position.y; position[2] = l.position.z;
-	 * position[3] = 1.f; gl.glLightfv(lightIndex[i], GL2.GL_POSITION, position,
-	 * 0); } if (l.type == Light.Type.SPOT) { float[] spotDirection = new
-	 * float[3]; spotDirection[0] = l.spotDirection.x; spotDirection[1] =
-	 * l.spotDirection.y; spotDirection[2] = l.spotDirection.z;
-	 * gl.glLightfv(lightIndex[i], GL2.GL_SPOT_DIRECTION, spotDirection, 0);
-	 * gl.glLightf(lightIndex[i], GL2.GL_SPOT_EXPONENT, l.spotExponent);
-	 * gl.glLightf(lightIndex[i], GL2.GL_SPOT_CUTOFF, l.spotCutoff); }
-	 * 
-	 * float[] diffuse = new float[4]; diffuse[0] = l.diffuse.x; diffuse[1] =
-	 * l.diffuse.y; diffuse[2] = l.diffuse.z; diffuse[3] = 1.f;
-	 * gl.glLightfv(lightIndex[i], GL2.GL_DIFFUSE, diffuse, 0);
-	 * 
-	 * float[] ambient = new float[4]; ambient[0] = l.ambient.x; ambient[1] =
-	 * l.ambient.y; ambient[2] = l.ambient.z; ambient[3] = 0;
-	 * gl.glLightfv(lightIndex[i], GL2.GL_AMBIENT, ambient, 0);
-	 * 
-	 * float[] specular = new float[4]; specular[0] = l.specular.x; specular[1]
-	 * = l.specular.y; specular[2] = l.specular.z; specular[3] = 0;
-	 * gl.glLightfv(lightIndex[i], GL2.GL_SPECULAR, specular, 0);
-	 * 
-	 * i++; } }
-	 */
-
 	private void cleanMaterial(Material m) {
 		if (m != null && m.getTexture() != null) {
 			GLES20.glDisable(GLES20.GL_TEXTURE_2D);
@@ -183,7 +99,6 @@ public class GLES20Renderer extends AbstractRenderer {
 	}
 
 	public void onDrawFrame(GL10 gl) {
-		try {
 			beginFrame();
 
 			SceneManagerIterator it = mSceneManager.iterator();
@@ -193,22 +108,18 @@ public class GLES20Renderer extends AbstractRenderer {
 			}
 
 			endFrame();
-		} catch (Exception exc) {
-			Log.e(TAG, "Error drawing Frame", exc);
-		}
+
 	}
 
 	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
-
-		mViewer.surfaceHasChanged(width, height);
-		setViewportMatrix(width, height);
-		glViewport(0, 0, width, height);
+			mViewer.surfaceHasChanged(width, height);
+			setViewportMatrix(width, height);
+			glViewport(0, 0, width, height);
 	}
 
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
 		Log.d(TAG, "onsurfacecreated method called");
-
 		int[] depthbits = new int[1];
 		glGetIntegerv(GL_DEPTH_BITS, depthbits, 0);
 		Log.d(TAG, "Depth Bits: " + depthbits[0]);
@@ -220,16 +131,20 @@ public class GLES20Renderer extends AbstractRenderer {
 		}
 
 		glDisable(GL_DITHER);
-		
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-		glClearColor(0.5f,0.5f,0.5f, 1);
+//		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+
+		glClearColor(0.5f, 0.5f, 0.5f, 1);
+
 		glClearDepthf(1);
-//		glEnable(GL_CULL_FACE);
+
+		// glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
+
 		glDepthFunc(GL_LEQUAL);
 
 		try {
+		
 			mProgram = mShader.getProgram();
 			if (mProgram == 0) {
 				return;
@@ -237,12 +152,15 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			Log.d(TAG, "Vertex Handle");
 			maVertexHandle = glGetAttribLocation(mProgram, "aPosition");
+			GLUtil.checkGlError("glUseProgram", TAG);
 
 			Log.d(TAG, "Texture Handle");
 			maTextureHandle = glGetAttribLocation(mProgram, "aTextureCoord");
+			GLUtil.checkGlError("glUseProgram", TAG);
 
 			Log.d(TAG, "Normal Handle");
 			maNormalHandle = glGetAttribLocation(mProgram, "aNormals");
+			GLUtil.checkGlError("glUseProgram", TAG);
 
 			Log.d(TAG, "MVP Handle");
 			muMVPMatrixHandle = glGetUniformLocation(mProgram, "uMVPMatrix");
@@ -254,6 +172,8 @@ public class GLES20Renderer extends AbstractRenderer {
 			if (lights.hasNext()) {
 				mLight = new GLLight(lights.next());
 				mLight.getHandles(mProgram);
+				GLUtil.checkGlError("glUseProgram", TAG);
+
 			}
 
 		} catch (Exception exc) {
@@ -279,7 +199,7 @@ public class GLES20Renderer extends AbstractRenderer {
 		mIndexBuffer = buffers.getIndexBuffer();
 		mTexCoordsBuffer = buffers.getTexCoordsBuffer();
 		mNormalBuffer = buffers.getNormalBuffer();
-
+		
 		// cleanMaterial(renderItem.getShape().getMaterial());
 
 		try {
@@ -324,8 +244,8 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			if (maNormalHandle != -1) {
 				Log.d(TAG, "Normal Pointers");
-				glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT,
-						true, 0, mNormalBuffer);
+				glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT, true, 0,
+						mNormalBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maNormalHandle", TAG);
 				glEnableVertexAttribArray(maNormalHandle);
 				GLUtil.checkGlError("glEnableVertexAttribArray maNormalHandle",
@@ -363,7 +283,6 @@ public class GLES20Renderer extends AbstractRenderer {
 		glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		glUseProgram(mProgram);
-		GLUtil.checkGlError("glUseProgram", TAG);
 	}
 
 	/**
@@ -373,4 +292,5 @@ public class GLES20Renderer extends AbstractRenderer {
 	private void endFrame() {
 		glFlush();
 	}
+	
 }

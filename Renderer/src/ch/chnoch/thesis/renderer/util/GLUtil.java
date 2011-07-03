@@ -1,5 +1,7 @@
 package ch.chnoch.thesis.renderer.util;
 
+import java.nio.IntBuffer;
+
 import javax.vecmath.Matrix4f;
 
 import android.opengl.GLES20;
@@ -31,5 +33,18 @@ public class GLUtil {
 			for (int j = 0; j < 4; j++)
 				f[j * 4 + i] = m.getElement(i, j);
 		return f;
+	}
+	
+	/**
+	 * Converts regular integers to 16/16 fixed point integers, that are used
+	 * in Android.
+	 * @param buffer
+	 */
+	 public static void convertIntToFixedPoint(IntBuffer buffer) {
+		while (buffer.hasRemaining()) {
+			int value = buffer.get();
+			buffer.put(value*65536);
+		}
+		buffer.position(0);
 	}
 }

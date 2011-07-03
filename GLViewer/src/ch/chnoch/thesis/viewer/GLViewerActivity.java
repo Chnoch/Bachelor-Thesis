@@ -31,6 +31,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private RenderContext mRenderer;
 	private final String TAG = "GLViewerActivity";
 
+	
 	private Node mRoot, mSmallGroup, mShapeNodeBig, mShapeNodeSmallOne,
 			mShapeNodeSmallTwo;
 
@@ -44,7 +45,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mSceneManager = new GraphSceneManager();
 		// Shape shape = loadTeapot();
 
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 10, 40));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 10, 20));
 		
 		createShapes();
 		createLights();
@@ -130,15 +131,15 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void createShapes() {
 		mShapeBig = Util.loadCube(4);
 		mShapeSmall = Util.loadCube(1);
-//		mShapeBig = loadStructure(R.raw.cube, 1);
-//		mShapeSmall = loadStructure(R.raw.cube, 1);
+//		mShapeBig = loadStructure(R.raw.test, 1);
+//		mShapeSmall = loadStructure(R.raw.test, 1);
 		// Shape groundShape = Util.loadGround();
 
 		Vector3f transY = new Vector3f(0, 8, 0);
 
+		
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
 		Vector3f transRight = new Vector3f(2, 0, 0);
-
 		
 		Matrix4f smallTrans = Util.getIdentityMatrix();
 		smallTrans.setTranslation(transY);
@@ -206,11 +207,13 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		// Construct a data structure that stores the vertices, their
 		// attributes, and the triangle mesh connectivity
 		VertexBuffers vertexBuffer = null;
+		
 		try {
 			InputStream teapotSrc = getApplication().getResources()
 					.openRawResource(resource);
 			vertexBuffer = ObjReader.read(teapotSrc, 1);
-			
+			GLUtil.convertIntToFixedPoint(vertexBuffer.getVertexBuffer());
+			GLUtil.convertIntToFixedPoint(vertexBuffer.getNormalBuffer());
 			if (size != 1) {
 				IntBuffer buffer = vertexBuffer.getVertexBuffer();
 				buffer.position(0);
@@ -218,6 +221,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 					int value = buffer.get();
 					buffer.put( value * size);
 				}
+				buffer.position(0);
 			}
 		} catch (IOException exc) {
 			Log.e(TAG, "Error loading Vertex data", exc);

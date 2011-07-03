@@ -226,6 +226,8 @@ public class ObjReader {
 		vertexBuffer.setIndexBuffer(indices);
 		vertexBuffer.setVertexBuffer(verticesFinal);
 		vertexBuffer.setColorBuffer(colors);
+		vertexBuffer.setNormalBuffer(normalsFinal);
+		vertexBuffer.setTexCoordsBuffer(texCoordsFinal);
 		return vertexBuffer;			
 	}
 } 

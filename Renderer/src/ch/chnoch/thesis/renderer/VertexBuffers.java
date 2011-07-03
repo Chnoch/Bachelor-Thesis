@@ -6,6 +6,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+import android.util.Log;
+
 public class VertexBuffers {
 
 	private IntBuffer mVertexBuffer;
@@ -62,6 +64,11 @@ public class VertexBuffers {
 		mIndexBuffer = ibb.asShortBuffer();
 		mIndexBuffer.put(indices);
 		mIndexBuffer.position(0);
+
+		for (int i = 0; i < mIndexBuffer.capacity() - 1; i++) {
+			Log.d("VertexBuffers", "Index: " + mIndexBuffer.get());
+		}
+		mIndexBuffer.position(0);
 	}
 
 	public void setIndexBuffer(int[] indices) {
@@ -91,6 +98,16 @@ public class VertexBuffers {
 		mNormalBuffer = vbb.asIntBuffer();
 		mNormalBuffer.put(normals);
 		mNormalBuffer.position(0);
+	}
+
+	public void setNormalBuffer(float[] normals) {
+		int[] normalValues = new int[normals.length];
+
+		for (int i = 0; i < normals.length; i++) {
+			normalValues[i] = (int) normals[i];
+		}
+
+		setNormalBuffer(normalValues);
 	}
 
 	public IntBuffer getNormalBuffer() {
