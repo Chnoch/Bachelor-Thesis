@@ -23,10 +23,10 @@ import static android.opengl.GLES10.*;
 public class GLES11Renderer extends AbstractRenderer {
 
 	private ShortBuffer mIndexBuffer;
-	private IntBuffer mVertexBuffer;
+	private FloatBuffer mVertexBuffer;
 	private FloatBuffer mTexCoordsBuffer;
-	private IntBuffer mColorBuffer;
-	private IntBuffer mNormalBuffer;
+	private FloatBuffer mColorBuffer;
+	private FloatBuffer mNormalBuffer;
 	private int width, height;
 
 	private final String TAG = "GLES11Renderer";

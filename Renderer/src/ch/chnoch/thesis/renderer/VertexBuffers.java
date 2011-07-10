@@ -10,29 +10,29 @@ import android.util.Log;
 
 public class VertexBuffers {
 
-	private IntBuffer mVertexBuffer;
-	private IntBuffer mColorBuffer;
+	private FloatBuffer mVertexBuffer;
+	private FloatBuffer mColorBuffer;
 	private ShortBuffer mIndexBuffer;
 	private FloatBuffer mTexCoordsBuffer;
-	private IntBuffer mNormalBuffer;
+	private FloatBuffer mNormalBuffer;
 
 	public VertexBuffers() {
 		super();
 	}
 
-	public IntBuffer getVertexBuffer() {
+	public FloatBuffer getVertexBuffer() {
 		return mVertexBuffer;
 	}
 
-	public void setVertexBuffer(int[] vertices) {
+	public void setVertexBuffer(float[] vertices) {
 		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
 		vbb.order(ByteOrder.nativeOrder());
-		mVertexBuffer = vbb.asIntBuffer();
+		mVertexBuffer = vbb.asFloatBuffer();
 		mVertexBuffer.put(vertices);
 		mVertexBuffer.position(0);
 	}
 
-	public void setVertexBuffer(float[] vertices) {
+	public void setVertexBuffer(int[] vertices) {
 		int[] vertexValues = new int[vertices.length];
 
 		for (int i = 0; i < vertices.length; i++) {
@@ -42,14 +42,14 @@ public class VertexBuffers {
 		setVertexBuffer(vertexValues);
 	}
 
-	public IntBuffer getColorBuffer() {
+	public FloatBuffer getColorBuffer() {
 		return mColorBuffer;
 	}
 
-	public void setColorBuffer(int[] colors) {
+	public void setColorBuffer(float[] colors) {
 		ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4);
 		cbb.order(ByteOrder.nativeOrder());
-		mColorBuffer = cbb.asIntBuffer();
+		mColorBuffer = cbb.asFloatBuffer();
 		mColorBuffer.put(colors);
 		mColorBuffer.position(0);
 	}
@@ -63,11 +63,6 @@ public class VertexBuffers {
 		ibb.order(ByteOrder.nativeOrder());
 		mIndexBuffer = ibb.asShortBuffer();
 		mIndexBuffer.put(indices);
-		mIndexBuffer.position(0);
-
-		for (int i = 0; i < mIndexBuffer.capacity() - 1; i++) {
-			Log.d("VertexBuffers", "Index: " + mIndexBuffer.get());
-		}
 		mIndexBuffer.position(0);
 	}
 
@@ -92,15 +87,15 @@ public class VertexBuffers {
 		return mTexCoordsBuffer;
 	}
 
-	public void setNormalBuffer(int[] normals) {
+	public void setNormalBuffer(float[] normals) {
 		ByteBuffer vbb = ByteBuffer.allocateDirect(normals.length * 4);
 		vbb.order(ByteOrder.nativeOrder());
-		mNormalBuffer = vbb.asIntBuffer();
+		mNormalBuffer = vbb.asFloatBuffer();
 		mNormalBuffer.put(normals);
 		mNormalBuffer.position(0);
 	}
 
-	public void setNormalBuffer(float[] normals) {
+	public void setNormalBuffer(int[] normals) {
 		int[] normalValues = new int[normals.length];
 
 		for (int i = 0; i < normals.length; i++) {
@@ -110,7 +105,7 @@ public class VertexBuffers {
 		setNormalBuffer(normalValues);
 	}
 
-	public IntBuffer getNormalBuffer() {
+	public FloatBuffer getNormalBuffer() {
 		return mNormalBuffer;
 	}
 }

@@ -1,5 +1,6 @@
 package ch.chnoch.thesis.renderer.util;
 
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import javax.vecmath.Matrix4f;
@@ -40,10 +41,10 @@ public class GLUtil {
 	 * in Android.
 	 * @param buffer
 	 */
-	 public static void convertIntToFixedPoint(IntBuffer buffer) {
-		while (buffer.hasRemaining()) {
-			int value = buffer.get();
-			buffer.put(value*65536);
+	 public static void convertFloatToFixedPoint(FloatBuffer buffer) {		 
+		for (int i = 0; i< buffer.capacity(); i++) {
+			float value = buffer.get(i);
+			buffer.put(i, (int) (value*65536));
 		}
 		buffer.position(0);
 	}

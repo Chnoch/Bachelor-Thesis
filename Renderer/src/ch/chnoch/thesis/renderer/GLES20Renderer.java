@@ -8,7 +8,9 @@ import java.util.Iterator;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.GLUtil;
@@ -38,19 +40,16 @@ public class GLES20Renderer extends AbstractRenderer {
 	private int maMaterialHandle;
 
 	private ShortBuffer mIndexBuffer;
-	private IntBuffer mVertexBuffer;
+	private FloatBuffer mVertexBuffer;
 	private FloatBuffer mTexCoordsBuffer;
-	private IntBuffer mColorBuffer;
-	private IntBuffer mNormalBuffer;
+	private FloatBuffer mColorBuffer;
+	private FloatBuffer mNormalBuffer;
 
 	private boolean mEnableShader;
 
 	private final String TAG = "GLES20Renderer";
 
 	private static final int FLOAT_SIZE_BYTES = 4;
-	private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
-	private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
-	private static final int TRIANGLE_VERTICES_DATA_POS_OFFSET = 0;
 
 	/**
 	 * This constructor is called by {@link GLRenderPanel}.
@@ -99,7 +98,8 @@ public class GLES20Renderer extends AbstractRenderer {
 	}
 
 	public void onDrawFrame(GL10 gl) {
-			beginFrame();
+			try {
+				beginFrame();
 
 			SceneManagerIterator it = mSceneManager.iterator();
 
@@ -109,6 +109,9 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			endFrame();
 
+			} catch (Exception e) {
+				Log.d(TAG, e.getMessage());
+			}
 	}
 
 	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
@@ -224,10 +227,9 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			if (maVertexHandle != -1) {
 				Log.d(TAG, "Vertex Pointers");
-				glVertexAttribPointer(maVertexHandle, 3, GL_FIXED, false, 0,
+				glVertexAttribPointer(maVertexHandle, 3, GL_FLOAT, false, 0,
 						mVertexBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maPosition", TAG);
-				// mVertexBuffer.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
 				glEnableVertexAttribArray(maVertexHandle);
 			}
 
@@ -243,9 +245,27 @@ public class GLES20Renderer extends AbstractRenderer {
 			}
 
 			if (maNormalHandle != -1) {
+				// rotate normals
+				FloatBuffer normals = mNormalBuffer.duplicate();
+				Matrix4f matrix = renderItem.getT();
+				Matrix3f rotation = new Matrix3f();
+				matrix.getRotationScale(rotation);
+				for (int i = 0; i< mNormalBuffer.capacity();i+=3) {
+					float x = mNormalBuffer.get(i);
+					float y = mNormalBuffer.get(i+1);
+					float z = mNormalBuffer.get(i+2);
+					
+					Vector3f vec = new Vector3f(x,y,z);
+					rotation.transform(vec);
+//					vec.normalize();
+					normals.put(i, vec.x);
+					normals.put(i+1, vec.y);
+					normals.put(i+2, vec.z);
+				}
+				
 				Log.d(TAG, "Normal Pointers");
 				glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT, true, 0,
-						mNormalBuffer);
+						normals);
 				GLUtil.checkGlError("glVertexAttribPointer maNormalHandle", TAG);
 				glEnableVertexAttribArray(maNormalHandle);
 				GLUtil.checkGlError("glEnableVertexAttribArray maNormalHandle",

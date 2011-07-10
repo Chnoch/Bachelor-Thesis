@@ -213,7 +213,7 @@ public class ObjReader {
 //			verticesInt[i] = Float.floatToIntBits(verticesFinal[i]);
 //		}
 		
-		int colors[] = new int[verticesFinal.length/3*4];
+		float colors[] = new float[verticesFinal.length/3*4];
 		for (int i=0;i<colors.length;i++) {
 			colors[i]=1;
 			colors[i++]=1;

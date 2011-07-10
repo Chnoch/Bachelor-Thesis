@@ -1,5 +1,6 @@
 package ch.chnoch.thesis.renderer;
 
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -105,8 +106,8 @@ public class Shape {
 	private List<Triangle> getTriangles() {
 		List<Triangle> triangles = new ArrayList<Triangle>();
 
-		IntBuffer verticesBuffer = mVertexBuffers.getVertexBuffer();
-		int[] verticesInt = new int[verticesBuffer.capacity()];
+		FloatBuffer verticesBuffer = mVertexBuffers.getVertexBuffer();
+		float[] verticesInt = new float[verticesBuffer.capacity()];
 
 		for (int i = 0; i < verticesBuffer.capacity(); i++) {
 			verticesInt[i] = verticesBuffer.get(i);
@@ -115,7 +116,7 @@ public class Shape {
 		// Fixed Point Conversion
 		float[] vertices = new float[verticesInt.length];
 		for (int i = 0; i < verticesInt.length; i++) {
-			vertices[i] = (float) verticesInt[i] / 65536;
+			vertices[i] = (float) verticesInt[i];
 		}
 
 		ShortBuffer indicesBuffer = mVertexBuffers.getIndexBuffer();

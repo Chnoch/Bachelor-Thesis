@@ -193,14 +193,14 @@ public class Util {
 		-one, one, one,
 		-one, one, one};
 
-	static int colors[] = { 0, 0, 0, one, one, 0, 0, one, one, one, 0, one, 0,
+	static float colors[] = { 0, 0, 0, one, one, 0, 0, one, one, one, 0, one, 0,
 			one, 0, one, 0, 0, one, one, one, 0, one, one, one, one, one, one,
 			0, one, one, one, };
 
 	static int indices_old[] = { 0, 4, 5, 0, 5, 1, 1, 5, 6, 1, 6, 2, 2, 6, 7, 2, 7,
 			3, 3, 7, 4, 3, 4, 0, 4, 7, 6, 4, 6, 5, 3, 0, 1, 3, 1, 2 };
 
-	static int indices[] = { 015, 12, 15, 
+	static int indices[] = { 0, 12, 15, 
 		0, 15, 3, 
 		4, 17, 19, 
 		4, 19, 8, 
@@ -213,7 +213,7 @@ public class Util {
 		11, 1, 5, 
 		11, 5, 7 };
 	
-	static int normals[] = { 0, 0,-oneNormal, 
+	static float normals[] = { 0, 0,-oneNormal, 
 							0, 0, -oneNormal, 
 							-oneNormal, 0,0,
 							

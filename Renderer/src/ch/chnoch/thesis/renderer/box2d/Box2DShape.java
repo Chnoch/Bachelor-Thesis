@@ -1,5 +1,6 @@
 package ch.chnoch.thesis.renderer.box2d;
 
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class Box2DShape {
 		mBox2DShapeDef.friction = 0.3f;
 	}
 
-	public Box2DShape(IntBuffer vertices) {
+	public Box2DShape(FloatBuffer vertices) {
 		mBox2DShapeDef = new PolygonDef();
 		// Some random default values
 		mBox2DShapeDef.density = 1;
@@ -60,10 +61,10 @@ public class Box2DShape {
 	 * Gets all x,y coordinates, that have the lowest z-value, therefore making
 	 * an appropriate measure for a 3D->2D conversion
 	 */
-	private List<Vector2f> getCoordinates(IntBuffer verticesBuffer) {
+	private List<Vector2f> getCoordinates(FloatBuffer verticesBuffer) {
 
 		// get Coordinates into an array
-		int[] verticesInt = new int[verticesBuffer.capacity()];
+		float[] verticesInt = new float[verticesBuffer.capacity()];
 
 		for (int i = 0; i < verticesBuffer.capacity(); i++) {
 			verticesInt[i] = verticesBuffer.get(i);

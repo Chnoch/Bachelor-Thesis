@@ -30,10 +30,10 @@ public class GL2DRenderer extends AbstractRenderer {
 	private int COLOR_ATTR = 1;
 	private int VERTEX_ATTR = 1;
 	private ShortBuffer mIndexBuffer;
-	private IntBuffer mVertexBuffer;
+	private FloatBuffer mVertexBuffer;
 	private FloatBuffer mTexCoordsBuffer;
-	private IntBuffer mColorBuffer;
-	private IntBuffer mNormalBuffer;
+	private FloatBuffer mColorBuffer;
+	private FloatBuffer mNormalBuffer;
 
 	private final String TAG = "GL2DRenderer";
 

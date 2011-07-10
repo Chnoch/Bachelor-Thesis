@@ -1,5 +1,6 @@
 package ch.chnoch.thesis.renderer;
 
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class BoundingBox {
 	private Point3f mLow, mHigh, mLowUpdated, mHighUpdated;
 	private boolean updated;
 
-	public BoundingBox(IntBuffer vertices) {
+	public BoundingBox(FloatBuffer vertices) {
 		updated = true;
 		init(vertices);
 		mLowUpdated = new Point3f(mLow);
@@ -34,15 +35,15 @@ public class BoundingBox {
 		mHighUpdated = new Point3f(mHigh);
 	}
 
-	private void init(IntBuffer vertices) {
-		int x, y, z;
+	private void init(FloatBuffer vertices) {
+		float x, y, z;
 		float lowX, lowY, lowZ, highX, highY, highZ;
-		lowX = Integer.MAX_VALUE;
-		lowY = Integer.MAX_VALUE;
-		lowZ = Integer.MAX_VALUE;
-		highX = Integer.MIN_VALUE;
-		highY = Integer.MIN_VALUE;
-		highZ = Integer.MIN_VALUE;
+		lowX = Float.MAX_VALUE;
+		lowY = Float.MAX_VALUE;
+		lowZ = Float.MAX_VALUE;
+		highX = Float.MIN_VALUE;
+		highY = Float.MIN_VALUE;
+		highZ = Float.MIN_VALUE;
 
 		while (vertices.remaining() > 0) {
 			x = vertices.get();
@@ -71,7 +72,8 @@ public class BoundingBox {
 		vertices.position(0);
 
 		// correction because of 16/16 fixed integer-representation of fp's
-		float div = 65536;
+//		float div = 65536;
+		float div = 1;
 		lowX = (float) lowX / div;
 		lowY = (float) lowY / div;
 		lowZ = (float) lowZ / div;
