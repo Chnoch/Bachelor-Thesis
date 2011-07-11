@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/wood"
+        android:title="@string/wood" />
+  <item android:id="@+id/aluminium"
+        android:title="@string/aluminium" />
+  <item android:id="@+id/wall"
+        android:title="@string/wall" />
+</menu>
