@@ -8,13 +8,14 @@ import ch.chnoch.thesis.renderer.interfaces.Texture;
 /**
  * Stores the properties of a material.
  */
-public class Material {
+public abstract class Material {
 
 	public Vector3f mDiffuse;
 	public Vector3f mSpecular;
 	public Vector3f mAmbient;
 	public float shininess;
 	private Texture texture;
+	private boolean mTextureChanged;
 	private Shader shader;
 
 	public Material() {
@@ -30,6 +31,14 @@ public class Material {
 
 	public Texture getTexture() {
 		return texture;
+	}
+	
+	public boolean hasTextureChanged() {
+		return mTextureChanged;
+	}
+	
+	public void setTextureChanged(boolean value) {
+		mTextureChanged = value;
 	}
 
 	public void setShader(Shader shader) {

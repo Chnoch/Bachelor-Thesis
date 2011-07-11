@@ -19,6 +19,9 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView.EGLContextFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -35,6 +38,12 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			mShapeNodeSmallTwo;
 
 	private Shape mShapeSmall, mShapeBig;
+	
+	/*
+	 * 
+	 * CALLBACK METHODS
+	 * 
+	 */
 
 	/** Called when the activity is first created. */
 	@Override
@@ -48,8 +57,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 5, 5));
 
 		createShapes();
-		createLights();
-		setMaterial();
+//		createLights();
+//		setMaterial();
 
 		boolean openGlES20 = detectOpenGLES20();
 		// boolean openGlES20 = false;
@@ -59,16 +68,19 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			// Tell the surface view we want to create an OpenGL ES
 			// 2.0-compatible
 			// context, and set an OpenGL ES 2.0-compatible renderer.
-			mRenderer = new GLES20Renderer();
+			mRenderer = new GLES20Renderer(getApplicationContext());
 			Shader shader = createShaders();
-			Material material = new Material();
+			Texture texture = createTexture(R.raw.wall);
+			Material material = new GLMaterial();
+			material.setTexture(texture);
 			material.setShader(shader);
-			mShapeBig.setMaterial(material);
-			mShapeSmall.setMaterial(material);
+			mShapeNodeBig.setMaterial(material);
+//			mShapeNodeSmall.setMaterial(material);
 		} else {
 			Log.d(TAG, "Using OpenGL ES 1.1");
 			mRenderer = new GLES11Renderer();
 		}
+		
 		mViewer = new GLViewer(this, mRenderer, openGlES20);
 		mRenderer.setSceneManager(mSceneManager);
 
@@ -101,10 +113,49 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		Log.d(TAG, "OnBackPressed");
 		this.finish();
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.texture_menu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		Material mat = mShapeNodeBig.getMaterial();
+		// Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.aluminium:
+	        mat.setTexture(createTexture(R.raw.aluminium));
+	        break;
+	    case R.id.wood:
+	    	mat.setTexture(createTexture(R.raw.wood));
+	    	break;
+	    case R.id.wall:
+	    	mat.setTexture(createTexture(R.raw.wall));
+	    	break;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	    mat.setTextureChanged(true);
+	    mViewer.requestRender();
+	    return true;
+	}
+	
+	
+	/*
+	 * 
+	 * 
+	 * Private Methods
+	 * 
+	 * 
+	 */
 
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.lightvert);
-		String fragmentShader = readRawText(R.raw.lightfrag);
+		String vertexShader = readRawText(R.raw.texture2dvert);
+		String fragmentShader = readRawText(R.raw.texture2dfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -121,6 +172,17 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		}
 		return null;
 	}
+	
+	private Texture createTexture(int id) {
+		Texture tex = mRenderer.makeTexture();
+		try {
+			tex.createTexture(id);
+		} catch (IOException exc) {
+			Log.e(TAG, exc.getMessage());
+		}
+		
+		return tex;
+	}
 
 	/*
 	 * Private Methods
@@ -128,8 +190,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
-		mShapeBig = loadStructure(R.raw.cube, 1);
-		mShapeSmall = loadStructure(R.raw.cube, 1);
+		mShapeBig = loadStructure(R.raw.cubetex, 1);
+//		mShapeSmall = loadStructure(R.raw.cube, 1);
 		// Shape groundShape = Util.loadGround();
 
 		Vector3f transY = new Vector3f(0, 8, 0);
@@ -154,19 +216,18 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mShapeNodeBig = new ShapeNode(mShapeBig);
 		mRoot.addChild(mShapeNodeBig);
 		
-		mSmallGroup = new TransformGroup();
-		mSmallGroup.initTranslationMatrix(smallTrans);
-		mRoot.addChild(mSmallGroup);
-
-		mShapeNodeSmallOne = new ShapeNode(mShapeSmall);
-		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
-		mShapeNodeSmallTwo = new ShapeNode(mShapeSmall);
-		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
-
-		mSmallGroup.addChild(mShapeNodeSmallOne);
-		mSmallGroup.addChild(mShapeNodeSmallTwo);
+//		mSmallGroup = new TransformGroup();
+//		mSmallGroup.initTranslationMatrix(smallTrans);
+//		mRoot.addChild(mSmallGroup);
+//
+//		mShapeNodeSmallOne = new ShapeNode(mShapeSmall);
+//		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
+//		mShapeNodeSmallTwo = new ShapeNode(mShapeSmall);
+//		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
+//
+//		mSmallGroup.addChild(mShapeNodeSmallOne);
+//		mSmallGroup.addChild(mShapeNodeSmallTwo);
 	}
-	
 	
 	private void createLights() {
 
@@ -182,7 +243,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 
 	private void setMaterial() {
-		Material mat = new Material();
+		Material mat = new GLMaterial();
 
 		mat.shininess = 5;
 		mat.mAmbient.set(1, 0, 0);
@@ -208,12 +269,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		try {
 			InputStream teapotSrc = getApplication().getResources()
 					.openRawResource(resource);
-			TestObjReader reader = new TestObjReader();
-//			reader.readFile(teapotSrc);
-//			vertexBuffer = reader.createVertexBuffers();
 			vertexBuffer = ObjReader.read(teapotSrc, 1);
-//			GLUtil.convertIntToFixedPoint(vertexBuffer.getVertexBuffer());
-//			GLUtil.convertIntToFixedPoint(vertexBuffer.getNormalBuffer());
 //			if (size != 1) {
 //				IntBuffer buffer = vertexBuffer.getVertexBuffer();
 //				buffer.position(0);
@@ -229,6 +285,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		return new Shape(vertexBuffer);
 	}
+	
 
 	private String readRawText(int id) {
 		InputStream raw = getApplication().getResources().openRawResource(id);

@@ -100,7 +100,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		node.setTranslationMatrix(trans);
 //		smallerGroup.addChild(node4);
 		
-		Material mat = new Material();
+		Material mat = new GLMaterial();
 
 		mat.shininess = 5;
 		mat.mAmbient.set(1, 0, 0);

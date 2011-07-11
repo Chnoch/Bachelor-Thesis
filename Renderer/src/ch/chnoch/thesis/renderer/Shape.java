@@ -17,7 +17,6 @@ import ch.chnoch.thesis.renderer.box2d.*;
  */
 public class Shape {
 
-	private Material mMaterial;
 	private VertexBuffers mVertexBuffers;
 	private Matrix4f t;
 	private BoundingBox mBox;
@@ -53,14 +52,6 @@ public class Shape {
 		return mBox;
 	}
 
-	public void setMaterial(Material material) {
-		this.mMaterial = material;
-	}
-
-	public Material getMaterial() {
-		return this.mMaterial;
-	}
-	
 	public Box2DShape enableBox2D() {
 		return new Box2DShape(mVertexBuffers.getVertexBuffer());
 	}

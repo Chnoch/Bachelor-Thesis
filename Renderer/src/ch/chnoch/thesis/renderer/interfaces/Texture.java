@@ -7,5 +7,9 @@ import java.io.IOException;
  */
 public interface Texture {
 
-	public void load(String fileName) throws IOException;
+	public void createTexture(int resource) throws IOException;
+	
+	public void load();
+	
+	public int getID();
 }
