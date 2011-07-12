@@ -53,7 +53,7 @@ public class GLES20Renderer extends AbstractRenderer {
 	private FloatBuffer mNormalBuffer;
 
 	private boolean mEnableShader;
-	
+
 	private boolean mTextureChanged = false;
 
 	private final String TAG = "GLES20Renderer";
@@ -218,8 +218,6 @@ public class GLES20Renderer extends AbstractRenderer {
 	 *            the object that needs to be drawn
 	 */
 	private void draw(RenderItem renderItem) {
-		// Set the material
-		// setMaterial(renderItem.getShape().getMaterial());
 		// Read geometry from the vertex element into array lists.
 		// These lists will be used to create the buffers.
 		VertexBuffers buffers = renderItem.getNode().getShape()
@@ -228,43 +226,32 @@ public class GLES20Renderer extends AbstractRenderer {
 		mColorBuffer = buffers.getColorBuffer();
 		mIndexBuffer = buffers.getIndexBuffer();
 		mTexCoordsBuffer = buffers.getTexCoordsBuffer();
-		if (mTexCoordsBuffer != null) {
-			for (int i = 0; i < mTexCoordsBuffer.capacity(); i++) {
-				Log.d(TAG, "Value: " + mTexCoordsBuffer.get());
-			}
-			mTexCoordsBuffer.position(0);
-		}
 		mNormalBuffer = buffers.getNormalBuffer();
-
-		// cleanMaterial(renderItem.getShape().getMaterial());
 
 		try {
 			// Set the modelview matrix by multiplying the camera matrix and the
 			// transformation matrix of the object
-			// if (muMVPMatrixHandle != -1) {
-			t.set(mSceneManager.getFrustum().getProjectionMatrix());
-			t.mul(mSceneManager.getCamera().getCameraMatrix());
-			t.mul(renderItem.getT());
-			glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
-					GLUtil.matrix4fToFloat16(t), 0);
-			GLUtil.checkGlError("glUniformMatrix4fv muMVPMatrixHandle", TAG);
-			// }
-
-			// Ignore the passed-in GL10 interface, and use the GLES20
-			// class's static methods instead.
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-			// Test for changed texture
-			Material material = renderItem.getNode().getMaterial();
-			if (material.hasTextureChanged()) {
-				loadTextures();
-				material.setTextureChanged(false);
+			if (muMVPMatrixHandle != -1) {
+				t.set(mSceneManager.getFrustum().getProjectionMatrix());
+				t.mul(mSceneManager.getCamera().getCameraMatrix());
+				t.mul(renderItem.getT());
+				glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
+						GLUtil.matrix4fToFloat16(t), 0);
+				GLUtil.checkGlError("glUniformMatrix4fv muMVPMatrixHandle", TAG);
 			}
-			Texture texture = material.getTexture();
-			if (texture != null) {
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, texture.getID());
+
+			// Test for changed textures
+			Material material = renderItem.getNode().getMaterial();
+			if (material != null) {
+				if (material.hasTextureChanged()) {
+					loadTextures();
+					material.setTextureChanged(false);
+				}
+				Texture texture = material.getTexture();
+				if (texture != null) {
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D, texture.getID());
+				}
 			}
 
 			if (maVertexHandle != -1) {
@@ -275,7 +262,7 @@ public class GLES20Renderer extends AbstractRenderer {
 				glEnableVertexAttribArray(maVertexHandle);
 			}
 
-			if (maTextureHandle != -1 && mTexCoordsBuffer!= null) {
+			if (maTextureHandle != -1 && mTexCoordsBuffer != null) {
 				Log.d(TAG, "Texture Pointers");
 				glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT, false, 0,
 						mTexCoordsBuffer);
@@ -288,26 +275,27 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			if (maNormalHandle != -1 && mNormalBuffer != null) {
 				// rotate normals
-				FloatBuffer normals = mNormalBuffer.duplicate();
-				Matrix4f matrix = renderItem.getT();
-				Matrix3f rotation = new Matrix3f();
-				matrix.getRotationScale(rotation);
-				for (int i = 0; i < mNormalBuffer.capacity(); i += 3) {
-					float x = mNormalBuffer.get(i);
-					float y = mNormalBuffer.get(i + 1);
-					float z = mNormalBuffer.get(i + 2);
-
-					Vector3f vec = new Vector3f(x, y, z);
-					rotation.transform(vec);
-					// vec.normalize();
-					normals.put(i, vec.x);
-					normals.put(i + 1, vec.y);
-					normals.put(i + 2, vec.z);
-				}
+//				FloatBuffer normals = mNormalBuffer.duplicate();
+//				Matrix4f matrix = renderItem.getT();
+//				Matrix3f rotation = new Matrix3f();
+//				matrix.getRotationScale(rotation);
+//				rotation.transpose();
+//				for (int i = 0; i < mNormalBuffer.capacity(); i += 3) {
+//					float x = mNormalBuffer.get(i);
+//					float y = mNormalBuffer.get(i + 1);
+//					float z = mNormalBuffer.get(i + 2);
+//
+//					Vector3f vec = new Vector3f(x, y, z);
+//					rotation.transform(vec);
+//					// vec.normalize();
+//					normals.put(i, vec.x);
+//					normals.put(i + 1, vec.y);
+//					normals.put(i + 2, vec.z);
+//				}
 
 				Log.d(TAG, "Normal Pointers");
 				glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT, true, 0,
-						normals);
+						mNormalBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maNormalHandle", TAG);
 				glEnableVertexAttribArray(maNormalHandle);
 				GLUtil.checkGlError("glEnableVertexAttribArray maNormalHandle",
@@ -321,8 +309,10 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			// Material
 			GLMaterial mat = (GLMaterial) renderItem.getNode().getMaterial();
-			mat.getHandles(mProgram);
-			mat.draw();
+			if (mat != null) {
+				mat.getHandles(mProgram);
+				mat.draw();
+			}
 
 			Log.d(TAG, "Draw");
 			glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
@@ -342,10 +332,10 @@ public class GLES20Renderer extends AbstractRenderer {
 	private void beginFrame() throws Exception {
 		// setLights();
 
-		glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		glUseProgram(mProgram);
-		
+
 		if (mTextureChanged) {
 			loadTextures();
 		}

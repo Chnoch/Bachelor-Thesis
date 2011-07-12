@@ -29,7 +29,7 @@ public class Frustum {
 		// Aspect Ratio is 1 on init
 		this.mAspectRatio = 1;
 		this.mVertFOV = 60;
-		this.mNearPlane = 5;
+		this.mNearPlane = 2;
 		this.mFarPlane = 50;
 
 		this.updateFrustum();

@@ -1,3 +1,4 @@
+#version 120
 precision mediump float;
 
 struct directional_light {

@@ -51,17 +51,16 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		mSceneManager = new GraphSceneManager();
-		// Shape shape = loadTeapot();
-
 		
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 5, 5));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 5, 10));
 
 		createShapes();
-//		createLights();
-//		setMaterial();
+		createLights();
+		setMaterial();
 
+		
 		boolean openGlES20 = detectOpenGLES20();
-		// boolean openGlES20 = false;
+//		 boolean openGlES20 = false;
 
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");
@@ -75,7 +74,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			material.setTexture(texture);
 			material.setShader(shader);
 			mShapeNodeBig.setMaterial(material);
-//			mShapeNodeSmall.setMaterial(material);
+//			mShapeNodeSmallOne.setMaterial(material);
 		} else {
 			Log.d(TAG, "Using OpenGL ES 1.1");
 			mRenderer = new GLES11Renderer();
@@ -154,8 +153,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	 */
 
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.texture2dvert);
-		String fragmentShader = readRawText(R.raw.texture2dfrag);
+		String vertexShader = readRawText(R.raw.lightvert);
+		String fragmentShader = readRawText(R.raw.lightfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -180,22 +179,17 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		} catch (IOException exc) {
 			Log.e(TAG, exc.getMessage());
 		}
-		
 		return tex;
 	}
 
-	/*
-	 * Private Methods
-	 */
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
 		mShapeBig = loadStructure(R.raw.cubetex, 1);
-//		mShapeSmall = loadStructure(R.raw.cube, 1);
+		mShapeSmall = loadStructure(R.raw.teapot, 1);
 		// Shape groundShape = Util.loadGround();
 
-		Vector3f transY = new Vector3f(0, 8, 0);
-
+		Vector3f transY = new Vector3f(0, 5, 0);
 		
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
 		Vector3f transRight = new Vector3f(2, 0, 0);
@@ -216,17 +210,17 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mShapeNodeBig = new ShapeNode(mShapeBig);
 		mRoot.addChild(mShapeNodeBig);
 		
-//		mSmallGroup = new TransformGroup();
-//		mSmallGroup.initTranslationMatrix(smallTrans);
-//		mRoot.addChild(mSmallGroup);
-//
-//		mShapeNodeSmallOne = new ShapeNode(mShapeSmall);
-//		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
-//		mShapeNodeSmallTwo = new ShapeNode(mShapeSmall);
-//		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
-//
-//		mSmallGroup.addChild(mShapeNodeSmallOne);
-//		mSmallGroup.addChild(mShapeNodeSmallTwo);
+		mSmallGroup = new TransformGroup();
+		mSmallGroup.initTranslationMatrix(smallTrans);
+		mRoot.addChild(mSmallGroup);
+
+		mShapeNodeSmallOne = new ShapeNode(mShapeSmall);
+		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
+		mShapeNodeSmallTwo = new ShapeNode(mShapeSmall);
+		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
+
+		mSmallGroup.addChild(mShapeNodeSmallOne);
+		mSmallGroup.addChild(mShapeNodeSmallTwo);
 	}
 	
 	private void createLights() {
