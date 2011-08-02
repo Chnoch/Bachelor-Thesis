@@ -135,6 +135,12 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	    case R.id.wall:
 	    	mat.setTexture(createTexture(R.raw.wall));
 	    	break;
+	    case R.id.cube:
+	    	addCube();
+	    	break;
+	    case R.id.teapot:
+	    	addTeapot();
+	    	break;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
@@ -147,14 +153,30 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	/*
 	 * 
 	 * 
-	 * Private Methods
+	 * Private Instantiation Methods
 	 * 
 	 * 
 	 */
+	
+	private void addCube() {
+		Shape shape = loadStructure(R.raw.cubetex);
+		ShapeNode node = new ShapeNode(shape);
+
+		node.setMaterial(mShapeNodeBig.getMaterial());
+		mRoot.addChild(node);
+	}
+	
+	private void addTeapot() {
+		Shape shape = loadStructure(R.raw.teapot);
+		ShapeNode node = new ShapeNode(shape);
+
+		node.setMaterial(mShapeNodeBig.getMaterial());
+		mRoot.addChild(node);
+	}
 
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.lightvert);
-		String fragmentShader = readRawText(R.raw.lightfrag);
+		String vertexShader = readRawText(R.raw.texture2dvert);
+		String fragmentShader = readRawText(R.raw.texture2dfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -185,8 +207,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
-		mShapeBig = loadStructure(R.raw.cubetex, 1);
-		mShapeSmall = loadStructure(R.raw.teapot, 1);
+		mShapeBig = loadStructure(R.raw.cubetex);
+		mShapeSmall = loadStructure(R.raw.teapot);
 		// Shape groundShape = Util.loadGround();
 
 		Vector3f transY = new Vector3f(0, 5, 0);
@@ -254,25 +276,15 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mViewer.setOnClickListener(this);
 	}
 
-	private Shape loadStructure(int resource, int size) {
+	private Shape loadStructure(int resource) {
 		// Construct a data structure that stores the vertices, their
 		// attributes, and the triangle mesh connectivity
 		VertexBuffers vertexBuffer = null;
 
-		
 		try {
-			InputStream teapotSrc = getApplication().getResources()
+			InputStream source = getApplication().getResources()
 					.openRawResource(resource);
-			vertexBuffer = ObjReader.read(teapotSrc, 1);
-//			if (size != 1) {
-//				IntBuffer buffer = vertexBuffer.getVertexBuffer();
-//				buffer.position(0);
-//				for (int i = 0; i < buffer.limit() - 1; i++) {
-//					int value = buffer.get();
-//					buffer.put(value * size);
-//				}
-//				buffer.position(0);
-//			}
+			vertexBuffer = ObjReader.read(source, 1);
 		} catch (Exception exc) {
 			Log.e(TAG, "Error loading Vertex data", exc);
 		}

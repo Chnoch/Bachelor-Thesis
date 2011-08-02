@@ -4,4 +4,6 @@
     <string name="wood">Holz</string>
     <string name="aluminium">Aluminium</string>
     <string name="wall">Ziegelsteine</string>
+    <string name="cube">Add Cube</string>
+    <string name="teapot">Add Teapot</string>
 </resources>

@@ -180,19 +180,19 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			loadTextures();
 
-			Log.d(TAG, "Vertex Handle");
+//			Log.d(TAG, "Vertex Handle");
 			maVertexHandle = glGetAttribLocation(mProgram, "aPosition");
 			GLUtil.checkGlError("glUseProgram", TAG);
 
-			Log.d(TAG, "Texture Handle");
+//			Log.d(TAG, "Texture Handle");
 			maTextureHandle = glGetAttribLocation(mProgram, "aTextureCoord");
 			GLUtil.checkGlError("glUseProgram", TAG);
 
-			Log.d(TAG, "Normal Handle");
+//			Log.d(TAG, "Normal Handle");
 			maNormalHandle = glGetAttribLocation(mProgram, "aNormals");
 			GLUtil.checkGlError("glUseProgram", TAG);
 
-			Log.d(TAG, "MVP Handle");
+//			Log.d(TAG, "MVP Handle");
 			muMVPMatrixHandle = glGetUniformLocation(mProgram, "uMVPMatrix");
 			if (muMVPMatrixHandle == -1) {
 				throw new RuntimeException("No MVPMatrix Handle");
@@ -255,7 +255,7 @@ public class GLES20Renderer extends AbstractRenderer {
 			}
 
 			if (maVertexHandle != -1) {
-				Log.d(TAG, "Vertex Pointers");
+//				Log.d(TAG, "Vertex Pointers");
 				glVertexAttribPointer(maVertexHandle, 3, GL_FLOAT, false, 0,
 						mVertexBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maPosition", TAG);
@@ -263,7 +263,7 @@ public class GLES20Renderer extends AbstractRenderer {
 			}
 
 			if (maTextureHandle != -1 && mTexCoordsBuffer != null) {
-				Log.d(TAG, "Texture Pointers");
+//				Log.d(TAG, "Texture Pointers");
 				glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT, false, 0,
 						mTexCoordsBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maTextureHandle",
@@ -293,7 +293,7 @@ public class GLES20Renderer extends AbstractRenderer {
 //					normals.put(i + 2, vec.z);
 //				}
 
-				Log.d(TAG, "Normal Pointers");
+//				Log.d(TAG, "Normal Pointers");
 				glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT, true, 0,
 						mNormalBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maNormalHandle", TAG);

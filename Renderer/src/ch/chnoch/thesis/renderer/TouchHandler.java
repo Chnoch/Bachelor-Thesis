@@ -55,8 +55,10 @@ public class TouchHandler implements OnTouchListener {
 			mEventEnd = e.getEventTime();
 
 			if (mOnNode) {
+				float distance = (float)Math.sqrt(Math.pow(mPreviousX - x,2) + Math.pow(mPreviousY - y,2));
+				Log.d("TouchHandler", "Distance: " + distance);
 				if (mEventEnd - mEventStart > 500
-						|| (mIsTranslation && !mRotate)) {
+						|| (mIsTranslation && !mRotate)|| distance < 0.8f ) {
 					Log.d("TouchHandler", "Moving Object");
 					// Long Press occured: Manipulate object by moving it
 					Ray prevRay = mViewer.unproject(mPreviousX, mPreviousY);

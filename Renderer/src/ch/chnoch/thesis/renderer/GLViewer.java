@@ -43,6 +43,7 @@ public class GLViewer extends GLSurfaceView {
 	public void surfaceHasChanged(int width, int height) {
 		mWidth = width;
 		mHeight = height;
+		mRenderer.getSceneManager().getFrustum().setAspectRatio((float)width/height);
 	}
 
 	public int width() {

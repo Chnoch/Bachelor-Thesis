@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/wood"
-  		android:showAsAction="ifRoom|withText"
-        android:title="@string/wood" />
-  <item android:id="@+id/aluminium"
-  		android:showAsAction="ifRoom|withText"
-        android:title="@string/aluminium" />
-  <item android:id="@+id/wall"
-        android:title="@string/wall" 
-        android:showAsAction="ifRoom|withText" />
+  
+  
+  
+  <group android:menuCategory="container" android:visible="true" android:enabled="true" android:id="@+id/textures"><item android:id="@+id/wood" android:showAsAction="ifRoom|withText" android:title="@string/wood" /><item android:id="@+id/aluminium" android:showAsAction="ifRoom|withText" android:title="@string/aluminium" /><item android:id="@+id/wall" android:title="@string/wall" android:showAsAction="ifRoom|withText" />
+  </group>
+  <group android:id="@+id/shapes">
+      <item android:title="@string/cube" android:id="@+id/cube" android:showAsAction="ifRoom|withText"></item>
+      <item android:title="@string/teapot" android:id="@+id/teapot" android:showAsAction="ifRoom|withText"></item>
+  </group>
 </menu>
