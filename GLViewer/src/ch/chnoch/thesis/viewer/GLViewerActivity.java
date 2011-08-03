@@ -70,10 +70,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			mRenderer = new GLES20Renderer(getApplicationContext());
 			Shader shader = createShaders();
 			Texture texture = createTexture(R.raw.wall);
-			Material material = new GLMaterial();
-			material.setTexture(texture);
-			material.setShader(shader);
-			mShapeNodeBig.setMaterial(material);
+			mShapeNodeBig.getMaterial().setTexture(texture);
+			mShapeNodeBig.getMaterial().setShader(shader);
 //			mShapeNodeSmallOne.setMaterial(material);
 		} else {
 			Log.d(TAG, "Using OpenGL ES 1.1");
@@ -167,16 +165,17 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 	
 	private void addTeapot() {
-		Shape shape = loadStructure(R.raw.teapot);
+		Shape shape = loadStructure(R.raw.teapot_alt);
 		ShapeNode node = new ShapeNode(shape);
 
 		node.setMaterial(mShapeNodeBig.getMaterial());
 		mRoot.addChild(node);
 	}
-
+	
+	
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.texture2dvert);
-		String fragmentShader = readRawText(R.raw.texture2dfrag);
+		String vertexShader = readRawText(R.raw.lightvert);
+		String fragmentShader = readRawText(R.raw.lightfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -207,7 +206,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
-		mShapeBig = loadStructure(R.raw.cubetex);
+		mShapeBig = loadStructure(R.raw.cube);
 		mShapeSmall = loadStructure(R.raw.teapot);
 		// Shape groundShape = Util.loadGround();
 
@@ -240,28 +239,28 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
 		mShapeNodeSmallTwo = new ShapeNode(mShapeSmall);
 		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
-
-		mSmallGroup.addChild(mShapeNodeSmallOne);
-		mSmallGroup.addChild(mShapeNodeSmallTwo);
+//
+//		mSmallGroup.addChild(mShapeNodeSmallOne);
+//		mSmallGroup.addChild(mShapeNodeSmallTwo);
 	}
 	
 	private void createLights() {
 
 		Light light = new Light(mSceneManager.getCamera());
 		light.mType = Light.Type.DIRECTIONAL;
-		light.mPosition.set(5, 5, 5);
-		light.mDirection.set(1, 1, 1);
+		light.mPosition.set(0, 1.5f, 0);
+		light.mDirection.set(-1, 0, 0);
 		light.mSpecular.set(1, 1, 1);
 		light.mAmbient.set(0.4f, 0.4f, 0.4f);
-		light.mDiffuse.set(0.3f, 0.3f, 0.3f);
+		light.mDiffuse.set(0.4f, 0.4f, 0.4f);
 
 		mSceneManager.addLight(light);
 	}
-
+	
 	private void setMaterial() {
 		Material mat = new GLMaterial();
 
-		mat.shininess = 5;
+		mat.shininess = 25;
 		mat.mAmbient.set(1, 0, 0);
 		mat.mDiffuse.set(1f, 0, 0);
 		mat.mSpecular.set(1f, 0f, 0f);

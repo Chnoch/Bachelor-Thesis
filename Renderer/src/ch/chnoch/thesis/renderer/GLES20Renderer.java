@@ -280,6 +280,7 @@ public class GLES20Renderer extends AbstractRenderer {
 //				Matrix3f rotation = new Matrix3f();
 //				matrix.getRotationScale(rotation);
 //				rotation.transpose();
+//				rotation.invert();
 //				for (int i = 0; i < mNormalBuffer.capacity(); i += 3) {
 //					float x = mNormalBuffer.get(i);
 //					float y = mNormalBuffer.get(i + 1);

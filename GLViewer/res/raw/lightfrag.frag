@@ -1,4 +1,3 @@
-#version 120
 precision mediump float;
 
 struct directional_light {
@@ -16,14 +15,23 @@ struct material_properties {
 	float specular_exponent;
 };
 
-varying float vMaterial[13];
-varying float vDirectional_light[18];
-varying vec4 vNormals;
+
+varying float vSpecular_exponent;
+
+varying vec3 vDirection;
+varying vec3 vHalfplane;
+
+varying vec4 vDiffuse;
+varying vec4 vAmbient;
+varying vec4 vMaterial_specular;
+varying vec4 vLight_specular;
+
+varying vec3 vNormals;
 
 const float c_zero = 0.0;
 const float c_one = 0.0;
 
-vec4 directional_light_computation(vec3 normal, directional_light light, material_properties material) {
+vec4 directional_light_computation(vec3 normal) {
 	vec4 computed_color = vec4(c_zero, c_zero, c_zero, c_zero);
 	float ndotl;
 	float ndoth;
@@ -42,50 +50,20 @@ vec4 directional_light_computation(vec3 normal, directional_light light, materia
 	return computed_color;
 }
 
-directional_light createDirectionalLight(float dirLight[18]) {
-	directional_light light;
-	
-	light.direction.x = dirLight[0];
-	light.direction.y = dirLight[1];
-	light.direction.z = dirLight[2];
-	light.halfplane.x = dirLight[3];
-	light.halfplane.y = dirLight[4];
-	light.halfplane.z = dirLight[5];
-	light.ambient_color.x = dirLight[6];
-	light.ambient_color.y = dirLight[7];
-	light.ambient_color.z = dirLight[8];
-	light.ambient_color.w = dirLight[9];
-	light.diffuse_color.x = dirLight[10];
-	light.diffuse_color.y = dirLight[11];
-	light.diffuse_color.z = dirLight[12];
-	light.diffuse_color.w = dirLight[13];
-	light.specular_color.x = dirLight[14];
-	light.specular_color.y = dirLight[15];
-	light.specular_color.z = dirLight[16];
-	light.specular_color.w = dirLight[17];
-	return light
-}
-
-material_properties createMaterial(float matProp[13]) {
-	material_properties material;
-	material.ambient_color.x = matProp[0];
-	material.ambient_color.y = matProp[1];
-	material.ambient_color.z = matProp[2];
-	material.ambient_color.w = matProp[3];
-	material.diffuse_color.x = matProp[4];
-	material.diffuse_color.y = matProp[5];
-	material.diffuse_color.z = matProp[6];
-	material.diffuse_color.w = matProp[7];
-	material.specular_color.x = matProp[8];
-	material.specular_color.y = matProp[9];
-	material.specular_color.z = matProp[10];
-	material.specular_color.w = matProp[11];
-	material.specular_exponent = matProp[12];
-	return material;
-}
-
-
 void main() {
 
-	gl_FragColor = computation(vNormals, createDirectionLight(vDirectional_light), createMaterial(vMaterial));
+	vec3 n, halfV;
+	float NdotL, NdotHV;
+	
+	vec4 color = vAmbient;
+	n = normalize(vNormals);
+	NdotL = max(dot(n,vDirection),0.0);
+	if (NdotL > 0.0) {
+		color += vDiffuse * NdotL;
+		halfV = normalize(vHalfplane);
+		NdotHV = max(dot(n,halfV),0.0);
+		color+= vMaterial_specular*vLight_specular* pow(NdotHV, vSpecular_exponent);
+	}
+
+	gl_FragColor = color;
 }
