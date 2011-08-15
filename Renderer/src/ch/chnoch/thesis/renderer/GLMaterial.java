@@ -12,9 +12,9 @@ public class GLMaterial extends Material {
 	}
 	
 	public void getHandles(int program) {
-		muAmbientColorHandle = glGetUniformLocation(program, "material.ambient_color");
-		muDiffuseColorHandle= glGetUniformLocation(program, "material.diffuse_color");
-		muSpecularColorHandle = glGetUniformLocation(program, "material.specular_color");
+		muAmbientColorHandle = glGetUniformLocation(program, "material.ambient");
+		muDiffuseColorHandle= glGetUniformLocation(program, "material.diffuse");
+		muSpecularColorHandle = glGetUniformLocation(program, "material.specular");
 		muSpecularExponentHandle = glGetUniformLocation(program, "material.specular_exponent");
 	}
 	

@@ -16,6 +16,7 @@ import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.GLUtil;
+import ch.chnoch.thesis.renderer.util.Util;
 
 import android.content.Context;
 import android.opengl.*;
@@ -40,8 +41,10 @@ public class GLES20Renderer extends AbstractRenderer {
 	private int mProgram;
 	private int mTextureID;
 	private int muMVPMatrixHandle;
+	private int muNormalMatrixHandle;
 	private int maVertexHandle;
 	private int maTextureHandle;
+	private int maHasTextureHandle;
 	private int maNormalHandle;
 	private int maLightHandle;
 	private int maMaterialHandle;
@@ -55,6 +58,7 @@ public class GLES20Renderer extends AbstractRenderer {
 	private boolean mEnableShader;
 
 	private boolean mTextureChanged = false;
+	private boolean mTextureBound = false;
 
 	private final String TAG = "GLES20Renderer";
 
@@ -180,23 +184,28 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			loadTextures();
 
-//			Log.d(TAG, "Vertex Handle");
+			// Log.d(TAG, "Vertex Handle");
 			maVertexHandle = glGetAttribLocation(mProgram, "aPosition");
 			GLUtil.checkGlError("glUseProgram", TAG);
 
-//			Log.d(TAG, "Texture Handle");
+			// Log.d(TAG, "Texture Handle");
 			maTextureHandle = glGetAttribLocation(mProgram, "aTextureCoord");
 			GLUtil.checkGlError("glUseProgram", TAG);
 
-//			Log.d(TAG, "Normal Handle");
+			maHasTextureHandle = glGetAttribLocation(mProgram, "aHasTexture");
+
+			// Log.d(TAG, "Normal Handle");
 			maNormalHandle = glGetAttribLocation(mProgram, "aNormals");
 			GLUtil.checkGlError("glUseProgram", TAG);
 
-//			Log.d(TAG, "MVP Handle");
+			// Log.d(TAG, "MVP Handle");
 			muMVPMatrixHandle = glGetUniformLocation(mProgram, "uMVPMatrix");
 			if (muMVPMatrixHandle == -1) {
 				throw new RuntimeException("No MVPMatrix Handle");
 			}
+
+			muNormalMatrixHandle = glGetUniformLocation(mProgram,
+					"uNormalMatrix");
 
 			Iterator<Light> lights = mSceneManager.lightIterator();
 			if (lights.hasNext()) {
@@ -227,6 +236,7 @@ public class GLES20Renderer extends AbstractRenderer {
 		mIndexBuffer = buffers.getIndexBuffer();
 		mTexCoordsBuffer = buffers.getTexCoordsBuffer();
 		mNormalBuffer = buffers.getNormalBuffer();
+		mTextureBound = false;
 
 		try {
 			// Set the modelview matrix by multiplying the camera matrix and the
@@ -251,61 +261,63 @@ public class GLES20Renderer extends AbstractRenderer {
 				if (texture != null) {
 					glActiveTexture(GL_TEXTURE0);
 					glBindTexture(GL_TEXTURE_2D, texture.getID());
+					mTextureBound = true;
 				}
 			}
 
 			if (maVertexHandle != -1) {
-//				Log.d(TAG, "Vertex Pointers");
+				// Log.d(TAG, "Vertex Pointers");
 				glVertexAttribPointer(maVertexHandle, 3, GL_FLOAT, false, 0,
 						mVertexBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maPosition", TAG);
 				glEnableVertexAttribArray(maVertexHandle);
 			}
 
-			if (maTextureHandle != -1 && mTexCoordsBuffer != null) {
-//				Log.d(TAG, "Texture Pointers");
-				glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT, false, 0,
-						mTexCoordsBuffer);
-				GLUtil.checkGlError("glVertexAttribPointer maTextureHandle",
-						TAG);
-				glEnableVertexAttribArray(maTextureHandle);
-				GLUtil.checkGlError(
-						"glEnableVertexAttribArray maTextureHandle", TAG);
+			if (mTextureBound) {
+				if (maTextureHandle != -1 && mTexCoordsBuffer != null) {
+					// Log.d(TAG, "Texture Pointers");
+					glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT, false,
+							0, mTexCoordsBuffer);
+					GLUtil.checkGlError(
+							"glVertexAttribPointer maTextureHandle", TAG);
+					glEnableVertexAttribArray(maTextureHandle);
+					GLUtil.checkGlError(
+							"glEnableVertexAttribArray maTextureHandle", TAG);
+					glVertexAttrib1f(maHasTextureHandle, 2);
+				} else if (maHasTextureHandle != -1) {
+					glVertexAttrib1f(maHasTextureHandle, 0);
+				}
+			} else if (maHasTextureHandle != -1){				
+				glVertexAttrib1f(maHasTextureHandle, 0);
 			}
 
-			if (maNormalHandle != -1 && mNormalBuffer != null) {
+			if (muNormalMatrixHandle!= -1 && maNormalHandle != -1 && mNormalBuffer != null) {
 				// rotate normals
-//				FloatBuffer normals = mNormalBuffer.duplicate();
-//				Matrix4f matrix = renderItem.getT();
-//				Matrix3f rotation = new Matrix3f();
-//				matrix.getRotationScale(rotation);
-//				rotation.transpose();
-//				rotation.invert();
-//				for (int i = 0; i < mNormalBuffer.capacity(); i += 3) {
-//					float x = mNormalBuffer.get(i);
-//					float y = mNormalBuffer.get(i + 1);
-//					float z = mNormalBuffer.get(i + 2);
-//
-//					Vector3f vec = new Vector3f(x, y, z);
-//					rotation.transform(vec);
-//					// vec.normalize();
-//					normals.put(i, vec.x);
-//					normals.put(i + 1, vec.y);
-//					normals.put(i + 2, vec.z);
-//				}
+				t.set(mSceneManager.getFrustum().getProjectionMatrix());
+				t.mul(mSceneManager.getCamera().getCameraMatrix());
+				t.mul(renderItem.getT());
+				t.transpose();
+				t.invert();
 
-//				Log.d(TAG, "Normal Pointers");
+				// Log.d(TAG, "Normal Pointers");
 				glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT, true, 0,
 						mNormalBuffer);
 				GLUtil.checkGlError("glVertexAttribPointer maNormalHandle", TAG);
 				glEnableVertexAttribArray(maNormalHandle);
 				GLUtil.checkGlError("glEnableVertexAttribArray maNormalHandle",
 						TAG);
+				glUniformMatrix4fv(muNormalMatrixHandle, 1, false,
+						GLUtil.matrix4fToFloat16(t), 0);
+				GLUtil.checkGlError("glUniformMatrix4fv muNormalMatrixHandle",
+						TAG);
 			}
 
 			// Light
 			if (mLight != null) {
-				mLight.draw();
+				t.set(mSceneManager.getFrustum().getProjectionMatrix());
+				t.mul(mSceneManager.getCamera().getCameraMatrix());
+				t.set(Util.getIdentityMatrix());
+				mLight.draw(t);
 			}
 
 			// Material

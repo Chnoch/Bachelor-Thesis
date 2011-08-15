@@ -75,17 +75,20 @@ public class Camera {
 	public void update() {
 		updateCamera();
 	}
-	
+
 	public Vector3f createHalfwayVector(Light light) {
 		Vector3f halfway;
 		Vector3f eyeVec = new Vector3f(mCenterOfProjection);
-		eyeVec.sub(mLookAtPoint);
-		Vector3f lightSource = light.mDirection;
+//		eyeVec.sub(mLookAtPoint);
+		Vector3f lightSource = light.getDirection();
+//		lightSource.negate();
+//		lightSource.sub(light.getDirection());
 		halfway = new Vector3f(eyeVec);
-		halfway.add(lightSource);
-		halfway.normalize();
+		halfway.sub(lightSource);
+//		halfway.normalize();
 		return halfway;
 	}
+	
 
 	private void updateCamera() {
 		Vector3f x = new Vector3f();
@@ -123,14 +126,14 @@ public class Camera {
 		forwardy = mCenterOfProjection.y - mLookAtPoint.y;
 		forwardz = mCenterOfProjection.z - mLookAtPoint.z;
 
-		invMag = (float) (1.0 / Math.sqrt(forwardx * forwardx + forwardy * forwardy
-				+ forwardz * forwardz));
+		invMag = (float) (1.0 / Math.sqrt(forwardx * forwardx + forwardy
+				* forwardy + forwardz * forwardz));
 		forwardx = forwardx * invMag;
 		forwardy = forwardy * invMag;
 		forwardz = forwardz * invMag;
 
-		invMag = (float) (1.0 / Math.sqrt(mUpVector.x * mUpVector.x + mUpVector.y
-				* mUpVector.y + mUpVector.z * mUpVector.z));
+		invMag = (float) (1.0 / Math.sqrt(mUpVector.x * mUpVector.x
+				+ mUpVector.y * mUpVector.y + mUpVector.z * mUpVector.z));
 		upx = mUpVector.x * invMag;
 		upy = mUpVector.y * invMag;
 		upz = mUpVector.z * invMag;
@@ -140,7 +143,8 @@ public class Camera {
 		sidey = upz * forwardx - upx * forwardz;
 		sidez = upx * forwardy - upy * forwardx;
 
-		invMag = (float) (1.0 / Math.sqrt(sidex * sidex + sidey * sidey + sidez * sidez));
+		invMag = (float) (1.0 / Math.sqrt(sidex * sidex + sidey * sidey + sidez
+				* sidez));
 		sidex *= invMag;
 		sidey *= invMag;
 		sidez *= invMag;
@@ -164,13 +168,16 @@ public class Camera {
 		mat[9] = forwardy;
 		mat[10] = forwardz;
 
-		mat[3] = -mCenterOfProjection.x * mat[0] + -mCenterOfProjection.y * mat[1] + -mCenterOfProjection.z * mat[2];
-		mat[7] = -mCenterOfProjection.x * mat[4] + -mCenterOfProjection.y * mat[5] + -mCenterOfProjection.z * mat[6];
-		mat[11] = -mCenterOfProjection.x * mat[8] + -mCenterOfProjection.y * mat[9] + -mCenterOfProjection.z * mat[10];
+		mat[3] = -mCenterOfProjection.x * mat[0] + -mCenterOfProjection.y
+				* mat[1] + -mCenterOfProjection.z * mat[2];
+		mat[7] = -mCenterOfProjection.x * mat[4] + -mCenterOfProjection.y
+				* mat[5] + -mCenterOfProjection.z * mat[6];
+		mat[11] = -mCenterOfProjection.x * mat[8] + -mCenterOfProjection.y
+				* mat[9] + -mCenterOfProjection.z * mat[10];
 
 		mat[12] = mat[13] = mat[14] = 0;
 		mat[15] = 1;
-		
+
 		mCameraMatrix.set(mat);
 	}
 }

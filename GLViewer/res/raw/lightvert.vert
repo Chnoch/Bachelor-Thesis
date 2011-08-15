@@ -3,21 +3,28 @@ precision mediump float;
 struct directional_light {
 	vec3 direction;
 	vec3 halfplane;
-	vec4 ambient_color;
-	vec4 diffuse_color;
-	vec4 specular_color;
+	vec4 ambient;
+	vec4 diffuse;
+	vec4 specular;
 };
 
 struct material_properties {
-	vec4 ambient_color;
-	vec4 diffuse_color;
-	vec4 specular_color;
+	vec4 ambient;
+	vec4 diffuse;
+	vec4 specular;
 	float specular_exponent;
 };
+
+// texture variables
+attribute float aHasTexture;
+varying float vTex;
+attribute vec2 aTextureCoord;
+varying vec2 vTextureCoord;
 
 uniform material_properties material;
 uniform directional_light light;
 uniform mat4 uMVPMatrix;
+uniform mat4 uNormalMatrix;
 
 attribute vec4 aPosition;
 attribute vec4 aNormals;
@@ -35,15 +42,19 @@ varying vec4 vLight_specular;
 varying vec3 vNormals;
 
 void main() {
+	// pass on texture variables
+	vTex = aHasTexture;
+	vTextureCoord = aTextureCoord;
+	
 	vDirection = normalize(light.direction);
 	vHalfplane = normalize(light.halfplane);
-	vDiffuse = material.diffuse_color * light.diffuse_color;
-	vAmbient = material.ambient_color * light.ambient_color;
-	vMaterial_specular = material.specular_color;
-	vLight_specular = light.specular_color;
+	vDiffuse = material.diffuse * light.diffuse;
+	vAmbient = material.ambient * light.ambient;
+	vMaterial_specular = material.specular;
+	vLight_specular = light.specular;
 	vSpecular_exponent = material.specular_exponent;
 	
-	vNormals = normalize(uMVPMatrix * aNormals).xyz;
+	vNormals = normalize(uNormalMatrix * aNormals).xyz;
 	
 	gl_Position = uMVPMatrix * aPosition;
 }

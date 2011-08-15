@@ -70,7 +70,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			mRenderer = new GLES20Renderer(getApplicationContext());
 			Shader shader = createShaders();
 			Texture texture = createTexture(R.raw.wall);
-			mShapeNodeBig.getMaterial().setTexture(texture);
+//			mShapeNodeBig.getMaterial().setTexture(texture);
 			mShapeNodeBig.getMaterial().setShader(shader);
 //			mShapeNodeSmallOne.setMaterial(material);
 		} else {
@@ -155,7 +155,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	 * 
 	 * 
 	 */
-	
 	private void addCube() {
 		Shape shape = loadStructure(R.raw.cubetex);
 		ShapeNode node = new ShapeNode(shape);
@@ -202,11 +201,12 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		}
 		return tex;
 	}
+	
 
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
-		mShapeBig = loadStructure(R.raw.cube);
+		mShapeBig = loadStructure(R.raw.cubetex);
 		mShapeSmall = loadStructure(R.raw.teapot);
 		// Shape groundShape = Util.loadGround();
 
@@ -225,7 +225,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
 
-		
 		// mRoot.addChild(new ShapeNode(groundShape));
 
 		mShapeNodeBig = new ShapeNode(mShapeBig);
@@ -245,14 +244,13 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 	
 	private void createLights() {
-
 		Light light = new Light(mSceneManager.getCamera());
-		light.mType = Light.Type.DIRECTIONAL;
-		light.mPosition.set(0, 1.5f, 0);
-		light.mDirection.set(-1, 0, 0);
-		light.mSpecular.set(1, 1, 1);
-		light.mAmbient.set(0.4f, 0.4f, 0.4f);
-		light.mDiffuse.set(0.4f, 0.4f, 0.4f);
+		light.setType(Light.Type.DIRECTIONAL);
+		light.setPosition(new Vector3f(0, 4, 3));
+		light.setDirection(new Vector3f(0, -1, -1));
+		light.setSpecular(new Vector3f(0, 0, 1));
+		light.setAmbient(new Vector3f(0f, 0f, 0f));
+		light.setDiffuse(new Vector3f(0f, 0, 0f));
 
 		mSceneManager.addLight(light);
 	}
@@ -260,16 +258,16 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void setMaterial() {
 		Material mat = new GLMaterial();
 
-		mat.shininess = 25;
-		mat.mAmbient.set(1, 0, 0);
-		mat.mDiffuse.set(1f, 0, 0);
-		mat.mSpecular.set(1f, 0f, 0f);
+		mat.shininess = 100;
+		mat.mAmbient.set(1f,1,1 );
+		mat.mDiffuse.set(1f, 1, 1);
+		mat.mSpecular.set(1f, 1f, 1f);
 
 		mShapeNodeBig.setMaterial(mat);
 		mShapeNodeSmallOne.setMaterial(mat);
 		mShapeNodeSmallTwo.setMaterial(mat);
 	}
-
+	
 	private void enablePhysics() {
 		mSceneManager.enablePhysicsEngine();
 		mViewer.setOnClickListener(this);

@@ -7,10 +7,12 @@ import javax.vecmath.*;
  */
 public class Light {
 
-	public Vector3f mHalfPlane, mDirection, mPosition, mDiffuse, mSpecular, mAmbient, mSpotDirection;
-	public float mSpotExponent;
-	public float mSpotCutoff;
-	public Type mType;
+	private Vector3f mHalfPlane, mDirection, mPosition, mDiffuse, mSpecular, mAmbient, mSpotDirection;
+	private float mSpotExponent;
+	private float mSpotCutoff;
+	private Type mType;
+	
+	private Camera mCamera;
 
 	public Light(Camera camera) {
 		mDirection = new Vector3f(0.f, 0.f, 1.f);
@@ -22,11 +24,22 @@ public class Light {
 		mSpotDirection = new Vector3f(0.f, 0.f, 1.f);
 		mSpotExponent = 0.f;
 		mSpotCutoff = 180.f;
+		mCamera = camera;
 		
 		mHalfPlane = camera.createHalfwayVector(this);
 	}
 
 
+	public float[] createDirectionArray(Matrix3f viewMatrix) {
+		Vector3f tempDir = new Vector3f(mDirection);
+		viewMatrix.transform(tempDir);
+		float[] dir = new float[3];
+		dir[0] = tempDir.x;
+		dir[1] = tempDir.y;
+		dir[2] = tempDir.z;
+		return dir;
+	}
+	
 	public float[] createDirectionArray() {
 		float[] dir = new float[3];
 		dir[0] = mDirection.x;
@@ -44,12 +57,14 @@ public class Light {
 		return pos;
 	}
 
-	public float[] createHalfplaneArray() {
-		float[] halfplane = new float[3];
-		halfplane[0] = mHalfPlane.x;
-		halfplane[1] = mHalfPlane.y;
-		halfplane[2] = mHalfPlane.z;
-		return halfplane;
+	public float[] createHalfplaneArray(Matrix3f viewMatrix) {
+		Vector3f tempDir = new Vector3f(mHalfPlane);
+		viewMatrix.transform(tempDir);
+		float[] halfVec = new float[3];
+		halfVec[0] = tempDir.x;
+		halfVec[1] = tempDir.y;
+		halfVec[2] = tempDir.z;
+		return halfVec;
 	}
 	
 	public float[] createSpotDirectionArray() {
@@ -94,5 +109,106 @@ public class Light {
 	 */
 	public enum Type {
 		DIRECTIONAL, POINT, SPOT
+	}
+	
+	public Vector3f getHalfPlane() {
+		return mHalfPlane;
+	}
+	
+	
+	public void setHalfPlane(Vector3f mHalfPlane) {
+		this.mHalfPlane = mHalfPlane;
+	}
+	
+	
+	public Vector3f getDirection() {
+		return mDirection;
+	}
+	
+	
+	public void setDirection(Vector3f mDirection) {
+		this.mDirection = mDirection;
+		mHalfPlane = mCamera.createHalfwayVector(this);
+	}
+	
+	
+	public Vector3f getPosition() {
+		return mPosition;
+	}
+	
+	
+	public void setPosition(Vector3f mPosition) {
+		this.mPosition = mPosition;
+		mHalfPlane = mCamera.createHalfwayVector(this);
+	}
+	
+	
+	public Vector3f getDiffuse() {
+		return mDiffuse;
+	}
+	
+	
+	public void setDiffuse(Vector3f mDiffuse) {
+		this.mDiffuse = mDiffuse;
+	}
+	
+	
+	public Vector3f getSpecular() {
+		return mSpecular;
+	}
+	
+	
+	public void setSpecular(Vector3f mSpecular) {
+		this.mSpecular = mSpecular;
+	}
+	
+	
+	public Vector3f getAmbient() {
+		return mAmbient;
+	}
+	
+	
+	public void setAmbient(Vector3f mAmbient) {
+		this.mAmbient = mAmbient;
+	}
+	
+	
+	public Vector3f getSpotDirection() {
+		return mSpotDirection;
+	}
+	
+	
+	public void setSpotDirection(Vector3f mSpotDirection) {
+		this.mSpotDirection = mSpotDirection;
+	}
+	
+	
+	public float getSpotExponent() {
+		return mSpotExponent;
+	}
+	
+	
+	public void setSpotExponent(float mSpotExponent) {
+		this.mSpotExponent = mSpotExponent;
+	}
+	
+	
+	public float getSpotCutoff() {
+		return mSpotCutoff;
+	}
+	
+	
+	public void setSpotCutoff(float mSpotCutoff) {
+		this.mSpotCutoff = mSpotCutoff;
+	}
+	
+	
+	public Type getType() {
+		return mType;
+	}
+	
+	
+	public void setType(Type mType) {
+		this.mType = mType;
 	}
 }

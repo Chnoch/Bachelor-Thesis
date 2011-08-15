@@ -1,6 +1,10 @@
 package ch.chnoch.thesis.renderer;
 
 import static android.opengl.GLES20.*;
+
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Matrix4f;
+
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
 public class GLLight {
@@ -17,19 +21,23 @@ public class GLLight {
 	public void getHandles(int program) {
 		muDirectionHandle = glGetUniformLocation(program, "light.direction");
 		muHalfplaneHandle = glGetUniformLocation(program, "light.halfplane");
-		muAmbientColorHandle = glGetUniformLocation(program, "light.ambient_color");
-		muDiffuseColorHandle = glGetUniformLocation(program, "light.diffuse_color");
-		muSpecularColorHandle = glGetUniformLocation(program, "light.specular_color");
+		muAmbientColorHandle = glGetUniformLocation(program, "light.ambient");
+		muDiffuseColorHandle = glGetUniformLocation(program, "light.diffuse");
+		muSpecularColorHandle = glGetUniformLocation(program, "light.specular");
 	}
 	
-	public void draw() throws Exception {
+	public void draw(Matrix4f viewMatrix) throws Exception {
+		
+		Matrix3f rotMatrix = new Matrix3f(); 
+		viewMatrix.getRotationScale(rotMatrix);
+		
 		float[] dir = new float[3];
-		dir = mLight.createDirectionArray();
+		dir = mLight.createDirectionArray(rotMatrix);
 		glUniform3f(muDirectionHandle, dir[0], dir[1], dir[2]);
 		GLUtil.checkGlError("glUniform3f muDirectionHandle",TAG);
 
 		float[] halfPlane = new float[3];
-		halfPlane = mLight.createHalfplaneArray();
+		halfPlane = mLight.createHalfplaneArray(rotMatrix);
 		glUniform3f(muHalfplaneHandle, halfPlane[0], halfPlane[1], halfPlane[2]);
 		GLUtil.checkGlError("glUniform3f muHalfplaneHandle",TAG);
 		

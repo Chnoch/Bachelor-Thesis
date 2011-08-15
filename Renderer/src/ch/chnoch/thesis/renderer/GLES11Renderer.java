@@ -216,19 +216,19 @@ public class GLES11Renderer extends AbstractRenderer {
 			l = iter.next();
 			gl.glEnable(lightIndex[i]);
 
-			if (l.mType == Light.Type.DIRECTIONAL) {
+			if (l.getType() == Light.Type.DIRECTIONAL) {
 				gl.glLightfv(lightIndex[i], GL_POSITION,
 						l.createDirectionArray(), 0);
 			}
-			if (l.mType == Light.Type.POINT || l.mType == Light.Type.SPOT) {
+			if (l.getType() == Light.Type.POINT || l.getType() == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL_POSITION,
 						l.createPositionArray(), 0);
 			}
-			if (l.mType == Light.Type.SPOT) {
+			if (l.getType() == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL_SPOT_DIRECTION,
 						l.createSpotDirectionArray(), 0);
-				gl.glLightf(lightIndex[i], GL_SPOT_EXPONENT, l.mSpotExponent);
-				gl.glLightf(lightIndex[i], GL_SPOT_CUTOFF, l.mSpotCutoff);
+				gl.glLightf(lightIndex[i], GL_SPOT_EXPONENT, l.getSpotExponent());
+				gl.glLightf(lightIndex[i], GL_SPOT_CUTOFF, l.getSpotCutoff());
 			}
 
 			gl.glLightfv(lightIndex[i], GL_DIFFUSE, l.createDiffuseArray(), 0);
