@@ -78,6 +78,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			mRenderer = new GLES11Renderer();
 		}
 		
+		
 		mViewer = new GLViewer(this, mRenderer, openGlES20);
 		mRenderer.setSceneManager(mSceneManager);
 
@@ -127,9 +128,9 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	    case R.id.aluminium:
 	        mat.setTexture(createTexture(R.raw.aluminium));
 	        break;
-	    case R.id.wood:
-	    	mat.setTexture(createTexture(R.raw.wood));
-	    	break;
+//	    case R.id.wood:
+//	    	mat.setTexture(createTexture(R.raw.wood));
+//	    	break;
 	    case R.id.wall:
 	    	mat.setTexture(createTexture(R.raw.wall));
 	    	break;
@@ -138,6 +139,9 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	    	break;
 	    case R.id.teapot:
 	    	addTeapot();
+	    	break;
+	    case R.id.sphere:
+	    	addSphere();
 	    	break;
 	    default:
 	        return super.onOptionsItemSelected(item);
@@ -171,10 +175,18 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mRoot.addChild(node);
 	}
 	
+	private void addSphere() {
+		Shape shape = loadStructure(R.raw.sphere_normal);
+		ShapeNode node = new ShapeNode(shape);
+		
+		node.setMaterial(mShapeNodeBig.getMaterial());
+		mRoot.addChild(node);
+	}
+	
 	
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.lightvert);
-		String fragmentShader = readRawText(R.raw.lightfrag);
+		String vertexShader = readRawText(R.raw.pointlightvert);
+		String fragmentShader = readRawText(R.raw.pointlightfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -192,6 +204,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		return null;
 	}
 	
+	
 	private Texture createTexture(int id) {
 		Texture tex = mRenderer.makeTexture();
 		try {
@@ -202,15 +215,15 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		return tex;
 	}
 	
-
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
-		mShapeBig = loadStructure(R.raw.cubetex);
+		mShapeBig = loadStructure(R.raw.sphere_prec);
 		mShapeSmall = loadStructure(R.raw.teapot);
 		// Shape groundShape = Util.loadGround();
 
 		Vector3f transY = new Vector3f(0, 5, 0);
+		
 		
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
 		Vector3f transRight = new Vector3f(2, 0, 0);
@@ -245,23 +258,25 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	
 	private void createLights() {
 		Light light = new Light(mSceneManager.getCamera());
-		light.setType(Light.Type.DIRECTIONAL);
-		light.setPosition(new Vector3f(0, 4, 3));
-		light.setDirection(new Vector3f(0, -1, -1));
-		light.setSpecular(new Vector3f(0, 0, 1));
-		light.setAmbient(new Vector3f(0f, 0f, 0f));
-		light.setDiffuse(new Vector3f(0f, 0, 0f));
+		light.setType(Light.Type.POINT);
+		
+//		light.setDirection(new Vector3f(0.05f, 0.1f, -1));
+		light.setPosition(new Vector3f(0,0,3));
+		light.setSpecular(new Vector3f(1,1,1));
+		light.setAmbient(new Vector3f(0.5f,0.5f,0.5f));
+		light.setDiffuse(new Vector3f(0.5f,0.5f,0.5f));
 
 		mSceneManager.addLight(light);
 	}
 	
+	
 	private void setMaterial() {
 		Material mat = new GLMaterial();
 
-		mat.shininess = 100;
-		mat.mAmbient.set(1f,1,1 );
-		mat.mDiffuse.set(1f, 1, 1);
-		mat.mSpecular.set(1f, 1f, 1f);
+		mat.shininess = 1000;
+		mat.mAmbient.set(0,0,0.5f);
+		mat.mDiffuse.set(0,0,0.5f);
+		mat.mSpecular.set(1,1,1);
 
 		mShapeNodeBig.setMaterial(mat);
 		mShapeNodeSmallOne.setMaterial(mat);
@@ -326,6 +341,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			}
 		}
 	}
+	
 
 	public void onClick(View v) {
 		Log.d("Box2dIntegration", "onClick");

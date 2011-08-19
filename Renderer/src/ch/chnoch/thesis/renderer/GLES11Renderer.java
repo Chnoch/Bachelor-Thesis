@@ -15,6 +15,7 @@ import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;
+import ch.chnoch.thesis.renderer.util.Util;
 
 import android.content.Context;
 import android.util.Log;
@@ -222,7 +223,7 @@ public class GLES11Renderer extends AbstractRenderer {
 			}
 			if (l.getType() == Light.Type.POINT || l.getType() == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL_POSITION,
-						l.createPositionArray(), 0);
+						l.createPositionArray(null), 0);
 			}
 			if (l.getType() == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL_SPOT_DIRECTION,

@@ -6,4 +6,5 @@
     <string name="wall">Ziegelsteine</string>
     <string name="cube">Add Cube</string>
     <string name="teapot">Add Teapot</string>
+    <string name="sphere">Add Sphere</string>
 </resources>

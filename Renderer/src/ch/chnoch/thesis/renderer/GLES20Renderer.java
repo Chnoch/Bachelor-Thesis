@@ -42,10 +42,12 @@ public class GLES20Renderer extends AbstractRenderer {
 	private int mTextureID;
 	private int muMVPMatrixHandle;
 	private int muNormalMatrixHandle;
+	private int muModelViewMatrixHandle;
 	private int maVertexHandle;
 	private int maTextureHandle;
 	private int maHasTextureHandle;
 	private int maNormalHandle;
+	private int maEyeVectorHandle;
 	private int maLightHandle;
 	private int maMaterialHandle;
 
@@ -193,9 +195,13 @@ public class GLES20Renderer extends AbstractRenderer {
 			GLUtil.checkGlError("glUseProgram", TAG);
 
 			maHasTextureHandle = glGetAttribLocation(mProgram, "aHasTexture");
+			GLUtil.checkGlError("glUseProgram", TAG);
 
 			// Log.d(TAG, "Normal Handle");
 			maNormalHandle = glGetAttribLocation(mProgram, "aNormals");
+			GLUtil.checkGlError("glUseProgram", TAG);
+
+			maEyeVectorHandle = glGetAttribLocation(mProgram, "aEyeVector");
 			GLUtil.checkGlError("glUseProgram", TAG);
 
 			// Log.d(TAG, "MVP Handle");
@@ -206,6 +212,8 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			muNormalMatrixHandle = glGetUniformLocation(mProgram,
 					"uNormalMatrix");
+			
+			muModelViewMatrixHandle = glGetUniformLocation(mProgram, "uMVMatrix");
 
 			Iterator<Light> lights = mSceneManager.lightIterator();
 			if (lights.hasNext()) {
@@ -273,6 +281,13 @@ public class GLES20Renderer extends AbstractRenderer {
 				glEnableVertexAttribArray(maVertexHandle);
 			}
 
+			if (maEyeVectorHandle != -1) {
+				Vector3f cop = mSceneManager.getCamera()
+						.getCenterOfProjection();
+				glVertexAttrib3f(maEyeVectorHandle, cop.x, cop.y, cop.z);
+//				glEnableVertexAttribArray(maEyeVectorHandle);
+			}
+
 			if (mTextureBound) {
 				if (maTextureHandle != -1 && mTexCoordsBuffer != null) {
 					// Log.d(TAG, "Texture Pointers");
@@ -287,11 +302,12 @@ public class GLES20Renderer extends AbstractRenderer {
 				} else if (maHasTextureHandle != -1) {
 					glVertexAttrib1f(maHasTextureHandle, 0);
 				}
-			} else if (maHasTextureHandle != -1){				
+			} else if (maHasTextureHandle != -1) {
 				glVertexAttrib1f(maHasTextureHandle, 0);
 			}
 
-			if (muNormalMatrixHandle!= -1 && maNormalHandle != -1 && mNormalBuffer != null) {
+			if (muNormalMatrixHandle != -1 && maNormalHandle != -1
+					&& mNormalBuffer != null) {
 				// rotate normals
 				t.set(mSceneManager.getFrustum().getProjectionMatrix());
 				t.mul(mSceneManager.getCamera().getCameraMatrix());
@@ -311,12 +327,20 @@ public class GLES20Renderer extends AbstractRenderer {
 				GLUtil.checkGlError("glUniformMatrix4fv muNormalMatrixHandle",
 						TAG);
 			}
+			if (muModelViewMatrixHandle != -1) {
+				t.set(mSceneManager.getCamera().getCameraMatrix());
+				t.mul(renderItem.getT());
+				glUniformMatrix4fv(muModelViewMatrixHandle, 1, false, GLUtil.matrix4fToFloat16(t), 0);
+				GLUtil.checkGlError("glUniformMatrix4fv muModelViewMatrixHandle",
+						TAG);
+			}
 
 			// Light
 			if (mLight != null) {
-				t.set(mSceneManager.getFrustum().getProjectionMatrix());
-				t.mul(mSceneManager.getCamera().getCameraMatrix());
+//				t.set(mSceneManager.getFrustum().getProjectionMatrix());
+//				t.mul(mSceneManager.getCamera().getCameraMatrix());
 				t.set(Util.getIdentityMatrix());
+//				t.invert();
 				mLight.draw(t);
 			}
 
