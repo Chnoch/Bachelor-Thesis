@@ -14,6 +14,8 @@ import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.*;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView.EGLContextFactory;
@@ -178,7 +180,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 	
 	private void addSphere() {
-		Shape shape = Util.loadSphere(10, 10, 1);
+		
+		Shape shape = Util.loadSphere(20, 20, 1);
 		ShapeNode node = new ShapeNode(shape);
 		
 		node.setMaterial(mShapeNodeBig.getMaterial());
@@ -187,8 +190,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	
 	
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.phongvert);
-		String fragmentShader = readRawText(R.raw.phongfrag);
+		String vertexShader = readRawText(R.raw.pointlightvert);
+		String fragmentShader = readRawText(R.raw.pointlightfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -220,7 +223,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
-		mShapeBig = loadStructure(R.raw.sphere_prec);
+		mShapeBig = Util.loadSphere(10,10,1);
 		mShapeSmall = loadStructure(R.raw.teapot);
 		// Shape groundShape = Util.loadGround();
 
@@ -262,12 +265,11 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 		
-		light.setDirection(new Vector3f(0,1, 0));
-//		light.setPosition(new Vector3f(0,0,3));
+		light.setDirection(new Vector3f(0,0, -1));
+		light.setPosition(new Vector3f(0,0,5));
 		light.setSpecular(new Vector3f(1,1,1));
 		light.setAmbient(new Vector3f(0.5f,0.5f,0.5f));
 		light.setDiffuse(new Vector3f(0.5f,0.5f,0.5f));
-
 		
 		mSceneManager.addLight(light);
 	}
@@ -276,7 +278,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void setMaterial() {
 		Material mat = new GLMaterial();
 
-		mat.shininess = 1000;
+		mat.shininess = 30;
 		mat.mAmbient.set(0,0,0.5f);
 		mat.mDiffuse.set(0,0,0.5f);
 		mat.mSpecular.set(1,1,1);
