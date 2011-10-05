@@ -52,7 +52,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		mSceneManager = new GraphSceneManager();
 		
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 5, 10));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 10));
 
 		createShapes();
 		createLights();
@@ -72,12 +72,14 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			Texture texture = createTexture(R.raw.wall);
 //			mShapeNodeBig.getMaterial().setTexture(texture);
 			mShapeNodeBig.getMaterial().setShader(shader);
+			
 //			mShapeNodeSmallOne.setMaterial(material);
+			
+			
 		} else {
 			Log.d(TAG, "Using OpenGL ES 1.1");
 			mRenderer = new GLES11Renderer();
 		}
-		
 		
 		mViewer = new GLViewer(this, mRenderer, openGlES20);
 		mRenderer.setSceneManager(mSceneManager);
@@ -176,7 +178,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 	
 	private void addSphere() {
-		Shape shape = loadStructure(R.raw.sphere_normal);
+		Shape shape = Util.loadSphere(10, 10, 1);
 		ShapeNode node = new ShapeNode(shape);
 		
 		node.setMaterial(mShapeNodeBig.getMaterial());
@@ -185,8 +187,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	
 	
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.pointlightvert);
-		String fragmentShader = readRawText(R.raw.pointlightfrag);
+		String vertexShader = readRawText(R.raw.phongvert);
+		String fragmentShader = readRawText(R.raw.phongfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -234,7 +236,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		leftTrans.setTranslation(transLeft);
 		Matrix4f rightTrans = Util.getIdentityMatrix();
 		rightTrans.setTranslation(transRight);
-
+		
 		mRoot = new TransformGroup();
 		mSceneManager.setRoot(mRoot);
 
@@ -260,12 +262,13 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 		
-//		light.setDirection(new Vector3f(0.05f, 0.1f, -1));
-		light.setPosition(new Vector3f(0,0,3));
+		light.setDirection(new Vector3f(0,1, 0));
+//		light.setPosition(new Vector3f(0,0,3));
 		light.setSpecular(new Vector3f(1,1,1));
 		light.setAmbient(new Vector3f(0.5f,0.5f,0.5f));
 		light.setDiffuse(new Vector3f(0.5f,0.5f,0.5f));
 
+		
 		mSceneManager.addLight(light);
 	}
 	

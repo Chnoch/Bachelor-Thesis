@@ -29,6 +29,7 @@ public class GLViewer extends GLSurfaceView {
 		mRenderer.setViewer(this);
 
 		setEGLConfigChooser(true);
+//		setEGLConfigChooser(8, 8, 8, 0, 16, 0);
 		// Turn on error-checking and logging
 		// setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR |
 		// GLSurfaceView.DEBUG_LOG_GL_CALLS);

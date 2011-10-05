@@ -45,6 +45,8 @@ void main() {
 	vSpecular_exponent = material.specular_exponent;
 	
 	vVaryingNormal = normalize(uNormalMatrix * aNormals).xyz;
+	//vVaryingNormal = normalize(aNormals).xyz;
+	//vVaryingNormal = normalize(vec3(0,1,1));
 	
 	vec4 vPosition4 = uMVMatrix * aPosition;
 	vec3 vPosition = vPosition4.xyz; // vPosition4.w;
