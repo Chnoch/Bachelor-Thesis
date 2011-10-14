@@ -266,7 +266,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		light.setType(Light.Type.POINT);
 		
 		light.setDirection(new Vector3f(0,0, -1));
-		light.setPosition(new Vector3f(0,0,5));
+		light.setPosition(new Vector3f(0,0,0));
 		light.setSpecular(new Vector3f(1,1,1));
 		light.setAmbient(new Vector3f(0.5f,0.5f,0.5f));
 		light.setDiffuse(new Vector3f(0.5f,0.5f,0.5f));
@@ -278,7 +278,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void setMaterial() {
 		Material mat = new GLMaterial();
 
-		mat.shininess = 30;
+		mat.shininess = 120;
 		mat.mAmbient.set(0,0,0.5f);
 		mat.mDiffuse.set(0,0,0.5f);
 		mat.mSpecular.set(1,1,1);
