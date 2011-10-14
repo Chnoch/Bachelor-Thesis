@@ -3,9 +3,7 @@ package ch.chnoch.thesis.viewer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.IntBuffer;
 
-import javax.microedition.khronos.egl.EGLContext;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
@@ -14,20 +12,16 @@ import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.*;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.opengl.GLSurfaceView.EGLContextFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.View.OnClickListener;
-
-import javax.microedition.khronos.egl.*;
 
 public class GLViewerActivity extends Activity implements OnClickListener {
 
@@ -90,7 +84,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mViewer.setOnTouchListener(touchHandler);
 		KeyHandler keyHandler = new KeyHandler(mRenderer);
 		mViewer.setOnKeyListener(keyHandler);
-
+		
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
@@ -309,7 +303,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		return new Shape(vertexBuffer);
 	}
 	
-
 	private String readRawText(int id) {
 		InputStream raw = getApplication().getResources().openRawResource(id);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

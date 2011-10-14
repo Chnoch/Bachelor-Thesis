@@ -27,6 +27,8 @@ public interface Node {
     public Matrix4f getRotationMatrix();
     public void initRotationMatrix(Matrix4f t);
     public void setRotationMatrix(Matrix4f t);
+    public void setScale(float f);
+    public float getScale();
     public Matrix4f getTransformationMatrix();
     
     public Shape getShape();
