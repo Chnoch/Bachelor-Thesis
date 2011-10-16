@@ -24,20 +24,6 @@ public class Plane {
 		mNormal = normal;
 	}
 
-	/*
-	 * public void setNode(Node node) { mNode = node; BoundingBox boundingBox =
-	 * mNode.getBoundingBox();
-	 * 
-	 * mPointOnPlane = new Vector3f(boundingBox.getLow()); float x =
-	 * boundingBox.getHigh().x; float y = boundingBox.getLow().y; float z =
-	 * boundingBox.getLow().z; Vector3f firstVector = new Vector3f(x, y, z);
-	 * firstVector.sub(firstVector, mPointOnPlane); y = boundingBox.getHigh().y;
-	 * Vector3f secondVector = new Vector3f(x, y, z);
-	 * secondVector.sub(secondVector, mPointOnPlane);
-	 * 
-	 * mNormal.cross(firstVector, secondVector); mNormal.normalize(); }
-	 */
-
 	public void setNode(Node node) {
 		mNode = node;
 	}
@@ -88,15 +74,6 @@ public class Plane {
 	}
 
 	public void update(Vector3f cur, Vector3f prev) {
-		/*
-		 * Vector3f x = new Vector3f(); Vector3f y = new Vector3f(); if
-		 * (Math.abs(mNormal.x) < Math.abs(mNormal.y)) { if (Math.abs(mNormal.x)
-		 * < Math.abs(mNormal.z)) { x.x = 1; } else { x.z = 1; } } else { if
-		 * (Math.abs(mNormal.y) < Math.abs(mNormal.z)) { x.y = 1; } else { x.z =
-		 * 1; } }
-		 * 
-		 * x.cross(mNormal, x); y.cross(mNormal, x);
-		 */
 		Log.d("Plane",
 				"Hitpoint cur: " + cur.toString() + " prev: " + prev.toString());
 		float dx = cur.x - prev.x;

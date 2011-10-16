@@ -14,12 +14,14 @@ public abstract class Leaf implements Node {
 	protected Node parent;
 	protected Matrix4f mTranslationMatrix, mRotationMatrix,
 			mTransformationMatrix;
+	protected float mScale;
 
 	public Leaf() {
 		super();
 		mTransformationMatrix = Util.getIdentityMatrix();
 		mRotationMatrix = Util.getIdentityMatrix();
 		mTranslationMatrix = Util.getIdentityMatrix();
+		mScale = 1;
 	}
 
 	public List<Node> getChildren() {
@@ -50,12 +52,22 @@ public abstract class Leaf implements Node {
 		this.mRotationMatrix = t;
 		setTransformationMatrix();
 	}
+	
+	public float getScale() {
+		return this.mScale;
+	}
+	
+	public void setScale(float f) {
+		this.mScale = f;
+		setTransformationMatrix();
+	}
 
 	protected void setTransformationMatrix() {
 		Matrix4f trans = new Matrix4f(mRotationMatrix);
 		Vector3f translation = new Vector3f();
 		mTranslationMatrix.get(translation);
 		trans.setTranslation(translation);
+		trans.setScale(mScale);
 
 		if (mTransformationMatrix == null) {
 			mTransformationMatrix = Util.getIdentityMatrix();

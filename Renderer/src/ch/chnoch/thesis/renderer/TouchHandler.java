@@ -2,12 +2,14 @@ package ch.chnoch.thesis.renderer;
 
 import java.util.List;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.Util;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
@@ -16,6 +18,7 @@ public class TouchHandler implements OnTouchListener {
 	private boolean mOnNode = false;
 	private boolean mIsTranslation = false;
 	private boolean mRotate = false;
+	private boolean mUpScaled = false;
 
 	private float mPreviousX, mPreviousY;
 	private long mEventStart, mEventEnd;
@@ -27,6 +30,8 @@ public class TouchHandler implements OnTouchListener {
 	private RayShapeIntersection mIntersection;
 
 	private GLViewer mViewer;
+	
+	private ScaleGestureDetector mScaleDetector;
 
 	private final float TOUCH_SCALE_FACTOR = 1;
 	private final float TRANSLATION_SCALE_FACTOR = 1;
@@ -39,10 +44,15 @@ public class TouchHandler implements OnTouchListener {
 		mTrackball = new Trackball();
 		mPlane = new Plane();
 		mPlane.setNormal(new Vector3f(0, 0, 1));
+		
+		mScaleDetector = new ScaleGestureDetector(viewer.getContext(), new ScaleListener());
 		// runSimulation();
 	}
 
 	public boolean onTouch(View view, MotionEvent e) {
+		// Let the gesture detector analyze the input first
+		mScaleDetector.onTouchEvent(e);
+		
 		if (view instanceof GLViewer) {
 			mViewer = (GLViewer) view;
 		}
@@ -53,17 +63,39 @@ public class TouchHandler implements OnTouchListener {
 		y = view.getHeight() - y;
 
 		switch (e.getAction()) {
+		
+		case MotionEvent.ACTION_DOWN:
+			try {
+				mEventStart = e.getEventTime();
+
+				Ray ray = mViewer.unproject(x, y);
+				Log.d("TouchHandler", "Ray: " + ray.toString());
+				
+				RayShapeIntersection intersect = mRenderer.getSceneManager()
+						.intersectRayNode(ray);
+				
+				if (intersect.hit) {
+					mIntersection = intersect;
+					mOnNode = true;
+				} else {
+					mOnNode = false;
+				}
+				break;
+			} catch (Exception exc) {
+//				Log.e(TAG, exc.getMessage());
+			}
+			mViewer.requestRender();
+		
 		case MotionEvent.ACTION_MOVE:
 			mEventEnd = e.getEventTime();
-
-			if (mOnNode) {
+			
+			if (mOnNode && !mScaleDetector.isInProgress()) {
 				float distance = (float) Math.sqrt(Math.pow(mPreviousX - x, 2)
 						+ Math.pow(mPreviousY - y, 2));
 				Log.d("TouchHandler", "Distance: " + distance);
-				if (mEventEnd - mEventStart > 500
-						|| (mIsTranslation && !mRotate) || distance < 0.1f) {
+				
+				if (mEventEnd - mEventStart > 500 || (mIsTranslation && !mRotate)) {
 					Log.d("TouchHandler", "Moving Object");
-
 					
 					try {
 						// Long Press occured: Manipulate object by moving it
@@ -82,15 +114,21 @@ public class TouchHandler implements OnTouchListener {
 						Log.d("TouchHandler", "Moving from "
 								+ startIntersection.hitPoint.toString()
 								+ " to " + endIntersection.hitPoint.toString());
+						
 						mPlane.update(endIntersection.hitPoint,
 								startIntersection.hitPoint);
 
 						mIsTranslation = true;
+						
+						if (!mUpScaled) {
+							mIntersection.node.setScale(mIntersection.node.getScale() + 0.1f);
+							mUpScaled = true;
+						}
 					} catch (Exception exc) {
 //						Log.e(TAG, exc.getMessage());
 					}
 
-				} else {
+				} else if (distance>0.1f){
 					// Short press: Rotate object
 					Log.d("TouchHandler", "Rotating Object");
 					try {
@@ -123,30 +161,17 @@ public class TouchHandler implements OnTouchListener {
 			}
 			mEventStart = e.getEventTime();
 			break;
-		case MotionEvent.ACTION_DOWN:
-
-			try {
-				mEventStart = e.getEventTime();
-
-				Ray ray = mViewer.unproject(x, y);
-				Log.d("TouchHandler", "Ray: " + ray.toString());
-				RayShapeIntersection intersect = mRenderer.getSceneManager()
-						.intersectRayNode(ray);
-				if (intersect.hit) {
-					mIntersection = intersect;
-					mOnNode = true;
-				} else {
-					mOnNode = false;
-				}
-				break;
-			} catch (Exception exc) {
-//				Log.e(TAG, exc.getMessage());
-			}
 		case MotionEvent.ACTION_UP:
 			// reset all flags
 			mIsTranslation = false;
 			mOnNode = false;
 			mRotate = false;
+			
+			if (mUpScaled) {
+				mIntersection.node.setScale(mIntersection.node.getScale() - 0.1f);
+				mUpScaled = false;
+				mViewer.requestRender();
+			}
 			// runSimulation();
 			break;
 
@@ -198,5 +223,22 @@ public class TouchHandler implements OnTouchListener {
 			}
 		}
 	}
+	
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+		float mScaleFactor = 1;
+		@Override
+		public boolean onScale(ScaleGestureDetector detector) {
+			mScaleFactor *= detector.getScaleFactor();
+			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
+			Log.d("TouchHandler", "ScaleFactor: " + mScaleFactor);
+			
+			mIntersection.node.setScale(mScaleFactor);
+			mViewer.requestRender();
+			
+			return true;
+		}
+
+	}
+
 
 }

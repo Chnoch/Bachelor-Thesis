@@ -40,6 +40,12 @@ public abstract class Group implements Node {
     	return null;
     }
     
+    public float getScale() {
+    	return 1;
+    }
+    
+    public void setScale(float f) {}
+    
     public Matrix4f getTransformationMatrix() {
     	return null;
     }
