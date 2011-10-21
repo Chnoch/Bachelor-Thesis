@@ -20,6 +20,7 @@ import ch.chnoch.thesis.renderer.util.Util;
 import android.content.Context;
 import android.util.Log;
 import static android.opengl.GLES10.*;
+import static android.opengl.GLES20.glClearColor;
 
 public class GLES11Renderer extends AbstractRenderer {
 
@@ -67,8 +68,8 @@ public class GLES11Renderer extends AbstractRenderer {
 	 */
 
 	public void onDrawFrame(GL10 gl) {
-		calculateFPS();
-		long oldTime = System.currentTimeMillis();
+//		calculateFPS();
+//		long oldTime = System.currentTimeMillis();
 
 		SceneManagerIterator shapeIterator = mSceneManager.iterator();
 
@@ -77,17 +78,18 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * The most efficient way of doing this is to use glClear().
 		 */
 		// gl.glViewport(0, 0, width, height);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		int count = 0;
+//		int count = 0;
 		while (shapeIterator.hasNext()) {
 			// Log.d("Renderer", "count: " + count);
-			count++;
+//			count++;
 			draw(shapeIterator.next(), gl);
 		}
 
-		long newTime = System.currentTimeMillis();
-
-		long diff = newTime - oldTime;
+//		long newTime = System.currentTimeMillis();
+//
+//		long diff = newTime - oldTime;
 		int error = gl.glGetError();
 		if (error != GL10.GL_NO_ERROR) {
 			Log.d("GLError", "Error: " + error);
@@ -188,10 +190,10 @@ public class GLES11Renderer extends AbstractRenderer {
 
 		gl.glEnableClientState(GL_VERTEX_ARRAY);
 		gl.glFrontFace(GL_CW);
-		gl.glVertexPointer(3, GL_FIXED, 0, mVertexBuffer);
-		// gl.glColorPointer(4, GL_FIXED, 0, mColorBuffer);
+		gl.glVertexPointer(3, GL_FLOAT, 0, mVertexBuffer);
+//		 gl.glColorPointer(4, GL_FLOAT, 0, mColorBuffer);
 		gl.glEnableClientState(GL_NORMAL_ARRAY);
-		gl.glNormalPointer(GL_FIXED, 0, mNormalBuffer);
+		gl.glNormalPointer(GL_FLOAT, 0, mNormalBuffer);
 		// gl.glEnable(GL_TEXTURE_2D);
 		// gl.glTexCoordPointer(2, GL_FLOAT, 0, mTexCoordsBuffer);
 		gl.glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
@@ -212,7 +214,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		Iterator<Light> iter = mSceneManager.lightIterator();
 
 		int i = 0;
-		Light l;
+		Light l = iter.next();
 		while (iter.hasNext() && i < 8) {
 			l = iter.next();
 			gl.glEnable(lightIndex[i]);
