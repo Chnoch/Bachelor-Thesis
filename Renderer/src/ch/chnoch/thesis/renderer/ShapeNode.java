@@ -67,6 +67,11 @@ public class ShapeNode extends Leaf {
 		setTransformationMatrix();
 		updateBoundingBox();
 	}
+	
+	public void setScale(float scale) {
+		super.setScale(scale);
+		updateBoundingBox();
+	}
 
 	public Matrix4f getCompleteTransformationMatrix() {
 		Matrix4f transform = new Matrix4f(getTransformationMatrix());

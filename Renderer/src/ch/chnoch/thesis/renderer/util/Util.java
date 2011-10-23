@@ -139,42 +139,8 @@ public class Util {
 		return shape;
 	}
 
-	public static Shape loadGround() {
-		VertexBuffers vertexBuffer = new VertexBuffers();
-		float vertices[] = { -100 * one, -one / 10f, -100 * one, -100 * one,
-				-one / 10f, -100 * one, -100 * one, -one / 10f, -100 * one,
-
-				100 * one, -one / 10f, -100 * one, 100 * one, -one / 10f,
-				-100 * one, 100 * one, -one / 10f, -100 * one,
-
-				100 * one, one / 10f, -100 * one, 100 * one, one / 10f,
-				-100 * one, 100 * one, one / 10f, -100 * one,
-
-				-100 * one, 0.1f * one, -100 * one, -100 * one, 0.1f * one,
-				-100 * one, -100 * one, 0.1f * one, -100 * one,
-
-				-100 * one, -0.1f * one, 100 * one, -100 * one, -0.1f * one,
-				100 * one, -100 * one, -0.1f * one, 100 * one,
-
-				100 * one, -0.1f * one, 100 * one, 100 * one, -0.1f * one,
-				100 * one, 100 * one, -0.1f * one, 100 * one,
-
-				100 * one, 0.1f * one, 100 * one, 100 * one, 0.1f * one,
-				100 * one, 100 * one, 0.1f * one, 100 * one,
-
-				-100 * one, 0.1f * one, 100 * one, -100 * one, 0.1f * one,
-				100 * one, -100 * one, 0.1f * one, 100 * one };
-
-		vertexBuffer.setVertexBuffer(vertices);
-		vertexBuffer.setColorBuffer(colors);
-		vertexBuffer.setIndexBuffer(indices);
-		vertexBuffer.setNormalBuffer(normals);
-
-		return new Shape(vertexBuffer);
-	}
-
-	public static int one = 0x10000;
-	public static int oneNormal = 0x10000;
+	public static int one = 1;
+	public static int oneNormal = 1;
 	static float vertices[] = { one, -one, -one, one, -one, -one, one, -one,
 			-one,
 
@@ -191,23 +157,6 @@ public class Util {
 			-one, one, one, -one, one, one, -one, one, one,
 
 			-one, one, -one, -one, one, -one, -one, one, -one };
-
-	static float verticesold[] = { -one, -one, -one, -one, -one, -one, -one,
-			-one, -one,
-
-			one, -one, -one, one, -one, -one, one, -one, -one,
-
-			one, one, -one, one, one, -one, one, one, -one,
-
-			-one, one, -one, -one, one, -one, -one, one, -one,
-
-			-one, -one, one, -one, -one, one, -one, -one, one,
-
-			one, -one, one, one, -one, one, one, -one, one,
-
-			one, one, one, one, one, one, one, one, one,
-
-			-one, one, one, -one, one, one, -one, one, one };
 
 	static float colors[] = { 0, 0, 0, one, one, 0, 0, one, one, one, 0, one,
 			0, one, 0, one, 0, 0, one, one, one, 0, one, one, one, one, one,

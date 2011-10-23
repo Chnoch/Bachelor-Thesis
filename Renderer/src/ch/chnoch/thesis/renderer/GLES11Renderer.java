@@ -118,6 +118,11 @@ public class GLES11Renderer extends AbstractRenderer {
 				0);
 		
 		gl.glViewport(0, 0, width, height);
+		
+		int error = gl.glGetError();
+		if (error != GL10.GL_NO_ERROR) {
+			Log.d("GLError", "Error onSurfaceChanged: " + error);
+		}
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -134,7 +139,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * performance. One might want to tweak that especially on software
 		 * renderer.
 		 */
-		gl.glDisable(GL_DITHER);
+//		gl.glDisable(GL_DITHER);
 
 		/*
 		 * Some one-time OpenGL initialization can be made here probably based
@@ -144,7 +149,7 @@ public class GLES11Renderer extends AbstractRenderer {
 
 		gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		gl.glClearDepthf(1f);
-		// gl.glEnable(GL_CULL_FACE);
+//		 gl.glEnable(GL_CULL_FACE);
 		gl.glShadeModel(GL_SMOOTH);
 		gl.glEnable(GL_DEPTH_TEST);
 		// gl.glDepthFunc(GL_LEQUAL);
@@ -155,7 +160,17 @@ public class GLES11Renderer extends AbstractRenderer {
 		// gl.glLoadMatrixf(
 		// GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 
+		int error = gl.glGetError();
+		if (error != GL10.GL_NO_ERROR) {
+			Log.d("GLError", "Error onSurfaceCreated preLights: " + error);
+		}
+		
 		setLights(gl);
+		
+		error = gl.glGetError();
+		if (error != GL10.GL_NO_ERROR) {
+			Log.d("GLError", "Error onSurfaceCreated: " + error);
+		}
 	}
 
 	/*
@@ -214,11 +229,12 @@ public class GLES11Renderer extends AbstractRenderer {
 		Iterator<Light> iter = mSceneManager.lightIterator();
 
 		int i = 0;
-		Light l = iter.next();
+		Light l;
 		while (iter.hasNext() && i < 8) {
 			l = iter.next();
+			
 			gl.glEnable(lightIndex[i]);
-
+			
 			if (l.getType() == Light.Type.DIRECTIONAL) {
 				gl.glLightfv(lightIndex[i], GL_POSITION,
 						l.createDirectionArray(), 0);
@@ -226,6 +242,7 @@ public class GLES11Renderer extends AbstractRenderer {
 			if (l.getType() == Light.Type.POINT || l.getType() == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL_POSITION,
 						l.createPositionArray(null), 0);
+				
 			}
 			if (l.getType() == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL_SPOT_DIRECTION,
@@ -240,8 +257,7 @@ public class GLES11Renderer extends AbstractRenderer {
 
 			i++;
 		}
-
-		gl.glEnable(GL10.GL_CCW);
+		
 	}
 
 	/**

@@ -188,42 +188,6 @@ public class TouchHandler implements OnTouchListener {
 	/*
 	 * Private Methods
 	 */
-
-	private Plane findClosestPlane(Ray ray) {
-		List<Plane> planes = mIntersection.node.getBoundingBox().getPlanes();
-		Plane closestPlane = null;
-		RayShapeIntersection tempInter = new RayShapeIntersection();
-		Vector3f tempVec = new Vector3f();
-		// Initialize the closest Vector at Infinity
-		float tempClosestDist = Float.MAX_VALUE;
-		for (Plane plane : planes) {
-			tempInter = plane.intersect(ray);
-			if (tempInter.hit) {
-				tempVec.sub(tempInter.hitPoint, ray.getOrigin());
-				if (tempVec.length() < tempClosestDist) {
-					tempClosestDist = tempVec.length();
-					closestPlane = plane;
-				}
-			}
-		}
-
-		return closestPlane;
-	}
-
-	private void runSimulation() {
-		Log.d("TouchHandler", "Simulation started");
-		new Thread(new Simulation()).run();
-	}
-
-	private class Simulation implements Runnable {
-		public void run() {
-			for (int i = 0; i < 1000; i++) {
-				mRenderer.getSceneManager().updateScene();
-				mViewer.requestRender();
-			}
-		}
-	}
-	
 	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 		float mScaleFactor = 1;
 		@Override

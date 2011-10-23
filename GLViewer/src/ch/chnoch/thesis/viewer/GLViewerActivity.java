@@ -48,7 +48,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		mSceneManager = new GraphSceneManager();
 		
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 10));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 20));
 
 		createShapes();
 		createLights();
@@ -167,7 +167,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	
 	private void addSphere() {
 		
-		Shape shape = Util.loadSphere(50, 50, 1);
+		Shape shape = Util.loadSphere(25, 25, 1);
 		ShapeNode node = new ShapeNode(shape);
 		
 		node.setMaterial(mShapeNodeBig.getMaterial());
@@ -209,7 +209,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
-		mShapeBig = Util.loadSphere(10,10,1);
+		mShapeBig = Util.loadSphere(20,20,1);
 		mShapeSmall = loadStructure(R.raw.teapot);
 		// Shape groundShape = Util.loadGround();
 
@@ -251,8 +251,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 		
-		light.setDirection(new Vector3f(0,0, -1));
-		light.setPosition(new Vector3f(0,0,5));
+		light.setDirection(new Vector3f(0,0, 0));
+		light.setPosition(new Vector3f(0,0,10));
 		light.setSpecular(new Vector3f(1,1,1));
 		light.setAmbient(new Vector3f(0.5f,0.5f,0.5f));
 		light.setDiffuse(new Vector3f(0.5f,0.5f,0.5f));
@@ -263,9 +263,9 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void setMaterial() {
 		Material mat = new GLMaterial();
 
-		mat.shininess = 80;
-		mat.mAmbient.set(0,0,0.5f);
-		mat.mDiffuse.set(0,0,0.5f);
+		mat.shininess = 50;
+		mat.mAmbient.set(0,0,1);
+		mat.mDiffuse.set(0,0,1);
 		mat.mSpecular.set(1,1,1);
 
 		mShapeNodeBig.setMaterial(mat);
