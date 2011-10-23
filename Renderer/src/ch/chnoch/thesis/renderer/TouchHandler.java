@@ -121,7 +121,7 @@ public class TouchHandler implements OnTouchListener {
 						mIsTranslation = true;
 						
 						if (!mUpScaled) {
-							mIntersection.node.setScale(mIntersection.node.getScale() + 0.1f);
+//							mIntersection.node.setScale(mIntersection.node.getScale() + 0.1f);
 							mUpScaled = true;
 						}
 					} catch (Exception exc) {
@@ -168,7 +168,7 @@ public class TouchHandler implements OnTouchListener {
 			mRotate = false;
 			
 			if (mUpScaled) {
-				mIntersection.node.setScale(mIntersection.node.getScale() - 0.1f);
+//				mIntersection.node.setScale(mIntersection.node.getScale() - 0.1f);
 				mUpScaled = false;
 				mViewer.requestRender();
 			}
@@ -228,6 +228,7 @@ public class TouchHandler implements OnTouchListener {
 		float mScaleFactor = 1;
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
+			mScaleFactor = mIntersection.node.getScale();
 			mScaleFactor *= detector.getScaleFactor();
 			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
 			Log.d("TouchHandler", "ScaleFactor: " + mScaleFactor);

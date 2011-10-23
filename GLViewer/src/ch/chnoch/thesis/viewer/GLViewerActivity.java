@@ -182,7 +182,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mRoot.addChild(node);
 	}
 	
-	
 	private Shader createShaders() {
 		String vertexShader = readRawText(R.raw.pointlightvert);
 		String fragmentShader = readRawText(R.raw.pointlightfrag);
