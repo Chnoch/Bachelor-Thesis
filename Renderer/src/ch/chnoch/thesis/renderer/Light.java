@@ -7,7 +7,7 @@ import javax.vecmath.*;
  */
 public class Light {
 
-	private Vector3f mHalfPlane, mDirection, mPosition, mDiffuse, mSpecular,
+	private Vector3f mDirection, mPosition, mDiffuse, mSpecular,
 			mAmbient, mSpotDirection;
 	private float mSpotExponent;
 	private float mSpotCutoff;
@@ -61,16 +61,6 @@ public class Light {
 		return pos;
 	}
 
-	public float[] createHalfplaneArray(Matrix3f viewMatrix) {
-		Vector3f tempDir = new Vector3f(mHalfPlane);
-		viewMatrix.transform(tempDir);
-		float[] halfVec = new float[3];
-		halfVec[0] = tempDir.x;
-		halfVec[1] = tempDir.y;
-		halfVec[2] = tempDir.z;
-		return halfVec;
-	}
-
 	public float[] createSpotDirectionArray() {
 		float[] spotDir = new float[3];
 		spotDir[0] = mSpotDirection.x;
@@ -114,14 +104,6 @@ public class Light {
 	 */
 	public enum Type {
 		DIRECTIONAL, POINT, SPOT
-	}
-
-	public Vector3f getHalfPlane() {
-		return mHalfPlane;
-	}
-
-	public void setHalfPlane(Vector3f mHalfPlane) {
-		this.mHalfPlane = mHalfPlane;
 	}
 
 	public Vector3f getDirection() {

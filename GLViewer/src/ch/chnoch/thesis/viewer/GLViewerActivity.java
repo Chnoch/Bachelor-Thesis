@@ -251,7 +251,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 		
-		light.setPosition(new Vector3f(0,0,20));
+		light.setPosition(new Vector3f(0,0,-10));
 		light.setSpecular(new Vector3f(1,1,1));
 		light.setAmbient(new Vector3f(0.5f,0.5f,0.5f));
 		light.setDiffuse(new Vector3f(0.5f,0.5f,0.5f));
