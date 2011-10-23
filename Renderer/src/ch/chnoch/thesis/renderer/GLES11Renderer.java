@@ -213,10 +213,9 @@ public class GLES11Renderer extends AbstractRenderer {
 		// gl.glTexCoordPointer(2, GL_FLOAT, 0, mTexCoordsBuffer);
 		gl.glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 				GL_UNSIGNED_SHORT, mIndexBuffer);
-		// gl.glPointSize(3);
-		// gl.glDrawArrays(GL_POINTS, 0, 24);
 		gl.glDisableClientState(GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL_VERTEX_ARRAY);
+		
 	}
 
 	private void setLights(GL10 gl) {
@@ -224,7 +223,10 @@ public class GLES11Renderer extends AbstractRenderer {
 				GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7 };
 
 		gl.glEnable(GL_LIGHTING);
-		gl.glLoadIdentity();
+//		gl.glLoadIdentity();
+		t.set(mCamera.getCameraMatrix());
+		// Log.d("ModelView", t.toString());
+		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 
 		Iterator<Light> iter = mSceneManager.lightIterator();
 
@@ -240,8 +242,9 @@ public class GLES11Renderer extends AbstractRenderer {
 						l.createDirectionArray(), 0);
 			}
 			if (l.getType() == Light.Type.POINT || l.getType() == Light.Type.SPOT) {
-				gl.glLightfv(lightIndex[i], GL_POSITION,
-						l.createPositionArray(null), 0);
+				float[] position = l.createPositionArray(null);
+				gl.glLightfv(lightIndex[i], GL_POSITION, position
+						, 0);
 				
 			}
 			if (l.getType() == Light.Type.SPOT) {
