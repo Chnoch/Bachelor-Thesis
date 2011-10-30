@@ -20,6 +20,7 @@ import ch.chnoch.thesis.renderer.util.Util;
 import android.content.Context;
 import android.util.Log;
 import static android.opengl.GLES10.*;
+import static android.opengl.GLES20.glClearColor;
 
 public class GLES11Renderer extends AbstractRenderer {
 
@@ -67,8 +68,8 @@ public class GLES11Renderer extends AbstractRenderer {
 	 */
 
 	public void onDrawFrame(GL10 gl) {
-		calculateFPS();
-		long oldTime = System.currentTimeMillis();
+//		calculateFPS();
+//		long oldTime = System.currentTimeMillis();
 
 		SceneManagerIterator shapeIterator = mSceneManager.iterator();
 
@@ -76,18 +77,18 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * Usually, the first thing one might want to do is to clear the screen.
 		 * The most efficient way of doing this is to use glClear().
 		 */
-		// gl.glViewport(0, 0, width, height);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		int count = 0;
+//		int count = 0;
 		while (shapeIterator.hasNext()) {
 			// Log.d("Renderer", "count: " + count);
-			count++;
+//			count++;
 			draw(shapeIterator.next(), gl);
 		}
 
-		long newTime = System.currentTimeMillis();
-
-		long diff = newTime - oldTime;
+//		long newTime = System.currentTimeMillis();
+//
+//		long diff = newTime - oldTime;
 		int error = gl.glGetError();
 		if (error != GL10.GL_NO_ERROR) {
 			Log.d("GLError", "Error: " + error);
@@ -110,12 +111,18 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * is resized.
 		 */
 		gl.glMatrixMode(GL_PROJECTION);
-
-		gl.glLoadMatrixf(
-				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()),
-				0);
+		gl.glLoadIdentity();
+//		gl.glLoadMatrixf(
+//				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()),
+//				0);
+		gl.glFrustumf(-1f,1f, (float)(-9.0/16.0), (float)(+9.0/16.0), 1f, 50f);
 		
 		gl.glViewport(0, 0, width, height);
+		
+		int error = gl.glGetError();
+		if (error != GL10.GL_NO_ERROR) {
+			Log.d("GLError", "Error onSurfaceChanged: " + error);
+		}
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -132,7 +139,7 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * performance. One might want to tweak that especially on software
 		 * renderer.
 		 */
-		gl.glDisable(GL_DITHER);
+//		gl.glDisable(GL_DITHER);
 
 		/*
 		 * Some one-time OpenGL initialization can be made here probably based
@@ -142,7 +149,7 @@ public class GLES11Renderer extends AbstractRenderer {
 
 		gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		gl.glClearDepthf(1f);
-		// gl.glEnable(GL_CULL_FACE);
+//		 gl.glEnable(GL_CULL_FACE);
 		gl.glShadeModel(GL_SMOOTH);
 		gl.glEnable(GL_DEPTH_TEST);
 		// gl.glDepthFunc(GL_LEQUAL);
@@ -153,7 +160,17 @@ public class GLES11Renderer extends AbstractRenderer {
 		// gl.glLoadMatrixf(
 		// GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()), 0);
 
+		int error = gl.glGetError();
+		if (error != GL10.GL_NO_ERROR) {
+			Log.d("GLError", "Error onSurfaceCreated preLights: " + error);
+		}
+		
 		setLights(gl);
+		
+		error = gl.glGetError();
+		if (error != GL10.GL_NO_ERROR) {
+			Log.d("GLError", "Error onSurfaceCreated: " + error);
+		}
 	}
 
 	/*
@@ -186,20 +203,21 @@ public class GLES11Renderer extends AbstractRenderer {
 
 		setMaterial(renderItem.getNode().getMaterial(), gl);
 
-		gl.glEnableClientState(GL_VERTEX_ARRAY);
-		gl.glFrontFace(GL_CW);
-		gl.glVertexPointer(3, GL_FIXED, 0, mVertexBuffer);
-		// gl.glColorPointer(4, GL_FIXED, 0, mColorBuffer);
+		gl.glEnable(GL_NORMALIZE);
 		gl.glEnableClientState(GL_NORMAL_ARRAY);
-		gl.glNormalPointer(GL_FIXED, 0, mNormalBuffer);
+		gl.glEnableClientState(GL_VERTEX_ARRAY);
+		gl.glFrontFace(GL_CCW);
+		gl.glVertexPointer(3, GL_FLOAT, 0, mVertexBuffer);
+//		 gl.glColorPointer(4, GL_FLOAT, 0, mColorBuffer);
+		gl.glNormalPointer(GL_FLOAT, 0, mNormalBuffer);
 		// gl.glEnable(GL_TEXTURE_2D);
 		// gl.glTexCoordPointer(2, GL_FLOAT, 0, mTexCoordsBuffer);
 		gl.glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 				GL_UNSIGNED_SHORT, mIndexBuffer);
-		// gl.glPointSize(3);
-		// gl.glDrawArrays(GL_POINTS, 0, 24);
-		gl.glDisableClientState(GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL_NORMAL_ARRAY);
+		gl.glDisable(GL_NORMALIZE);
+		
 	}
 
 	private void setLights(GL10 gl) {
@@ -207,7 +225,11 @@ public class GLES11Renderer extends AbstractRenderer {
 				GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7 };
 
 		gl.glEnable(GL_LIGHTING);
-		gl.glLoadIdentity();
+//		gl.glLoadIdentity();
+		gl.glMatrixMode(GL_MODELVIEW);
+		t.set(mCamera.getCameraMatrix());
+		// Log.d("ModelView", t.toString());
+		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
 
 		Iterator<Light> iter = mSceneManager.lightIterator();
 
@@ -215,15 +237,18 @@ public class GLES11Renderer extends AbstractRenderer {
 		Light l;
 		while (iter.hasNext() && i < 8) {
 			l = iter.next();
+			
 			gl.glEnable(lightIndex[i]);
-
+			
 			if (l.getType() == Light.Type.DIRECTIONAL) {
 				gl.glLightfv(lightIndex[i], GL_POSITION,
 						l.createDirectionArray(), 0);
 			}
 			if (l.getType() == Light.Type.POINT || l.getType() == Light.Type.SPOT) {
-				gl.glLightfv(lightIndex[i], GL_POSITION,
-						l.createPositionArray(null), 0);
+				float[] position = l.createPositionArray(null);
+				gl.glLightfv(lightIndex[i], GL_POSITION, position
+						, 0);
+				
 			}
 			if (l.getType() == Light.Type.SPOT) {
 				gl.glLightfv(lightIndex[i], GL_SPOT_DIRECTION,
@@ -238,8 +263,7 @@ public class GLES11Renderer extends AbstractRenderer {
 
 			i++;
 		}
-
-		gl.glEnable(GL10.GL_CCW);
+		
 	}
 
 	/**

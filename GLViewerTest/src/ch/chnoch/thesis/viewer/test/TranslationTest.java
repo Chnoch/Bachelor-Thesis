@@ -121,7 +121,7 @@ public class TranslationTest extends AndroidTestCase {
 	}
 	
 	private Plane findClosestPlane(Ray ray) {
-		List<Plane> planes = root.getBoundingBox().getPlanes();
+		List<Plane> planes = null;
 		Plane closestPlane = null;
 		RayShapeIntersection tempInter = new RayShapeIntersection();
 		Vector3f tempVec = new Vector3f();

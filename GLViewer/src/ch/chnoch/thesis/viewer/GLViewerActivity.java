@@ -48,15 +48,15 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		mSceneManager = new GraphSceneManager();
 		
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 10));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 20));
+		mSceneManager.getFrustum().setVertFOV(90);
 
 		createShapes();
 		createLights();
 		setMaterial();
 
-		
-		boolean openGlES20 = detectOpenGLES20();
-//		 boolean openGlES20 = false;
+//		boolean openGlES20 = detectOpenGLES20();
+		 boolean openGlES20 = false;
 
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");
@@ -68,6 +68,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			Texture texture = createTexture(R.raw.wall);
 //			mShapeNodeBig.getMaterial().setTexture(texture);
 			mShapeNodeBig.getMaterial().setShader(shader);
+			
 			
 //			mShapeNodeSmallOne.setMaterial(material);
 			
@@ -122,28 +123,20 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		Material mat = mShapeNodeBig.getMaterial();
 		// Handle item selection
-	    switch (item.getItemId()) {
-	    case R.id.aluminium:
-	        mat.setTexture(createTexture(R.raw.aluminium));
-	        break;
-//	    case R.id.wood:
-//	    	mat.setTexture(createTexture(R.raw.wood));
-//	    	break;
-	    case R.id.wall:
-	    	mat.setTexture(createTexture(R.raw.wall));
-	    	break;
-	    case R.id.cube:
-	    	addCube();
-	    	break;
-	    case R.id.teapot:
-	    	addTeapot();
-	    	break;
-	    case R.id.sphere:
-	    	addSphere();
-	    	break;
-	    default:
-	        return super.onOptionsItemSelected(item);
-	    }
+		int id = item.getItemId();
+	    if (id == R.id.aluminium) {
+			mat.setTexture(createTexture(R.raw.aluminium));
+		} else if (id == R.id.wall) {
+			mat.setTexture(createTexture(R.raw.wall));
+		} else if (id == R.id.cube) {
+			addCube();
+		} else if (id == R.id.teapot) {
+			addTeapot();
+		} else if (id == R.id.sphere) {
+			addSphere();
+		} else {
+			return super.onOptionsItemSelected(item);
+		}
 	    mat.setTextureChanged(true);
 	    mViewer.requestRender();
 	    return true;
@@ -175,7 +168,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	
 	private void addSphere() {
 		
-		Shape shape = Util.loadSphere(20, 20, 1);
+		Shape shape = Util.loadSphere(25, 25, 1);
 		ShapeNode node = new ShapeNode(shape);
 		
 		node.setMaterial(mShapeNodeBig.getMaterial());
@@ -216,7 +209,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void createShapes() {
 //		mShapeBig = Util.loadCube(4);
 //		mShapeSmall = Util.loadCube(1);
-		mShapeBig = Util.loadSphere(10,10,1);
+		mShapeBig = Util.loadSphere(20,20,1);
 		mShapeSmall = loadStructure(R.raw.teapot);
 		// Shape groundShape = Util.loadGround();
 
@@ -224,7 +217,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		
 		
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
-		Vector3f transRight = new Vector3f(2, 0, 0);
+		Vector3f transRight = new Vector3f(20, 0, 0);
 
 		Matrix4f smallTrans = Util.getIdentityMatrix();
 		smallTrans.setTranslation(transY);
@@ -239,6 +232,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		// mRoot.addChild(new ShapeNode(groundShape));
 
 		mShapeNodeBig = new ShapeNode(mShapeBig);
+		mShapeNodeBig.initTranslationMatrix(rightTrans);
 		mRoot.addChild(mShapeNodeBig);
 		
 		mSmallGroup = new TransformGroup();
@@ -254,26 +248,26 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 //		mSmallGroup.addChild(mShapeNodeSmallTwo);
 	}
 	
+	
 	private void createLights() {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 		
-		light.setDirection(new Vector3f(0,0, -1));
-		light.setPosition(new Vector3f(0,0,0));
+		light.setPosition(new Vector3f(0,0,20));
+		light.setDirection(new Vector3f(0,0,1));
 		light.setSpecular(new Vector3f(1,1,1));
-		light.setAmbient(new Vector3f(0.5f,0.5f,0.5f));
+		light.setAmbient(new Vector3f(0f,0f,0f));
 		light.setDiffuse(new Vector3f(0.5f,0.5f,0.5f));
 		
 		mSceneManager.addLight(light);
 	}
 	
-	
 	private void setMaterial() {
 		Material mat = new GLMaterial();
 
-		mat.shininess = 120;
-		mat.mAmbient.set(0,0,0.5f);
-		mat.mDiffuse.set(0,0,0.5f);
+		mat.shininess = 20;
+		mat.mAmbient.set(0,0,1);
+		mat.mDiffuse.set(0,0,1);
 		mat.mSpecular.set(1,1,1);
 
 		mShapeNodeBig.setMaterial(mat);

@@ -2,12 +2,14 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.*;
 
+import android.util.Log;
+
 /**
  * Stores the properties of a light source.
  */
 public class Light {
 
-	private Vector3f mHalfPlane, mDirection, mPosition, mDiffuse, mSpecular,
+	private Vector3f mDirection, mPosition, mDiffuse, mSpecular,
 			mAmbient, mSpotDirection;
 	private float mSpotExponent;
 	private float mSpotCutoff;
@@ -16,18 +18,18 @@ public class Light {
 	private Camera mCamera;
 
 	public Light(Camera camera) {
-		mDirection = new Vector3f(0.f, 0.f, 1.f);
-		mPosition = new Vector3f(0.f, 0.f, 1.f);
-		mType = Type.DIRECTIONAL;
-		mDiffuse = new Vector3f(1.f, 1.f, 1.f);
-		mAmbient = new Vector3f(0.f, 0.f, 0.f);
-		mSpecular = new Vector3f(1.f, 1.f, 1.f);
-		mSpotDirection = new Vector3f(0.f, 0.f, 1.f);
-		mSpotExponent = 0.f;
-		mSpotCutoff = 180.f;
-		mCamera = camera;
-
-		mHalfPlane = camera.createHalfwayVector(this);
+//		mDirection = new Vector3f(0.f, 0.f, 1.f);
+//		mPosition = new Vector3f(0.f, 0.f, 1.f);
+//		mType = Type.DIRECTIONAL;
+//		mDiffuse = new Vector3f(1.f, 1.f, 1.f);
+//		mAmbient = new Vector3f(0.f, 0.f, 0.f);
+//		mSpecular = new Vector3f(1.f, 1.f, 1.f);
+//		mSpotDirection = new Vector3f(0.f, 0.f, 1.f);
+//		mSpotExponent = 0.f;
+//		mSpotCutoff = 180.f;
+//		mCamera = camera;
+//
+//		mHalfPlane = camera.createHalfwayVector(this);
 	}
 
 	public float[] createDirectionArray(Matrix3f viewMatrix) {
@@ -41,10 +43,11 @@ public class Light {
 	}
 
 	public float[] createDirectionArray() {
-		float[] dir = new float[3];
+		float[] dir = new float[4];
 		dir[0] = mDirection.x;
 		dir[1] = mDirection.y;
 		dir[2] = mDirection.z;
+		dir[3] = 0;
 		return dir;
 	}
 
@@ -58,17 +61,8 @@ public class Light {
 		pos[1] = tempPos.y;
 		pos[2] = tempPos.z;
 		pos[3] = 1.f;
+		Log.d("Light", "Light Position: " + pos[0] + "," +pos[1] + "," + pos[2] + "," + pos[3]);
 		return pos;
-	}
-
-	public float[] createHalfplaneArray(Matrix3f viewMatrix) {
-		Vector3f tempDir = new Vector3f(mHalfPlane);
-		viewMatrix.transform(tempDir);
-		float[] halfVec = new float[3];
-		halfVec[0] = tempDir.x;
-		halfVec[1] = tempDir.y;
-		halfVec[2] = tempDir.z;
-		return halfVec;
 	}
 
 	public float[] createSpotDirectionArray() {
@@ -93,7 +87,7 @@ public class Light {
 		amb[0] = mAmbient.x;
 		amb[1] = mAmbient.y;
 		amb[2] = mAmbient.z;
-		amb[3] = 0;
+		amb[3] = 1;
 		return amb;
 	}
 
@@ -102,7 +96,7 @@ public class Light {
 		spec[0] = mSpecular.x;
 		spec[1] = mSpecular.y;
 		spec[2] = mSpecular.z;
-		spec[3] = 0;
+		spec[3] = 1;
 		return spec;
 	}
 
@@ -116,21 +110,12 @@ public class Light {
 		DIRECTIONAL, POINT, SPOT
 	}
 
-	public Vector3f getHalfPlane() {
-		return mHalfPlane;
-	}
-
-	public void setHalfPlane(Vector3f mHalfPlane) {
-		this.mHalfPlane = mHalfPlane;
-	}
-
 	public Vector3f getDirection() {
 		return mDirection;
 	}
 
 	public void setDirection(Vector3f mDirection) {
 		this.mDirection = mDirection;
-		mHalfPlane = mCamera.createHalfwayVector(this);
 	}
 
 	public Vector3f getPosition() {
@@ -139,7 +124,6 @@ public class Light {
 
 	public void setPosition(Vector3f mPosition) {
 		this.mPosition = mPosition;
-		mHalfPlane = mCamera.createHalfwayVector(this);
 	}
 
 	public Vector3f getDiffuse() {
