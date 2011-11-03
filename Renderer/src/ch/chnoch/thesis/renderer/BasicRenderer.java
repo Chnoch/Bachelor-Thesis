@@ -35,7 +35,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		setCamera(gl);
+//		setCamera(gl);
 
 		for (int i = 0; i < 72; i++) {
 			gl.glPushMatrix();
@@ -68,7 +68,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		float ratio = (float) w / h;
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		gl.glFrustumf(-ratio, ratio, -1, 1, 2, 100);
+		gl.glFrustumf(-1, 1, -1f/ratio, 1f/ratio, 1, 100);
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		mNormalBuffer.put(normals);
 		mNormalBuffer.position(0);
 		
-		ByteBuffer ibb = ByteBuffer.allocateDirect(normals.length * 2);
+		ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
 		ibb.order(ByteOrder.nativeOrder());
 		mIndexBuffer = ibb.asShortBuffer();
 		mIndexBuffer.put(indices);
@@ -115,6 +115,8 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 	}
 
 	private void drawLights(GL10 gl) {
+		
+//		gl.glLightModeli(GL10.GL_LIGHT_MODEL, GL10.GL_TRUE);
 
 		// Directional light
 //		float[] position = { 0f, 0f, 1f, 0 };

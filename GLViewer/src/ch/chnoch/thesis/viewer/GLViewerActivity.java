@@ -55,8 +55,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		createLights();
 		setMaterial();
 
-//		boolean openGlES20 = detectOpenGLES20();
-		 boolean openGlES20 = false;
+		boolean openGlES20 = detectOpenGLES20();
+//		 boolean openGlES20 = false;
 
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");
@@ -253,7 +253,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 		
-		light.setPosition(new Vector3f(0,0,20));
+		light.setPosition(new Vector3f(0,0,0));
 		light.setDirection(new Vector3f(0,0,1));
 		light.setSpecular(new Vector3f(1,1,1));
 		light.setAmbient(new Vector3f(0f,0f,0f));
