@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/Renderer/bin" sourcepath="/Renderer/src"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/Java3D/1.5.1/lib/ext/vecmath.jar" sourcepath="C:/Program Files/Java/Java3D/1.5.1/vecmath-1_5_2-src.zip"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
