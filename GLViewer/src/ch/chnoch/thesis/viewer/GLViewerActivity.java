@@ -48,15 +48,15 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 
 		mSceneManager = new GraphSceneManager();
 		
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, -20));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 20));
+		mSceneManager.getFrustum().setVertFOV(90);
 
 		createShapes();
 		createLights();
 		setMaterial();
 
-		
-//		boolean openGlES20 = detectOpenGLES20();
-		 boolean openGlES20 = false;
+		boolean openGlES20 = detectOpenGLES20();
+//		 boolean openGlES20 = false;
 
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");
@@ -68,6 +68,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 			Texture texture = createTexture(R.raw.wall);
 //			mShapeNodeBig.getMaterial().setTexture(texture);
 			mShapeNodeBig.getMaterial().setShader(shader);
+			
 			
 //			mShapeNodeSmallOne.setMaterial(material);
 			
@@ -174,7 +175,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mRoot.addChild(node);
 	}
 	
-	
 	private Shader createShaders() {
 		String vertexShader = readRawText(R.raw.pointlightvert);
 		String fragmentShader = readRawText(R.raw.pointlightfrag);
@@ -217,7 +217,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		
 		
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
-		Vector3f transRight = new Vector3f(2, 0, 0);
+		Vector3f transRight = new Vector3f(20, 0, 0);
 
 		Matrix4f smallTrans = Util.getIdentityMatrix();
 		smallTrans.setTranslation(transY);
@@ -232,6 +232,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		// mRoot.addChild(new ShapeNode(groundShape));
 
 		mShapeNodeBig = new ShapeNode(mShapeBig);
+		mShapeNodeBig.initTranslationMatrix(rightTrans);
 		mRoot.addChild(mShapeNodeBig);
 		
 		mSmallGroup = new TransformGroup();
@@ -247,13 +248,15 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 //		mSmallGroup.addChild(mShapeNodeSmallTwo);
 	}
 	
+	
 	private void createLights() {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 		
-		light.setPosition(new Vector3f(0,0,-10));
+		light.setPosition(new Vector3f(0,0,0));
+		light.setDirection(new Vector3f(0,0,1));
 		light.setSpecular(new Vector3f(1,1,1));
-		light.setAmbient(new Vector3f(0.5f,0.5f,0.5f));
+		light.setAmbient(new Vector3f(0f,0f,0f));
 		light.setDiffuse(new Vector3f(0.5f,0.5f,0.5f));
 		
 		mSceneManager.addLight(light);

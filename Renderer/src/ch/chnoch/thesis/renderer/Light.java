@@ -2,6 +2,8 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.*;
 
+import android.util.Log;
+
 /**
  * Stores the properties of a light source.
  */
@@ -41,10 +43,11 @@ public class Light {
 	}
 
 	public float[] createDirectionArray() {
-		float[] dir = new float[3];
+		float[] dir = new float[4];
 		dir[0] = mDirection.x;
 		dir[1] = mDirection.y;
 		dir[2] = mDirection.z;
+		dir[3] = 0;
 		return dir;
 	}
 
@@ -58,6 +61,7 @@ public class Light {
 		pos[1] = tempPos.y;
 		pos[2] = tempPos.z;
 		pos[3] = 1.f;
+		Log.d("Light", "Light Position: " + pos[0] + "," +pos[1] + "," + pos[2] + "," + pos[3]);
 		return pos;
 	}
 

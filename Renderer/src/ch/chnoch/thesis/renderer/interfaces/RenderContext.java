@@ -3,7 +3,6 @@ package ch.chnoch.thesis.renderer.interfaces;
 import javax.vecmath.Matrix4f;
 
 import ch.chnoch.thesis.renderer.GLViewer;
-import android.content.Context;
 import android.opengl.GLSurfaceView;
 
 /**

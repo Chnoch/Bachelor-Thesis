@@ -206,7 +206,6 @@ public class TouchHandler implements OnTouchListener {
 				mIntersection.node.setScale(mScaleFactor);
 				mViewer.requestRender();
 			}
-
 			return true;
 		}
 

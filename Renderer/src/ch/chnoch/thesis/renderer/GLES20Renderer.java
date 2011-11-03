@@ -348,8 +348,8 @@ public class GLES20Renderer extends AbstractRenderer {
 			// Light
 			if (mLight != null) {
 //				t.set(mSceneManager.getFrustum().getProjectionMatrix());
-//				t.mul(mSceneManager.getCamera().getCameraMatrix());
-				t.set(Util.getIdentityMatrix());
+				t.set(mSceneManager.getCamera().getCameraMatrix());
+//				t.set(Util.getIdentityMatrix());
 //				t.invert();
 				mLight.draw(t);
 			}

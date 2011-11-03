@@ -77,7 +77,6 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * Usually, the first thing one might want to do is to clear the screen.
 		 * The most efficient way of doing this is to use glClear().
 		 */
-		// gl.glViewport(0, 0, width, height);
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //		int count = 0;
@@ -112,10 +111,11 @@ public class GLES11Renderer extends AbstractRenderer {
 		 * is resized.
 		 */
 		gl.glMatrixMode(GL_PROJECTION);
-
-		gl.glLoadMatrixf(
-				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()),
-				0);
+		gl.glLoadIdentity();
+//		gl.glLoadMatrixf(
+//				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()),
+//				0);
+		gl.glFrustumf(-1f,1f, (float)(-9.0/16.0), (float)(+9.0/16.0), 1f, 50f);
 		
 		gl.glViewport(0, 0, width, height);
 		
@@ -203,18 +203,20 @@ public class GLES11Renderer extends AbstractRenderer {
 
 		setMaterial(renderItem.getNode().getMaterial(), gl);
 
+		gl.glEnable(GL_NORMALIZE);
+		gl.glEnableClientState(GL_NORMAL_ARRAY);
 		gl.glEnableClientState(GL_VERTEX_ARRAY);
-		gl.glFrontFace(GL_CW);
+		gl.glFrontFace(GL_CCW);
 		gl.glVertexPointer(3, GL_FLOAT, 0, mVertexBuffer);
 //		 gl.glColorPointer(4, GL_FLOAT, 0, mColorBuffer);
-		gl.glEnableClientState(GL_NORMAL_ARRAY);
 		gl.glNormalPointer(GL_FLOAT, 0, mNormalBuffer);
 		// gl.glEnable(GL_TEXTURE_2D);
 		// gl.glTexCoordPointer(2, GL_FLOAT, 0, mTexCoordsBuffer);
 		gl.glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 				GL_UNSIGNED_SHORT, mIndexBuffer);
-		gl.glDisableClientState(GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL_NORMAL_ARRAY);
+		gl.glDisable(GL_NORMALIZE);
 		
 	}
 
@@ -224,6 +226,7 @@ public class GLES11Renderer extends AbstractRenderer {
 
 		gl.glEnable(GL_LIGHTING);
 //		gl.glLoadIdentity();
+		gl.glMatrixMode(GL_MODELVIEW);
 		t.set(mCamera.getCameraMatrix());
 		// Log.d("ModelView", t.toString());
 		gl.glLoadMatrixf(GLUtil.matrix4fToFloat16(t), 0);
