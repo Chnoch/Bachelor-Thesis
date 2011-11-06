@@ -22,12 +22,11 @@ public interface Node {
 
 	public Matrix4f getCompleteTransformationMatrix();
     public Matrix4f getTranslationMatrix();
-    public void initTranslationMatrix(Matrix4f t);
     public void setTranslationMatrix(Matrix4f t);
     public Matrix4f getRotationMatrix();
-    public void initRotationMatrix(Matrix4f t);
     public void setRotationMatrix(Matrix4f t);
     public void setScale(float f);
+    public void move(Vector3f v);
     public float getScale();
     public Matrix4f getTransformationMatrix();
     

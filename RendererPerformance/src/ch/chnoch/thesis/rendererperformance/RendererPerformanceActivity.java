@@ -51,7 +51,7 @@ public class RendererPerformanceActivity extends Activity {
 
 		for (int i = 0; i < NUM_OF_SHAPES; i++) {
 			mNode = new ShapeNode(mShape);
-			mNode.initTranslationMatrix(new Matrix4f(mTranslation));
+//			mNode.move(mTranslation);
 			mRoot.addChild(mNode);
 			mTranslation.m03 += 1;
 		}

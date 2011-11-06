@@ -81,14 +81,14 @@ public class Plane {
 		float dz = cur.z - prev.z;
 
 		// translation vector. 3rd dimension??
-		Vector3f trans = new Vector3f(dx, dy, dz);
+		mNode.move(new Vector3f(dx, dy, dz));
 
-		Matrix4f transMatrix = new Matrix4f();
-		transMatrix.setTranslation(trans);
-		Matrix4f t = mNode.getTranslationMatrix();
-		t.add(transMatrix);
-		Log.d("Plane", "Translation Matrix:\n" + t.toString());
-		mNode.setTranslationMatrix(t);
+//		Matrix4f transMatrix = new Matrix4f();
+//		transMatrix.setTranslation(trans);
+//		Matrix4f t = mNode.getTranslationMatrix();
+//		t.add(transMatrix);
+//		Log.d("Plane", "Translation Matrix:\n" + t.toString());
+//		mNode.setTranslationMatrix(t);
 	}
 
 	public Vector3f getPointOnPlane() {

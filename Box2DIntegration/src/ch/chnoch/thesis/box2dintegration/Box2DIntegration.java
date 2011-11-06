@@ -15,7 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class Box2DIntegration extends Activity {
+public class Box2DIntegration extends Activity implements OnClickListener {
 
 	private GraphSceneManager mSceneManager;
 	private Shape mShape;
@@ -42,6 +42,10 @@ public class Box2DIntegration extends Activity {
 		createLights();
 		createShapes();
 
+		// Shape cube = Util.loadCube(1);
+		// Node root = new ShapeNode(cube);
+		// mSceneManager.setRoot(root);
+
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
@@ -51,7 +55,7 @@ public class Box2DIntegration extends Activity {
 
 		mViewer.setOnTouchListener(new TouchHandler(mRenderer, mViewer));
 
-//		runSimulation();
+		runSimulation();
 
 		// mNode.getPhysicsProperties().setType(TType.STATIC);
 		/*
@@ -81,19 +85,37 @@ public class Box2DIntegration extends Activity {
 	public void onPause() {
 		super.onPause();
 		mViewer.onPause();
-		mSimulation.stopThread();
+		// mSimulation.stopThread();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		mViewer.onResume();
-		mSimulation.resumeThread();
+		// mSimulation.resumeThread();
 	}
 
 	private void runSimulation() {
-		mSimulation = new Simulation();
-		mSimulation.start();
+		// mSimulation = new Simulation();
+		// mSimulation.start();
+		new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					for (int i = 0; i < 50; i++) {
+						// Log.d("Simulation", "Updating scene");
+						mSceneManager.updateScene();
+						mViewer.requestRender();
+					}
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+		}).start();
 	}
 
 	private void createLights() {
@@ -134,16 +156,17 @@ public class Box2DIntegration extends Activity {
 
 		for (int i = 0; i < 5; i++) {
 			Node newRow = new TransformGroup();
-			Matrix4f rowTranslation = Util.getIdentityMatrix();
-			rowTranslation.setTranslation(new Vector3f(0, i * 2.1f, 0));
-			newRow.setTranslationMatrix(rowTranslation);
+			// Matrix4f rowTranslation = Util.getIdentityMatrix();
+			// rowTranslation.setTranslation();
+			// newRow.setTranslationMatrix(rowTranslation);
+			newRow.move(new Vector3f(0, i * 4f, 0));
 
 			for (int j = 0 + ((mirror + 1) / 2); j < 5 - i; j++) {
 				Node cube = new ShapeNode(shape);
-				Matrix4f columnTranslation = Util.getIdentityMatrix();
-				columnTranslation.setTranslation(new Vector3f((-mirror) * j
-						* 2.1f, 0, 0));
-				cube.setTranslationMatrix(columnTranslation);
+				// Matrix4f columnTranslation = Util.getIdentityMatrix();
+				// columnTranslation.setTranslation();
+				// cube.setTranslationMatrix(columnTranslation);
+				cube.move(new Vector3f((-mirror) * j * 2.1f, 0, 0));
 				cube.setMaterial(mat);
 
 				newRow.addChild(cube);
@@ -157,7 +180,7 @@ public class Box2DIntegration extends Activity {
 
 		public void run() {
 			while (isRunning) {
-				// Log.d("Simulation", "Updating scene");
+				Log.d("Simulation", "Updating scene");
 				mSceneManager.updateScene();
 				mViewer.requestRender();
 			}
@@ -173,8 +196,9 @@ public class Box2DIntegration extends Activity {
 		}
 	}
 
-	// public void onClick(View arg0) {
-	// Log.d("Box2dIntegration", "onClick");
-	// new Thread(new Simulation()).run();
-	// }
+	public void onClick(View arg0) {
+		Log.d("Box2dIntegration", "onClick");
+		// new Thread(new Simulation()).run();
+		runSimulation();
+	}
 }

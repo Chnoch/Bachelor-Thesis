@@ -35,11 +35,6 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		mIdentity = Util.getIdentityMatrix();
 		zero = new Vector3f(0,0,0);
 		
-		mMove = Util.getIdentityMatrix();
-		mMove.m03 = 2;
-		mMove.m13 = 2;
-		mMove.m23 = 2;
-		
 //		mSceneManager.getCamera().getCameraMatrix().set(mIdentity);
 //		mSceneManager.getFrustum().getProjectionMatrix().set(mIdentity);
 		mRenderer.setViewportMatrix(320, 483);
@@ -49,7 +44,7 @@ public class ExtendedPickingTest extends AndroidTestCase {
 		shapeNode = new ShapeNode(shape);
 		shapeNode2 = new ShapeNode(shape);
 		
-		shapeNode2.setTranslationMatrix(mMove);
+		shapeNode2.move(new Vector3f(2,2,2));
 		
 		shapeNode.setShape(shape);
 		shapeNode2.setShape(shape);

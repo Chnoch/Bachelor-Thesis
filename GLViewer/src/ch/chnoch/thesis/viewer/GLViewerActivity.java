@@ -217,7 +217,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		
 		
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
-		Vector3f transRight = new Vector3f(20, 0, 0);
+		Vector3f transRight = new Vector3f(2, 0, 0);
 
 		Matrix4f smallTrans = Util.getIdentityMatrix();
 		smallTrans.setTranslation(transY);
@@ -232,20 +232,24 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		// mRoot.addChild(new ShapeNode(groundShape));
 
 		mShapeNodeBig = new ShapeNode(mShapeBig);
-		mShapeNodeBig.initTranslationMatrix(rightTrans);
+//		mShapeNodeBig.initTranslationMatrix(rightTrans);
+		mShapeNodeBig.move(transRight);
 		mRoot.addChild(mShapeNodeBig);
 		
 		mSmallGroup = new TransformGroup();
-		mSmallGroup.initTranslationMatrix(smallTrans);
+//		mSmallGroup.initTranslationMatrix(smallTrans);
+		mSmallGroup.move(transY);
 		mRoot.addChild(mSmallGroup);
 
 		mShapeNodeSmallOne = new ShapeNode(mShapeSmall);
-		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
+		mShapeNodeSmallOne.move(transLeft);
+//		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
 		mShapeNodeSmallTwo = new ShapeNode(mShapeSmall);
-		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
+		mShapeNodeSmallTwo.move(transRight);
+//		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
 //
-//		mSmallGroup.addChild(mShapeNodeSmallOne);
-//		mSmallGroup.addChild(mShapeNodeSmallTwo);
+		mSmallGroup.addChild(mShapeNodeSmallOne);
+		mSmallGroup.addChild(mShapeNodeSmallTwo);
 	}
 	
 	

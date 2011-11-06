@@ -57,11 +57,16 @@ public class Shape {
 	}
 
 	/**
-	 * Intersect the given Ray with this shape. Tests for every triangle of the shape.
-	 * Speed depends hence on the complexity of the shape.
-	 * @param Ray ray The Ray to be intersected
-	 * @param Matrix4f transformation The transformation of the Shape into its actual position
-	 * @return a RayShapeIntersection with the coordinates of the HitPoint if any.
+	 * Intersect the given Ray with this shape. Tests for every triangle of the
+	 * shape. Speed depends hence on the complexity of the shape.
+	 * 
+	 * @param Ray
+	 *            ray The Ray to be intersected
+	 * @param Matrix4f
+	 *            transformation The transformation of the Shape into its actual
+	 *            position
+	 * @return a RayShapeIntersection with the coordinates of the HitPoint if
+	 *         any.
 	 */
 	RayShapeIntersection intersect(Ray ray, Matrix4f transformation) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
@@ -79,12 +84,12 @@ public class Shape {
 				hitTriangles.add(intersection);
 			}
 		}
-		
+
 		Vector3f distance = new Vector3f();
 		float shortestDist = Float.MAX_VALUE;
 		for (RayShapeIntersection in : hitTriangles) {
 			distance.sub(ray.getOrigin(), in.hitPoint);
-			if (distance.length()<shortestDist) {
+			if (distance.length() < shortestDist) {
 				intersection = in;
 				shortestDist = distance.length();
 			}
@@ -143,7 +148,7 @@ public class Shape {
 
 		return triangles;
 	}
-	
+
 	/*
 	 * Private Methods
 	 */
@@ -210,7 +215,7 @@ public class Shape {
 			intersection.hitPoint = null;
 			return intersection;
 		}
-		
+
 		t = (uv * wu - uu * wv) / D;
 		if (t < 0.0 || (s + t) > 1.0) {
 			// I is outside T

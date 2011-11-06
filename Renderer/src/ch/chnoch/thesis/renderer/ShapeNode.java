@@ -18,6 +18,7 @@ public class ShapeNode extends Leaf {
 	private BoundingBox mBoundingBox;
 	private Material mMaterial;
 	private Box2DBody mBox2DBody;
+	private boolean mPhysicsEnabled = false;
 
 	public ShapeNode(Shape shape) {
 		super();
@@ -46,31 +47,32 @@ public class ShapeNode extends Leaf {
 		return mBoundingBox.update(getCompleteTransformationMatrix());
 	}
 
-	public void initTranslationMatrix(Matrix4f t) {
-		mTranslationMatrix.set(t);
-		setTransformationMatrix();
-	}
-
-	public void initRotationMatrix(Matrix4f t) {
-		mRotationMatrix.set(t);
-		setTransformationMatrix();
-	}
-
 	public void setTranslationMatrix(Matrix4f t) {
-		mTranslationMatrix.set(t);
-		setTransformationMatrix();
+		super.setTranslationMatrix(t);
 		updateBoundingBox();
 	}
 
 	public void setRotationMatrix(Matrix4f t) {
-		mRotationMatrix.set(t);
-		setTransformationMatrix();
+		super.setRotationMatrix(t);
 		updateBoundingBox();
 	}
-	
+
 	public void setScale(float scale) {
 		super.setScale(scale);
 		updateBoundingBox();
+	}
+
+	public void move(Vector3f v) {
+		Matrix4f t = getTranslationMatrix();
+		Matrix4f move = new Matrix4f();
+		move.setTranslation(v);
+		t.add(move);
+		setTranslationMatrix(t);
+
+		if (mPhysicsEnabled) {
+			mBox2DBody.move(v.x, v.y);
+		}
+
 	}
 
 	public Matrix4f getCompleteTransformationMatrix() {
@@ -102,10 +104,16 @@ public class ShapeNode extends Leaf {
 
 		Box2DShape shape = mShape.enableBox2D();
 		mBox2DBody.createShape(shape, true);
+
+		mPhysicsEnabled = true;
 	}
 
 	@Override
 	public void updatePhysics() {
+		// Temporarily disable the automatic translation of the
+		// graphical model back to the physical one.
+		mPhysicsEnabled = false;
+		
 		Vector2f prevPos = mBox2DBody.getPreviousPosition();
 		Vector2f curPos = mBox2DBody.getCurrentPosition();
 
@@ -113,11 +121,13 @@ public class ShapeNode extends Leaf {
 		trans.x = curPos.x - prevPos.x;
 		trans.y = curPos.y - prevPos.y;
 		trans.z = 0;
-
+		
 		move(trans);
 
 		mBox2DBody.setPreviousPosition(curPos);
 		rotZ(mBox2DBody.getAngle());
+		
+		mPhysicsEnabled = true;
 	}
 
 	public void setParent(Node parent) {
@@ -161,14 +171,6 @@ public class ShapeNode extends Leaf {
 		mBoundingBox.setUpdated();
 	}
 
-	private void move(Vector3f v) {
-		Matrix4f t = getTranslationMatrix();
-		Matrix4f move = new Matrix4f();
-		move.setTranslation(v);
-		t.add(move);
-		setTranslationMatrix(t);
-	}
-
 	private void rotZ(float angle) {
 		Matrix4f t = Util.getIdentityMatrix();
 		Matrix4f rot = new Matrix4f();
@@ -176,4 +178,5 @@ public class ShapeNode extends Leaf {
 		rot.mul(t);
 		setRotationMatrix(rot);
 	}
+
 }
