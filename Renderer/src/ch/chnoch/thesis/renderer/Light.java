@@ -18,16 +18,16 @@ public class Light {
 	private Camera mCamera;
 
 	public Light(Camera camera) {
-//		mDirection = new Vector3f(0.f, 0.f, 1.f);
-//		mPosition = new Vector3f(0.f, 0.f, 1.f);
-//		mType = Type.DIRECTIONAL;
-//		mDiffuse = new Vector3f(1.f, 1.f, 1.f);
-//		mAmbient = new Vector3f(0.f, 0.f, 0.f);
-//		mSpecular = new Vector3f(1.f, 1.f, 1.f);
-//		mSpotDirection = new Vector3f(0.f, 0.f, 1.f);
-//		mSpotExponent = 0.f;
-//		mSpotCutoff = 180.f;
-//		mCamera = camera;
+		mDirection = new Vector3f(0.f, 0.f, 1.f);
+		mPosition = new Vector3f(0.f, 0.f, 1.f);
+		mType = Type.DIRECTIONAL;
+		mDiffuse = new Vector3f(1.f, 1.f, 1.f);
+		mAmbient = new Vector3f(0.f, 0.f, 0.f);
+		mSpecular = new Vector3f(1.f, 1.f, 1.f);
+		mSpotDirection = new Vector3f(0.f, 0.f, 1.f);
+		mSpotExponent = 0.f;
+		mSpotCutoff = 180.f;
+		mCamera = camera;
 //
 //		mHalfPlane = camera.createHalfwayVector(this);
 	}
@@ -117,6 +117,10 @@ public class Light {
 	public void setDirection(Vector3f mDirection) {
 		this.mDirection = mDirection;
 	}
+	
+	public void setDirection(float x, float y, float z) {
+		this.mDirection.set(x,y,z);
+	}
 
 	public Vector3f getPosition() {
 		return mPosition;
@@ -126,12 +130,19 @@ public class Light {
 		this.mPosition = mPosition;
 	}
 
+	public void setPosition(float x, float y, float z) {
+		this.mPosition.set(x,y,z);
+	}
+	
 	public Vector3f getDiffuse() {
 		return mDiffuse;
 	}
 
 	public void setDiffuse(Vector3f mDiffuse) {
 		this.mDiffuse = mDiffuse;
+	}
+	public void setDiffuse(float x, float y, float z) {
+		this.mDiffuse.set(x,y,z);
 	}
 
 	public Vector3f getSpecular() {
@@ -141,6 +152,10 @@ public class Light {
 	public void setSpecular(Vector3f mSpecular) {
 		this.mSpecular = mSpecular;
 	}
+	
+	public void setSpecular(float x, float y, float z) {
+		this.mSpecular.set(x,y,z);
+	}
 
 	public Vector3f getAmbient() {
 		return mAmbient;
@@ -149,6 +164,9 @@ public class Light {
 	public void setAmbient(Vector3f mAmbient) {
 		this.mAmbient = mAmbient;
 	}
+	public void setAmbient(float x, float y, float z) {
+		this.mAmbient.set(x,y,z);
+	}
 
 	public Vector3f getSpotDirection() {
 		return mSpotDirection;
@@ -156,6 +174,9 @@ public class Light {
 
 	public void setSpotDirection(Vector3f mSpotDirection) {
 		this.mSpotDirection = mSpotDirection;
+	}
+	public void setSpotDirection(float x, float y, float z) {
+		this.mSpotDirection.set(x,y,z);
 	}
 
 	public float getSpotExponent() {

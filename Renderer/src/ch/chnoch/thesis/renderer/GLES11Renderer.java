@@ -112,10 +112,10 @@ public class GLES11Renderer extends AbstractRenderer {
 		 */
 		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadIdentity();
-//		gl.glLoadMatrixf(
-//				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()),
-//				0);
-		gl.glFrustumf(-1f,1f, (float)(-9.0/16.0), (float)(+9.0/16.0), 1f, 50f);
+		gl.glLoadMatrixf(
+				GLUtil.matrix4fToFloat16(mFrustum.getProjectionMatrix()),
+				0);
+//		gl.glFrustumf(-1f,1f, (float)(-9.0/16.0), (float)(+9.0/16.0), 1f, 50f);
 		
 		gl.glViewport(0, 0, width, height);
 		

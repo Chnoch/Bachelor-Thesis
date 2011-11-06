@@ -11,47 +11,25 @@ import static android.opengl.GLES10.GL_VERSION;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.util.Log;
 
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.Shader;
-import ch.chnoch.thesis.renderer.interfaces.Texture;
+public class BasicRenderer implements GLSurfaceView.Renderer {
 
-public class BasicRenderer extends AbstractRenderer {
-	SceneManagerInterface mSceneManager;
-	
-	public BasicRenderer(SceneManagerInterface sceneManager) {
-		mSceneManager = sceneManager;
-	}
-
+	private FloatBuffer mVertexBuffer;
+	private FloatBuffer mNormalBuffer;
+	private ShortBuffer mIndexBuffer;
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		gl.glDisable(GL10.GL_DITHER);
-	
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        
-        SceneManagerIterator it = mSceneManager.iterator();
-        while (it.hasNext()) {
-        	draw(gl, it.next().getNode().getShape());
-        }
-	}
-	
-	public void draw(GL10 gl, Shape shape) {
-		if (shape != null) {
-			VertexBuffers buffers = shape.getVertexBuffers();
-			FloatBuffer vertices = buffers.getVertexBuffer();
-			ShortBuffer indices = buffers.getIndexBuffer();
-        gl.glFrontFace(GL10.GL_CCW);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertices);
-        gl.glDrawElements(GL10.GL_TRIANGLES, indices.capacity(),
-                GL10.GL_UNSIGNED_SHORT, indices);
-		}
 
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
@@ -81,10 +59,6 @@ public class BasicRenderer extends AbstractRenderer {
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
 		gl.glViewport(0, 0, w, h);
 
-        float ratio = (float) w / h;
-        gl.glMatrixMode(GL10.GL_PROJECTION);
-        gl.glLoadIdentity();
-        gl.glFrustumf(-ratio, ratio, -1, 1, 3, 7);
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
 		 * draw, but usually a new projection needs to be set when the viewport
@@ -99,12 +73,12 @@ public class BasicRenderer extends AbstractRenderer {
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-  		int[] depthbits = new int[1];
+		int[] depthbits = new int[1];
 		gl.glGetIntegerv(GL_DEPTH_BITS, depthbits, 0);
 		Log.d("BasicRenderer", "Depth Bits: " + depthbits[0]);
 
 		Log.d("BasicRenderer", "Version: " + gl.glGetString(GL_VERSION));
-		
+
 //		gl.glDisable(GL10.GL_DITHER);
 
 		/*
@@ -124,24 +98,24 @@ public class BasicRenderer extends AbstractRenderer {
 		mVertexBuffer = vbb.asFloatBuffer();
 		mVertexBuffer.put(vertices);
 		mVertexBuffer.position(0);
-		
+
 		ByteBuffer nbb = ByteBuffer.allocateDirect(normals.length * 4);
 		nbb.order(ByteOrder.nativeOrder());
 		mNormalBuffer = nbb.asFloatBuffer();
 		mNormalBuffer.put(normals);
 		mNormalBuffer.position(0);
-		
+
 		ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
 		ibb.order(ByteOrder.nativeOrder());
 		mIndexBuffer = ibb.asShortBuffer();
 		mIndexBuffer.put(indices);
 		mIndexBuffer.position(0);
-		
+
 		drawLights(gl);
 	}
 
 	private void drawLights(GL10 gl) {
-		
+
 //		gl.glLightModeli(GL10.GL_LIGHT_MODEL, GL10.GL_TRUE);
 
 		// Directional light
@@ -164,7 +138,7 @@ public class BasicRenderer extends AbstractRenderer {
 		gl.glLightfv(GL10.GL_LIGHT0, GL_AMBIENT, ambient, 0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL_SPECULAR, specular, 0);
 	}
-	
+
 	private void setCamera(GL10 gl) {
 		GLU.gluLookAt(gl, 0, 0, 0, 0f, 0f, -1f, 0f, 1.0f, 0.0f);
 	}
@@ -174,7 +148,7 @@ public class BasicRenderer extends AbstractRenderer {
 		float[] ambient = { 0, 0, 0.3f, 1 };
 		float[] diffuse = { 0, 0, .7f, 1 };
 		float[] specular = { 1, 1, 1, 1 };
-		
+
 		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse, 0);
 
 		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient, 0);
@@ -202,7 +176,7 @@ public class BasicRenderer extends AbstractRenderer {
 		gl.glDrawElements(GL10.GL_TRIANGLES, mIndexBuffer.capacity(), GL10.GL_UNSIGNED_SHORT, mIndexBuffer);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
-		
+
 		int error = gl.glGetError();
 		if (error != GL10.GL_NO_ERROR) {
 			Log.d("GLError", "OpenGL Error: " + error);
@@ -216,12 +190,12 @@ public class BasicRenderer extends AbstractRenderer {
 			-1.0f, 1.0f, 0.0f, // 2. left-top
 			1.0f, 1.0f, 0.0f // 3. right-top
 	};
-	
+
 	private short indices[] = {
 			0,1,3,
 			0,3,2
 	};
-	
+
 	private float normals[] = {
 			0,0,1,
 			0,0,1,

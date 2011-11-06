@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.Util;
+import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -38,9 +39,8 @@ public class TouchHandler implements OnTouchListener {
 
 	private final String TAG = "TouchHandler";
 
-	public TouchHandler(RenderContext renderer, GLViewer viewer) {
+	public TouchHandler(RenderContext renderer, GLSurfaceView viewer) {
 		mRenderer = renderer;
-		mViewer = viewer;
 		mTrackball = new Trackball();
 		mPlane = new Plane();
 		mPlane.setNormal(new Vector3f(0, 0, 1));

@@ -52,7 +52,7 @@ public class Shape {
 		return mBox;
 	}
 
-	public Box2DShape enableBox2D() {
+	Box2DShape enableBox2D() {
 		return new Box2DShape(mVertexBuffers.getVertexBuffer());
 	}
 
@@ -63,7 +63,7 @@ public class Shape {
 	 * @param Matrix4f transformation The transformation of the Shape into its actual position
 	 * @return a RayShapeIntersection with the coordinates of the HitPoint if any.
 	 */
-	public RayShapeIntersection intersect(Ray ray, Matrix4f transformation) {
+	RayShapeIntersection intersect(Ray ray, Matrix4f transformation) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
 		List<RayShapeIntersection> hitTriangles = new ArrayList<RayShapeIntersection>();
 

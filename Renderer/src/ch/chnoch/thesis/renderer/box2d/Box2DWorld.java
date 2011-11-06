@@ -24,7 +24,7 @@ public class Box2DWorld {
 		mBox2DsurroundingBox = new AABB(new Vec2(low.x, low.y), new Vec2(high.x, high.y));
 		mBox2DWorld = new World(mBox2DsurroundingBox, new Vec2(gravity.x, gravity.y), true);
 		
-//		createGroundBody();
+		createGroundBody();
 	}
 	
 	public void step(float dt, int iterations){
@@ -48,9 +48,9 @@ public class Box2DWorld {
 	private void createGroundBody() {
 		Box2DBody groundBody = new Box2DBody(new Vector2f(0,-10), this);
 		Box2DShape groundShape = new Box2DShape();
-		groundShape.setAsBox(50,1);
+		groundShape.setAsBox(50,10);
 		groundBody.createShape(groundShape, false);
-//		groundBody.setType(TType.STATIC);
+		groundBody.setType(TType.STATIC);
 		
 //		groundBody.setMassFromShapes();
 	}
