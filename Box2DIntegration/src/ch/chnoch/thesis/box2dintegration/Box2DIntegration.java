@@ -81,14 +81,14 @@ public class Box2DIntegration extends Activity {
 	public void onPause() {
 		super.onPause();
 		mViewer.onPause();
-		mSimulation.stopThread();
+//		mSimulation.stopThread();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		mViewer.onResume();
-		mSimulation.resumeThread();
+//		mSimulation.resumeThread();
 	}
 
 	private void runSimulation() {
