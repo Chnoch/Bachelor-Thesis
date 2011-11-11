@@ -23,9 +23,11 @@ import android.util.Log;
 
 public class BasicRenderer implements GLSurfaceView.Renderer {
 
-	private FloatBuffer mVertexBuffer;
-	private FloatBuffer mNormalBuffer;
-	private ShortBuffer mIndexBuffer;
+	protected FloatBuffer mVertexBuffer;
+	protected FloatBuffer mNormalBuffer;
+	protected ShortBuffer mIndexBuffer;
+	protected Light mLight;
+	protected Material mMaterial;
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
@@ -93,24 +95,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 //		gl.glEnable(GL10.GL_NORMALIZE);
 
-		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
-		vbb.order(ByteOrder.nativeOrder());
-		mVertexBuffer = vbb.asFloatBuffer();
-		mVertexBuffer.put(vertices);
-		mVertexBuffer.position(0);
-
-		ByteBuffer nbb = ByteBuffer.allocateDirect(normals.length * 4);
-		nbb.order(ByteOrder.nativeOrder());
-		mNormalBuffer = nbb.asFloatBuffer();
-		mNormalBuffer.put(normals);
-		mNormalBuffer.position(0);
-
-		ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
-		ibb.order(ByteOrder.nativeOrder());
-		mIndexBuffer = ibb.asShortBuffer();
-		mIndexBuffer.put(indices);
-		mIndexBuffer.position(0);
-
+		
 		drawLights(gl);
 	}
 
@@ -122,44 +107,37 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 //		float[] position = { 0f, 0f, 1f, 0 };
 
 		// Point Light
-		float[] position = { 0f, 0f, 0, 1 };
-		float[] diffuse = { .6f, .6f, .6f, 1f };
-		float[] specular = { 1, 1, 1, 1 };
-		float[] ambient = { 0.2f, 0.2f, .2f, 1 };
+		
 
 		gl.glEnable(GL10.GL_LIGHTING);
 		gl.glEnable(GL10.GL_LIGHT0);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 //		setCamera(gl);
-		gl.glLightfv(GL10.GL_LIGHT0, GL_POSITION, position, 0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL_POSITION, mLight.createPositionArray(null), 0);
 
-		gl.glLightfv(GL10.GL_LIGHT0, GL_DIFFUSE, diffuse, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL_AMBIENT, ambient, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL_SPECULAR, specular, 0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL_DIFFUSE, mLight.createDiffuseArray(), 0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL_AMBIENT, mLight.createAmbientArray(), 0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL_SPECULAR, mLight.createSpecularArray(), 0);
 	}
 
 	private void setCamera(GL10 gl) {
 		GLU.gluLookAt(gl, 0, 0, 0, 0f, 0f, -1f, 0f, 1.0f, 0.0f);
 	}
 
-	private void setMaterial(GL10 gl) {
-		float shininess = 30;
-		float[] ambient = { 0, 0, 0.3f, 1 };
-		float[] diffuse = { 0, 0, .7f, 1 };
-		float[] specular = { 1, 1, 1, 1 };
+	private void drawMaterial(GL10 gl) {
 
-		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse, 0);
+		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mMaterial.createDiffuseArray(), 0);
 
-		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient, 0);
+		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mMaterial.createAmbientArray(), 0);
 
-		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular, 0);
+		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mMaterial.createSpecularArray(), 0);
 
-		gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+		gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mMaterial.shininess);
 	}
 
 	public void draw(GL10 gl) {
-		setMaterial(gl);
+		drawMaterial(gl);
 		gl.glEnable(GL10.GL_NORMALIZE);
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -183,23 +161,37 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 
-	private float vertices[] = {
-			// Vertices for the square
-			-1.0f, -1.0f, 0.0f, // 0. left-bottom
-			1.0f, -1.0f, 0.0f, // 1. right-bottom
-			-1.0f, 1.0f, 0.0f, // 2. left-top
-			1.0f, 1.0f, 0.0f // 3. right-top
-	};
+	public FloatBuffer getVertexBuffer() {
+		return mVertexBuffer;
+	}
 
-	private short indices[] = {
-			0,1,3,
-			0,3,2
-	};
+	public void setVertexBuffer(FloatBuffer mVertexBuffer) {
+		this.mVertexBuffer = mVertexBuffer;
+	}
 
-	private float normals[] = {
-			0,0,1,
-			0,0,1,
-			0,0,1,
-			0,0,1
-	};
+	public FloatBuffer getNormalBuffer() {
+		return mNormalBuffer;
+	}
+
+	public void setNormalBuffer(FloatBuffer mNormalBuffer) {
+		this.mNormalBuffer = mNormalBuffer;
+	}
+
+	public ShortBuffer getIndexBuffer() {
+		return mIndexBuffer;
+	}
+
+	public void setIndexBuffer(ShortBuffer mIndexBuffer) {
+		this.mIndexBuffer = mIndexBuffer;
+	}
+	
+	public void setLight(Light light) {
+		mLight = light;
+	}
+	
+	public void setMaterial(Material mat) {
+		mMaterial = mat;
+	}
+
+	
 }

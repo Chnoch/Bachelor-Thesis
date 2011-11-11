@@ -28,9 +28,29 @@ public class Box2DShape {
 		mBox2DShapeDef.friction = 0.3f;
 
 		// TODO: Check for correct order of vertices
+		// First approach: We assume cubes. We just take the smallest and biggest value
+		// and generate a box out of it. 
+		float xmin = Float.MAX_VALUE;
+		float xmax = Float.MIN_VALUE;
+		float ymin = Float.MAX_VALUE;
+		float ymax = Float.MIN_VALUE;
 		for (Vector2f coord : getCoordinates(vertices)) {
-			mBox2DShapeDef.addVertex(new Vec2(coord.x, coord.y));
+			if (coord.x < xmin) {
+				xmin = coord.x;
+			}
+			if (coord.x > xmax) {
+				xmax = coord.x;
+			}
+			if (coord.y < ymin) {
+				ymin = coord.y;
+			}
+			if (coord.y > ymax) {
+				ymax = coord.y;
+			}
+			
+			
 		}
+		setAsBox((xmax-xmin)/2, (ymax-ymin)/2);
 	}
 
 	void setDensity(float dens) {
@@ -45,7 +65,7 @@ public class Box2DShape {
 	 * Package Scope
 	 */
 
-	void setAsBox(float x, float y) {
+	public void setAsBox(float x, float y) {
 		mBox2DShapeDef.setAsBox(x, y);
 	}
 
@@ -64,16 +84,16 @@ public class Box2DShape {
 	private List<Vector2f> getCoordinates(FloatBuffer verticesBuffer) {
 
 		// get Coordinates into an array
-		float[] verticesInt = new float[verticesBuffer.capacity()];
+		float[] vertices = new float[verticesBuffer.capacity()];
 
 		for (int i = 0; i < verticesBuffer.capacity(); i++) {
-			verticesInt[i] = verticesBuffer.get(i);
+			vertices[i] = verticesBuffer.get(i);
 		}
 		// Fixed Point Conversion
-		float[] vertices = new float[verticesInt.length];
-		for (int i = 0; i < verticesInt.length; i++) {
-			vertices[i] = (float) verticesInt[i] / 65536;
-		}
+//		float[] vertices = new float[verticesInt.length];
+//		for (int i = 0; i < verticesInt.length; i++) {
+//			vertices[i] = (float) verticesInt[i] / 65536;
+//		}
 
 		// read closest points based on their z-value
 

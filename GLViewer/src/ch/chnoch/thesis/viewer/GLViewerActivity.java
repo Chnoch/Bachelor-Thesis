@@ -176,8 +176,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 	
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.pointlightvert);
-		String fragmentShader = readRawText(R.raw.pointlightfrag);
+		String vertexShader = readRawText(R.raw.phongvert);
+		String fragmentShader = readRawText(R.raw.phongfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -217,7 +217,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		
 		
 		Vector3f transLeft = new Vector3f(-2, 0, 0);
-		Vector3f transRight = new Vector3f(20, 0, 0);
+		Vector3f transRight = new Vector3f(2, 0, 0);
 
 		Matrix4f smallTrans = Util.getIdentityMatrix();
 		smallTrans.setTranslation(transY);
@@ -232,20 +232,24 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		// mRoot.addChild(new ShapeNode(groundShape));
 
 		mShapeNodeBig = new ShapeNode(mShapeBig);
-		mShapeNodeBig.initTranslationMatrix(rightTrans);
+//		mShapeNodeBig.initTranslationMatrix(rightTrans);
+		mShapeNodeBig.move(transRight);
 		mRoot.addChild(mShapeNodeBig);
 		
 		mSmallGroup = new TransformGroup();
-		mSmallGroup.initTranslationMatrix(smallTrans);
+//		mSmallGroup.initTranslationMatrix(smallTrans);
+		mSmallGroup.move(transY);
 		mRoot.addChild(mSmallGroup);
 
 		mShapeNodeSmallOne = new ShapeNode(mShapeSmall);
-		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
+		mShapeNodeSmallOne.move(transLeft);
+//		mShapeNodeSmallOne.initTranslationMatrix(leftTrans);
 		mShapeNodeSmallTwo = new ShapeNode(mShapeSmall);
-		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
+		mShapeNodeSmallTwo.move(transRight);
+//		mShapeNodeSmallTwo.initTranslationMatrix(rightTrans);
 //
-//		mSmallGroup.addChild(mShapeNodeSmallOne);
-//		mSmallGroup.addChild(mShapeNodeSmallTwo);
+		mSmallGroup.addChild(mShapeNodeSmallOne);
+		mSmallGroup.addChild(mShapeNodeSmallTwo);
 	}
 	
 	
@@ -253,7 +257,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 		
-		light.setPosition(new Vector3f(0,0,0));
+		light.setPosition(new Vector3f(0,0,20));
 		light.setDirection(new Vector3f(0,0,1));
 		light.setSpecular(new Vector3f(1,1,1));
 		light.setAmbient(new Vector3f(0f,0f,0f));
@@ -265,7 +269,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	private void setMaterial() {
 		Material mat = new GLMaterial();
 
-		mat.shininess = 20;
+		mat.shininess = 128;
 		mat.mAmbient.set(0,0,1);
 		mat.mDiffuse.set(0,0,1);
 		mat.mSpecular.set(1,1,1);

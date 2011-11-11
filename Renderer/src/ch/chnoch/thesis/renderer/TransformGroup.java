@@ -90,8 +90,12 @@ public class TransformGroup extends Group {
 		return null;
 	}
 
-	public void move(Vector3f t) {
-		// TODO Auto-generated method stub
+	public void move(Vector3f v) {
+		Matrix4f t = getTranslationMatrix();
+		Matrix4f move = new Matrix4f();
+		move.setTranslation(v);
+		t.add(move);
+		setTranslationMatrix(t);
 	}
 
 	public void rotZ(float angle) {

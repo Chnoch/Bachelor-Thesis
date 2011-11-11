@@ -1,8 +1,7 @@
 precision mediump float;
 
-struct directional_light {
-	vec3 direction;
-	vec3 halfplane;
+struct point_light {
+	vec3 position;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -17,31 +16,26 @@ struct material_properties {
 
 varying float vSpecular_exponent;
 
-varying vec3 vDirection;
-varying vec3 vEyeVector;
-varying vec3 vPosition;
+varying vec3 vViewPosition;
+varying vec3 vLightPosition;
+
+varying vec3 vNormal;
 
 varying vec4 vDiffuse;
 varying vec4 vAmbient;
-varying vec4 vMaterial_specular;
-varying vec4 vLight_specular;
-
-varying vec4 vNormals;
-varying vec3 vVaryingNormal;
-varying vec3 vVaryingLightDir;
-
+varying vec4 vSpecular;
 
 void main(void) {
-	float diff = max(0.0, dot(normalize(vVaryingNormal), normalize(vVaryingLightDir)));
-	vec4 color = diff * vDiffuse;
-	color += vAmbient;
-	vec3 vReflection = normalize(reflect(-normalize(vVaryingLightDir),normalize(vVaryingNormal)));
-	float spec = max(0.0, dot(normalize(vVaryingNormal), vReflection));
 
-	if(diff != 0.0) {
-		vec4 specu = pow(spec, vSpecular_exponent)*vMaterial_specular*vLight_specular;
-		color += specu;
-	}
+	vec3 L = normalize(vLightPosition - vViewPosition);
+	vec3 R = normalize(-reflect(L, vNormal));
+	vec3 V = normalize(-vViewPosition);
 	
-	gl_FragColor = color;
+	vec4 diffuse = vDiffuse * max(dot(vNormal, L), 0.0);
+	vec4 specular = vSpecular * pow(max(dot(R,V), 0.0), vSpecular_exponent);
+	
+	diffuse = clamp(diffuse, 0.0, 1.0);
+	specular = clamp(specular, 0.0, 1.0);
+	
+	gl_FragColor = vAmbient + diffuse + specular;
 }

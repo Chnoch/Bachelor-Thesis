@@ -48,9 +48,9 @@ public class Box2DWorld {
 	private void createGroundBody() {
 		Box2DBody groundBody = new Box2DBody(new Vector2f(0,-10), this);
 		Box2DShape groundShape = new Box2DShape();
-		groundShape.setAsBox(50,10);
+		groundShape.setAsBox(50,5);
 		groundBody.createShape(groundShape, false);
-		groundBody.setType(TType.STATIC);
+//		groundBody.setType(TType.STATIC);
 		
 //		groundBody.setMassFromShapes();
 	}

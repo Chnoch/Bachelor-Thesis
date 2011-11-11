@@ -36,8 +36,7 @@ public class Box2DBody {
 		// Log.d("Box2DBody", "getWorldCenter: " + pos.toString());
 		// Log.d("Box2DBody", "getLocalCenter: " +
 		// mBox2DBody.getLocalCenter().toString());
-		 Log.d("Box2DBody", "getPosition: " +
-		 mBox2DBody.getPosition().toString());
+//		 Log.d("Box2DBody", "getPosition: " + mBox2DBody.getPosition().toString());
 		return new Vector2f(pos.x, pos.y);
 	}
 
@@ -47,6 +46,10 @@ public class Box2DBody {
 
 	public void setPreviousPosition(Vector2f pos) {
 		mPreviousPosition.set(pos);
+	}
+	
+	public void move(float x, float y) {
+		mBox2DBody.setLinearVelocity(new Vec2(x,y));
 	}
 
 	public void setType(TType type) {

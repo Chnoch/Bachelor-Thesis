@@ -1,7 +1,7 @@
 precision mediump float;
 
-struct directional_light {
-	vec3 direction;
+struct point_light {
+	vec3 position;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -15,43 +15,35 @@ struct material_properties {
 };
 
 uniform material_properties material;
-uniform directional_light light;
-
-varying float vSpecular_exponent;
-
-varying vec3 vDirection;
-varying vec3 vEyeVector;
-varying vec4 vPosition;
-
-varying vec4 vDiffuse;
-varying vec4 vAmbient;
-varying vec4 vMaterial_specular;
-varying vec4 vLight_specular;
+uniform point_light light;
 
 attribute vec4 aPosition;
 attribute vec4 aNormals;
+
+varying float vSpecular_exponent;
+
+varying vec3 vViewPosition;
+varying vec3 vLightPosition;
+
+varying vec3 vNormal;
+
+varying vec4 vDiffuse;
+varying vec4 vAmbient;
+varying vec4 vSpecular;
+
 uniform mat4 uMVPMatrix;  // mvp = ModelViewProjection
 uniform mat4 uMVMatrix; // mv = ModelView
 uniform mat4 uNormalMatrix;
 
-varying vec3 vVaryingNormal;
-varying vec3 vVaryingLightDir;
-
 void main() {
 	vDiffuse = material.diffuse * light.diffuse;
 	vAmbient = material.ambient * light.ambient;
-	vMaterial_specular = material.specular;
-	vLight_specular = light.specular;
+	vSpecular = material.specular * light.specular;
 	vSpecular_exponent = material.specular_exponent;
+	vLightPosition = light.position;
 	
-	vVaryingNormal = normalize(uNormalMatrix * aNormals).xyz;
-	//vVaryingNormal = normalize(aNormals).xyz;
-	//vVaryingNormal = normalize(vec3(0,1,1));
-	
-	vec4 vPosition4 = uMVMatrix * aPosition;
-	vec3 vPosition = vPosition4.xyz; // vPosition4.w;
-	
-	vVaryingLightDir = light.direction;
+	vNormal = (uNormalMatrix * aNormals).xyz;
+	vViewPosition = (uMVMatrix * aPosition).xyz;
 	
 	gl_Position = uMVPMatrix * aPosition;
 }

@@ -1,7 +1,6 @@
 package ch.chnoch.thesis.renderer;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,21 +8,13 @@ import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.GLUtil;
-import ch.chnoch.thesis.renderer.util.Util;
 
 import android.content.Context;
 import android.opengl.*;
-import static android.opengl.GLES10.GL_FASTEST;
-import static android.opengl.GLES10.GL_PERSPECTIVE_CORRECTION_HINT;
-import static android.opengl.GLES10.GL_PROJECTION;
-import static android.opengl.GLES10.GL_SMOOTH;
 import static android.opengl.GLES20.*;
 import android.util.Log;
 

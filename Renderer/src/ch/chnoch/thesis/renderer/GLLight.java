@@ -29,7 +29,9 @@ public class GLLight {
 	public void draw(Matrix4f viewMatrix) throws Exception {
 
 		Matrix3f rotMatrix = new Matrix3f();
-		viewMatrix.getRotationScale(rotMatrix);
+		if (viewMatrix != null) {
+			viewMatrix.getRotationScale(rotMatrix);
+		}
 
 		if (muDirectionHandle != -1) {
 			float[] dir = new float[3];
