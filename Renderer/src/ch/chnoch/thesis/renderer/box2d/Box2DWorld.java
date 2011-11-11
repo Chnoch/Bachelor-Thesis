@@ -5,15 +5,18 @@ import javax.vecmath.Vector2f;
 import org.jbox2d.collision.*;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.joints.Joint;
 
 import ch.chnoch.thesis.renderer.box2d.Box2DBody.TType;
 import ch.chnoch.thesis.renderer.interfaces.*;
 
 public class Box2DWorld {
 
-	World mBox2DWorld;
-	AABB mBox2DsurroundingBox;
-	SceneManagerInterface mSceneManager;
+	private World mBox2DWorld;
+	private AABB mBox2DsurroundingBox;
+	private SceneManagerInterface mSceneManager;
+	private Box2DBody mGroundBody;
+	
 	
 	/**
 	 * Creates a World, where all the elements will live in.
@@ -40,16 +43,24 @@ public class Box2DWorld {
 		return mBox2DWorld.createBody(body.getDefinition());
 	}
 	
+	Joint createJoint(Box2DJoint joint) {
+		return mBox2DWorld.createJoint(joint.getJointDef());
+	}
+	
+	Box2DBody getGroundBody() {
+		return mGroundBody;
+	}
+	
 	
 	/*
 	 * Private Methods
 	 */
 	
 	private void createGroundBody() {
-		Box2DBody groundBody = new Box2DBody(new Vector2f(0,-10), this);
+		mGroundBody = new Box2DBody(new Vector2f(0,-10), this);
 		Box2DShape groundShape = new Box2DShape();
 		groundShape.setAsBox(50,5);
-		groundBody.createShape(groundShape, false);
+		mGroundBody.createShape(groundShape, false);
 //		groundBody.setType(TType.STATIC);
 		
 //		groundBody.setMassFromShapes();

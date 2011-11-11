@@ -176,8 +176,8 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 	}
 	
 	private Shader createShaders() {
-		String vertexShader = readRawText(R.raw.phongvert);
-		String fragmentShader = readRawText(R.raw.phongfrag);
+		String vertexShader = Util.readRawText(getApplication(), R.raw.phongvert);
+		String fragmentShader = Util.readRawText(getApplication(), R.raw.phongfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -300,25 +300,6 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		return new Shape(vertexBuffer);
 	}
 	
-	private String readRawText(int id) {
-		InputStream raw = getApplication().getResources().openRawResource(id);
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-		int i;
-		try {
-			i = raw.read();
-			while (i != -1) {
-				byteArrayOutputStream.write(i);
-				i = raw.read();
-			}
-			raw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return byteArrayOutputStream.toString();
-	}
-
 	private boolean detectOpenGLES20() {
 		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		ConfigurationInfo info = am.getDeviceConfigurationInfo();

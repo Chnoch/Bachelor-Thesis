@@ -313,8 +313,8 @@ public class GLES20Renderer extends AbstractRenderer {
 				t.set(mSceneManager.getFrustum().getProjectionMatrix());
 				t.mul(mSceneManager.getCamera().getCameraMatrix());
 				t.mul(renderItem.getT());
-				t.transpose();
 				t.invert();
+				t.transpose();
 
 				// Log.d(TAG, "Normal Pointers");
 				glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT, true, 0,

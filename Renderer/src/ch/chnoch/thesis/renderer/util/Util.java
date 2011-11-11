@@ -1,10 +1,15 @@
 package ch.chnoch.thesis.renderer.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
+
+import android.app.Application;
 
 import ch.chnoch.thesis.renderer.*;
 
@@ -51,6 +56,25 @@ public class Util {
 	 */
 	public static Matrix4f getIdentityMatrix() {
 		return new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+	}
+	
+	public static String readRawText(Application app, int id) {
+		InputStream raw = app.getResources().openRawResource(id);
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+		int i;
+		try {
+			i = raw.read();
+			while (i != -1) {
+				byteArrayOutputStream.write(i);
+				i = raw.read();
+			}
+			raw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return byteArrayOutputStream.toString();
 	}
 
 	public static Shape loadCube(float scale) {

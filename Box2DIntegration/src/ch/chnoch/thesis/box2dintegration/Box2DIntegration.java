@@ -24,6 +24,8 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private GLSurfaceView mViewer;
 
 	private Simulation mSimulation;
+	
+	private static final String TAG = "Box2DIntegration";
 
 	/** Called when the activity is first created. */
 	@Override
@@ -33,11 +35,11 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 20));
 		mSceneManager.getFrustum().setVertFOV(90);
 
-		mRenderer = new GLES11Renderer();
+		mRenderer = new GLES20Renderer(getApplicationContext());
 		// mRenderer = new GL2DRenderer();
 		mRenderer.setSceneManager(mSceneManager);
 
-		mViewer = new GLViewer(this, mRenderer, false);
+		mViewer = new GLViewer(this, mRenderer, true);
 
 		createLights();
 		createShapes();
@@ -121,8 +123,8 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private void createLights() {
 
 		Light light = new Light(mSceneManager.getCamera());
-		light.setType(Light.Type.DIRECTIONAL);
-		light.setPosition(5, 5, 5);
+		light.setType(Light.Type.POINT);
+		light.setPosition(0, 5, 10);
 		light.setDirection(1, 1, 1);
 		light.setSpecular(1, 1, 1);
 		light.setAmbient(0.4f, 0.4f, 0.4f);
@@ -146,8 +148,28 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mat.mAmbient.set(1, 0, 0);
 		mat.mDiffuse.set(1f, 0, 0);
 		mat.mSpecular.set(1f, 0f, 0f);
-
+		mat.setShader(createShaders());
 		return mat;
+	}
+	
+	private Shader createShaders() {
+		String vertexShader = Util.readRawText(getApplication(), R.raw.phongvert);
+		String fragmentShader = Util.readRawText(getApplication(), R.raw.phongfrag);
+		Shader shader = null;
+		Log.d(TAG, "VertexShader: " + vertexShader);
+		Log.d(TAG, "FragmentShader: " + fragmentShader);
+		try {
+			mRenderer.createShader(shader, vertexShader, fragmentShader);
+			return shader;
+			// if (shader.getProgram() == 0) {
+			// throw new RuntimeException();
+			// }
+		} catch (GLException exc) {
+			Log.e(TAG, exc.getError());
+		} catch (Exception e) {
+			Log.e(TAG, "Error loading Shaders", e);
+		}
+		return null;
 	}
 
 	private void buildHalfPyramid(Node root, int mirror) {
