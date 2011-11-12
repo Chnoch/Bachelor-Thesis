@@ -33,17 +33,21 @@ public class TouchHandler implements OnTouchListener {
 	private GLViewer mViewer;
 
 	private ScaleGestureDetector mScaleDetector;
+	
+	private boolean mRotationDisabled;
 
 	private final float TOUCH_SCALE_FACTOR = 1;
 	private final float TRANSLATION_SCALE_FACTOR = 1;
 
 	private final String TAG = "TouchHandler";
 
-	public TouchHandler(RenderContext renderer, GLSurfaceView viewer) {
+	public TouchHandler(RenderContext renderer, GLSurfaceView viewer, boolean disableRotation) {
 		mRenderer = renderer;
 		mTrackball = new Trackball();
 		mPlane = new Plane();
 		mPlane.setNormal(new Vector3f(0, 0, 1));
+		
+		mRotationDisabled = disableRotation;
 
 		mScaleDetector = new ScaleGestureDetector(viewer.getContext(),
 				new ScaleListener());
@@ -95,8 +99,8 @@ public class TouchHandler implements OnTouchListener {
 						+ Math.pow(mPreviousY - y, 2));
 				Log.d("TouchHandler", "Distance: " + distance);
 
-				if (mEventEnd - mEventStart > 500
-						|| (mIsTranslation && !mRotate)) {
+				if (mEventEnd - mEventStart > 300
+						|| (mIsTranslation && !mRotate) || mRotationDisabled) {
 					Log.d("TouchHandler", "Moving Object");
 
 					try {

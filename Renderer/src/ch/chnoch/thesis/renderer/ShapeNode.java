@@ -100,7 +100,7 @@ public class ShapeNode extends Leaf {
 		Vector2f position = new Vector2f();
 		position.x = trans.m03;
 		position.y = trans.m13;
-		mBox2DBody = new Box2DBody(position, world);
+		mBox2DBody = new Box2DBody(position, world, true);
 
 		Box2DShape shape = mShape.enableBox2D();
 		mBox2DBody.createShape(shape, true);

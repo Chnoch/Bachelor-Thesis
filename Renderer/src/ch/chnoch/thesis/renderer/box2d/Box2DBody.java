@@ -16,12 +16,14 @@ public class Box2DBody {
 	private Vector2f mPreviousPosition;
 	private Box2DJoint mJoint;
 
-	public Box2DBody(Vector2f position, Box2DWorld world) {
+	public Box2DBody(Vector2f position, Box2DWorld world, boolean createJoint) {
 		mBox2DBodyDef = new BodyDef();
 		mBox2DBodyDef.position.set(position.x, position.y);
 		mPreviousPosition = position;
 		mBox2DBody = world.createBody(this);
-		mJoint = new Box2DJoint(this, world);
+		if (createJoint) {
+			mJoint = new Box2DJoint(this, world);
+		}
 	}
 
 	public Vector2f getForce() {
@@ -34,11 +36,7 @@ public class Box2DBody {
 	}
 
 	public Vector2f getCurrentPosition() {
-		Vec2 pos = mBox2DBody.getPosition();
-		// Log.d("Box2DBody", "getWorldCenter: " + pos.toString());
-		// Log.d("Box2DBody", "getLocalCenter: " +
-		// mBox2DBody.getLocalCenter().toString());
-//		 Log.d("Box2DBody", "getPosition: " + mBox2DBody.getPosition().toString());
+		Vec2 pos = mBox2DBody.getWorldCenter();
 		return new Vector2f(pos.x, pos.y);
 	}
 
@@ -49,9 +47,11 @@ public class Box2DBody {
 	public void setPreviousPosition(Vector2f pos) {
 		mPreviousPosition.set(pos);
 	}
-	
+
 	public void move(float x, float y) {
-		mBox2DBody.setLinearVelocity(new Vec2(x,y));
+		// mBox2DBody.setLinearVelocity(new Vec2(x,y));
+		mJoint.update(new Vec2(getCurrentPosition().x + x,
+				getCurrentPosition().y + y));
 	}
 
 	public void setType(TType type) {
@@ -107,7 +107,7 @@ public class Box2DBody {
 	BodyDef getDefinition() {
 		return mBox2DBodyDef;
 	}
-	
+
 	Body getBody() {
 		return mBox2DBody;
 	}

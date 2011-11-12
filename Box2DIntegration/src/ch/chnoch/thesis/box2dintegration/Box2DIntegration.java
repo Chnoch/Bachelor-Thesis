@@ -55,7 +55,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager.enablePhysicsEngine();
 		// mViewer.setOnClickListener(this);
 
-		mViewer.setOnTouchListener(new TouchHandler(mRenderer, mViewer));
+		mViewer.setOnTouchListener(new TouchHandler(mRenderer, mViewer, true));
 
 		runSimulation();
 
@@ -89,6 +89,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mViewer.onPause();
 		// mSimulation.stopThread();
 	}
+	
 
 	@Override
 	public void onResume() {
@@ -103,7 +104,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		new Thread(new Runnable() {
 			public void run() {
 				while (true) {
-					for (int i = 0; i < 10; i++) {
+					for (int i = 0; i < 1; i++) {
 						// Log.d("Simulation", "Updating scene");
 						mSceneManager.updateScene();
 						mViewer.requestRender();
@@ -135,9 +136,11 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 
 	private void createShapes() {
 
-		Node root = new TransformGroup();
-		buildHalfPyramid(root, 1);
-		buildHalfPyramid(root, -1);
+//		Node root = new TransformGroup();
+		Node root = new ShapeNode(Util.loadCube(1));
+		root.setMaterial(createMaterial());
+		//		buildHalfPyramid(root, 1);
+//		buildHalfPyramid(root, -1);
 		mSceneManager.setRoot(root);
 	}
 
