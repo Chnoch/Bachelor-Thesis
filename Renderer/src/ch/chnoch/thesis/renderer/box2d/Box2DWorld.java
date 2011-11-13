@@ -16,6 +16,7 @@ public class Box2DWorld {
 	private AABB mBox2DsurroundingBox;
 	private SceneManagerInterface mSceneManager;
 	private Box2DBody mGroundBody;
+	private Box2DBody mTopBody;
 	
 	
 	/**
@@ -28,6 +29,7 @@ public class Box2DWorld {
 		mBox2DWorld = new World(mBox2DsurroundingBox, new Vec2(gravity.x, gravity.y), true);
 		
 		createGroundBody();
+		createTopBody();
 	}
 	
 	public void step(float dt, int iterations){
@@ -51,6 +53,10 @@ public class Box2DWorld {
 		return mGroundBody;
 	}
 	
+	Box2DBody getTopBody() {
+		return mTopBody;
+	}
+	
 	
 	/*
 	 * Private Methods
@@ -61,8 +67,16 @@ public class Box2DWorld {
 		Box2DShape groundShape = new Box2DShape();
 		groundShape.setAsBox(50,5);
 		mGroundBody.createShape(groundShape, false);
-//		groundBody.setType(TType.STATIC);
+		mGroundBody.setType(TType.STATIC);
 		
 //		groundBody.setMassFromShapes();
+	}
+	
+	private void createTopBody() {
+		mTopBody = new Box2DBody(new Vector2f(8, 4), this, false);
+		Box2DShape topShape = new Box2DShape();
+		topShape.setAsBox(10, 1);
+		mTopBody.createShape(topShape, false);
+		mTopBody.setType(TType.STATIC);
 	}
 }

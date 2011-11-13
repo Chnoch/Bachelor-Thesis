@@ -88,6 +88,10 @@ public class Box2DBody {
 	public void setFriction(float friction) {
 		mBox2DBody.m_shapeList.m_friction = friction;
 	}
+	
+	public void setLinearVelocity(float x, float y) {
+		mBox2DBody.setLinearVelocity(new Vec2(x,y));
+	}
 
 	public float getAngle() {
 		return mBox2DBody.getAngle();

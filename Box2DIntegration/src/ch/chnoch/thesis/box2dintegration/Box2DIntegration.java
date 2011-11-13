@@ -19,7 +19,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 
 	private GraphSceneManager mSceneManager;
 	private Shape mShape;
-	private Node mNode, mRoot;
+	private Node mBullet, mRoot;
 	private RenderContext mRenderer;
 	private GLSurfaceView mViewer;
 
@@ -35,11 +35,12 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 20));
 		mSceneManager.getFrustum().setVertFOV(90);
 
-		mRenderer = new GLES20Renderer(getApplicationContext());
+//		mRenderer = new GLES20Renderer(getApplicationContext());
+		mRenderer = new GLES11Renderer();
 		// mRenderer = new GL2DRenderer();
 		mRenderer.setSceneManager(mSceneManager);
 
-		mViewer = new GLViewer(this, mRenderer, true);
+		mViewer = new GLViewer(this, mRenderer, false);
 
 		createLights();
 		createShapes();
@@ -53,7 +54,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mViewer.setFocusableInTouchMode(true);
 
 		mSceneManager.enablePhysicsEngine();
-		// mViewer.setOnClickListener(this);
+//		 mViewer.setOnClickListener(this);
 
 		mViewer.setOnTouchListener(new TouchHandler(mRenderer, mViewer, true));
 
@@ -112,7 +113,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -136,11 +136,16 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 
 	private void createShapes() {
 
-//		Node root = new TransformGroup();
-		Node root = new ShapeNode(Util.loadCube(1));
+		Node root = new TransformGroup();
+		mBullet = new ShapeNode(Util.loadCube(1));
+		Matrix4f trans = new Matrix4f();
+		trans.setTranslation(new Vector3f(13, 5, 0));
+		mBullet.setTranslationMatrix(trans);
+		root.addChild(mBullet);
+		
 		root.setMaterial(createMaterial());
-		//		buildHalfPyramid(root, 1);
-//		buildHalfPyramid(root, -1);
+		buildHalfPyramid(root, 1);
+		buildHalfPyramid(root, -1);
 		mSceneManager.setRoot(root);
 	}
 
@@ -151,29 +156,29 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mat.mAmbient.set(1, 0, 0);
 		mat.mDiffuse.set(1f, 0, 0);
 		mat.mSpecular.set(1f, 0f, 0f);
-		mat.setShader(createShaders());
+//		mat.setShader(createShaders());
 		return mat;
 	}
 	
-	private Shader createShaders() {
-		String vertexShader = Util.readRawText(getApplication(), R.raw.phongvert);
-		String fragmentShader = Util.readRawText(getApplication(), R.raw.phongfrag);
-		Shader shader = null;
-		Log.d(TAG, "VertexShader: " + vertexShader);
-		Log.d(TAG, "FragmentShader: " + fragmentShader);
-		try {
-			mRenderer.createShader(shader, vertexShader, fragmentShader);
-			return shader;
-			// if (shader.getProgram() == 0) {
-			// throw new RuntimeException();
-			// }
-		} catch (GLException exc) {
-			Log.e(TAG, exc.getError());
-		} catch (Exception e) {
-			Log.e(TAG, "Error loading Shaders", e);
-		}
-		return null;
-	}
+//	private Shader createShaders() {
+//		String vertexShader = Util.readRawText(getApplication(), R.raw.phongvert);
+//		String fragmentShader = Util.readRawText(getApplication(), R.raw.phongfrag);
+//		Shader shader = null;
+//		Log.d(TAG, "VertexShader: " + vertexShader);
+//		Log.d(TAG, "FragmentShader: " + fragmentShader);
+//		try {
+//			mRenderer.createShader(shader, vertexShader, fragmentShader);
+//			return shader;
+//			// if (shader.getProgram() == 0) {
+//			// throw new RuntimeException();
+//			// }
+//		} catch (GLException exc) {
+//			Log.e(TAG, exc.getError());
+//		} catch (Exception e) {
+//			Log.e(TAG, "Error loading Shaders", e);
+//		}
+//		return null;
+//	}
 
 	private void buildHalfPyramid(Node root, int mirror) {
 		Shape shape = Util.loadCube(1);
@@ -224,6 +229,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	public void onClick(View arg0) {
 		Log.d("Box2dIntegration", "onClick");
 		// new Thread(new Simulation()).run();
-		runSimulation();
+		mBullet.getPhysicsProperties().setLinearVelocity(-200, 0);
 	}
 }
