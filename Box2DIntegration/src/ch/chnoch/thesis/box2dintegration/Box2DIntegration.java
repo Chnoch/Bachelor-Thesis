@@ -45,10 +45,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		createLights();
 		createShapes();
 
-		// Shape cube = Util.loadCube(1);
-		// Node root = new ShapeNode(cube);
-		// mSceneManager.setRoot(root);
-
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
@@ -111,7 +107,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 						mViewer.requestRender();
 					}
 					try {
-						Thread.sleep(20);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -120,6 +116,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 			}
 		}).start();
 	}
+	
 
 	private void createLights() {
 
@@ -137,11 +134,12 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private void createShapes() {
 
 		Node root = new TransformGroup();
-		mBullet = new ShapeNode(Util.loadCube(1));
-		Matrix4f trans = new Matrix4f();
-		trans.setTranslation(new Vector3f(13, 5, 0));
-		mBullet.setTranslationMatrix(trans);
-		root.addChild(mBullet);
+//		Node root = new ShapeNode(Util.loadCube(1));
+//		mBullet = new ShapeNode(Util.loadCube(1));
+//		Matrix4f trans = new Matrix4f();
+//		trans.setTranslation(new Vector3f(13, 5, 0));
+//		mBullet.setTranslationMatrix(trans);
+//		root.addChild(mBullet);
 		
 		root.setMaterial(createMaterial());
 		buildHalfPyramid(root, 1);

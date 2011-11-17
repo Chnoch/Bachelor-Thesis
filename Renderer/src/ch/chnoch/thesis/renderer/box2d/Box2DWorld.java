@@ -29,7 +29,7 @@ public class Box2DWorld {
 		mBox2DWorld = new World(mBox2DsurroundingBox, new Vec2(gravity.x, gravity.y), true);
 		
 		createGroundBody();
-		createTopBody();
+//		createTopBody();
 	}
 	
 	public void step(float dt, int iterations){
@@ -63,19 +63,18 @@ public class Box2DWorld {
 	 */
 	
 	private void createGroundBody() {
-		mGroundBody = new Box2DBody(new Vector2f(-25,-10), this, false);
 		Box2DShape groundShape = new Box2DShape();
 		groundShape.setAsBox(50,5);
-		mGroundBody.createShape(groundShape, false);
-		mGroundBody.setType(TType.STATIC);
+		mGroundBody = new Box2DBody(new Vector2f(-25,-10), this, groundShape, false, false);
+//		mGroundBody.setType(TType.STATIC);
 		
 //		groundBody.setMassFromShapes();
 	}
 	
 	private void createTopBody() {
-		mTopBody = new Box2DBody(new Vector2f(8, 4), this, false);
 		Box2DShape topShape = new Box2DShape();
 		topShape.setAsBox(10, 1);
+		mTopBody = new Box2DBody(new Vector2f(8, 4), this, topShape, false, false);
 		mTopBody.createShape(topShape, false);
 		mTopBody.setType(TType.STATIC);
 	}

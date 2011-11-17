@@ -63,14 +63,16 @@ public class ShapeNode extends Leaf {
 	}
 
 	public void move(Vector3f v) {
-		Matrix4f t = getTranslationMatrix();
-		Matrix4f move = new Matrix4f();
-		move.setTranslation(v);
-		t.add(move);
-		setTranslationMatrix(t);
 
 		if (mPhysicsEnabled) {
+			Log.d("ShapeNode", "Moved ShapeNode with enabledPhysics: x: " + v.x + ", y: " +v.y );
 			mBox2DBody.move(v.x, v.y);
+		} else {
+			Matrix4f t = getTranslationMatrix();
+			Matrix4f move = new Matrix4f();
+			move.setTranslation(v);
+			t.add(move);
+			setTranslationMatrix(t);
 		}
 
 	}
@@ -100,10 +102,11 @@ public class ShapeNode extends Leaf {
 		Vector2f position = new Vector2f();
 		position.x = trans.m03;
 		position.y = trans.m13;
-		mBox2DBody = new Box2DBody(position, world, true);
+		mBox2DBody = new Box2DBody(position, world, mShape.enableBox2D(), true,
+				true);
 
-		Box2DShape shape = mShape.enableBox2D();
-		mBox2DBody.createShape(shape, true);
+//		Box2DShape shape = mShape.enableBox2D();
+//		mBox2DBody.createShape(shape, true);
 
 		mPhysicsEnabled = true;
 	}
@@ -113,7 +116,7 @@ public class ShapeNode extends Leaf {
 		// Temporarily disable the automatic translation of the
 		// graphical model back to the physical one.
 		mPhysicsEnabled = false;
-		
+
 		Vector2f prevPos = mBox2DBody.getPreviousPosition();
 		Vector2f curPos = mBox2DBody.getCurrentPosition();
 
@@ -121,12 +124,19 @@ public class ShapeNode extends Leaf {
 		trans.x = curPos.x - prevPos.x;
 		trans.y = curPos.y - prevPos.y;
 		trans.z = 0;
-		
+
 		move(trans);
 
 		mBox2DBody.setPreviousPosition(curPos);
+
 		rotZ(mBox2DBody.getAngle());
-		
+		if (!prevPos.epsilonEquals(curPos, 0.01f)) {
+			Log.d("ShapeNode", "previous position: " + prevPos.toString());
+			Log.d("ShapeNode", "current position: " + curPos.toString());
+			Log.d("ShapeNode", "rotating: " + mBox2DBody.getAngle());
+			Log.d("ShapeNode", "moving: " + trans.toString());
+		}
+
 		mPhysicsEnabled = true;
 	}
 

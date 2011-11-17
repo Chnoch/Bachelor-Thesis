@@ -16,11 +16,12 @@ public class Box2DBody {
 	private Vector2f mPreviousPosition;
 	private Box2DJoint mJoint;
 
-	public Box2DBody(Vector2f position, Box2DWorld world, boolean createJoint) {
+	public Box2DBody(Vector2f position, Box2DWorld world, Box2DShape shape, boolean hasMass, boolean createJoint) {
 		mBox2DBodyDef = new BodyDef();
 		mBox2DBodyDef.position.set(position.x, position.y);
 		mPreviousPosition = position;
 		mBox2DBody = world.createBody(this);
+		createShape(shape, hasMass);
 		if (createJoint) {
 			mJoint = new Box2DJoint(this, world);
 		}
@@ -36,7 +37,7 @@ public class Box2DBody {
 	}
 
 	public Vector2f getCurrentPosition() {
-		Vec2 pos = mBox2DBody.getWorldCenter();
+		Vec2 pos = mBox2DBody.getPosition();
 		return new Vector2f(pos.x, pos.y);
 	}
 
@@ -50,6 +51,7 @@ public class Box2DBody {
 
 	public void move(float x, float y) {
 		// mBox2DBody.setLinearVelocity(new Vec2(x,y));
+		Log.d("Box2DBody", "move: x: " + x + " y: " + y);
 		Log.d("Box2DBody", "CurrentPosition: " + getCurrentPosition().toString());
 		mJoint.update(new Vec2(getCurrentPosition().x + x,
 				getCurrentPosition().y + y));
