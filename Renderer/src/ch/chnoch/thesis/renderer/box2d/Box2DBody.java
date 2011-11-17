@@ -50,6 +50,7 @@ public class Box2DBody {
 
 	public void move(float x, float y) {
 		// mBox2DBody.setLinearVelocity(new Vec2(x,y));
+		Log.d("Box2DBody", "CurrentPosition: " + getCurrentPosition().toString());
 		mJoint.update(new Vec2(getCurrentPosition().x + x,
 				getCurrentPosition().y + y));
 	}

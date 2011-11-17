@@ -111,7 +111,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 						mViewer.requestRender();
 					}
 					try {
-						Thread.sleep(50);
+						Thread.sleep(20);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
