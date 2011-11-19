@@ -109,7 +109,7 @@ public class TransformGroup extends Group {
 	}
 
 	@Override
-	public void updatePhysics() {
+	public void updatePositionFromPhysic() {
 		// TODO Auto-generated method stub
 		
 	}

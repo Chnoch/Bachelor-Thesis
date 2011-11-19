@@ -20,6 +20,8 @@ public class ShapeNode extends Leaf {
 	private Box2DBody mBox2DBody;
 	private boolean mPhysicsEnabled = false;
 
+	private static final float PTM_RATIO = 1;
+
 	public ShapeNode(Shape shape) {
 		super();
 		mShape = shape;
@@ -65,9 +67,13 @@ public class ShapeNode extends Leaf {
 	public void move(Vector3f v) {
 
 		if (mPhysicsEnabled) {
-			Log.d("ShapeNode", "Moved ShapeNode with enabledPhysics: x: " + v.x + ", y: " +v.y );
-			mBox2DBody.move(v.x, v.y);
+			Log.d("ShapeNode", "Moved ShapeNode with enabledPhysics: x: " + v.x
+					+ ", y: " + v.y);
+			mBox2DBody.move(v.x, v.y, PTM_RATIO);
 		} else {
+			if (mBox2DBody != null) {
+				mBox2DBody.checkForJoints();
+			}
 			Matrix4f t = getTranslationMatrix();
 			Matrix4f move = new Matrix4f();
 			move.setTranslation(v);
@@ -105,14 +111,10 @@ public class ShapeNode extends Leaf {
 		mBox2DBody = new Box2DBody(position, world, mShape.enableBox2D(), true,
 				true);
 
-//		Box2DShape shape = mShape.enableBox2D();
-//		mBox2DBody.createShape(shape, true);
-
 		mPhysicsEnabled = true;
 	}
 
-	@Override
-	public void updatePhysics() {
+	public void updatePositionFromPhysic() {
 		// Temporarily disable the automatic translation of the
 		// graphical model back to the physical one.
 		mPhysicsEnabled = false;
@@ -130,14 +132,12 @@ public class ShapeNode extends Leaf {
 		mBox2DBody.setPreviousPosition(curPos);
 
 		rotZ(mBox2DBody.getAngle());
-		if (!prevPos.epsilonEquals(curPos, 0.01f)) {
-			Log.d("ShapeNode", "previous position: " + prevPos.toString());
-			Log.d("ShapeNode", "current position: " + curPos.toString());
-			Log.d("ShapeNode", "rotating: " + mBox2DBody.getAngle());
-			Log.d("ShapeNode", "moving: " + trans.toString());
-		}
 
 		mPhysicsEnabled = true;
+	}
+
+	public void releaseNode() {
+		mBox2DBody.removeJoint();
 	}
 
 	public void setParent(Node parent) {

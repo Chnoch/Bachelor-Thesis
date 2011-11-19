@@ -8,28 +8,26 @@ import java.util.List;
 import javax.vecmath.Vector2f;
 
 import org.jbox2d.collision.*;
+import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.*;
+import org.jbox2d.dynamics.FixtureDef;
 
 public class Box2DShape {
 
-	private PolygonDef mBox2DShapeDef;
+	private FixtureDef mFixtureDef;
+	private PolygonShape mPolygonShape;
 
 	public Box2DShape() {
-		mBox2DShapeDef = new PolygonDef();
-		// Some random default values
-		mBox2DShapeDef.density = 1;
-		mBox2DShapeDef.friction = 0.3f;
+		init();
 	}
 
 	public Box2DShape(FloatBuffer vertices) {
-		mBox2DShapeDef = new PolygonDef();
-		// Some random default values
-		mBox2DShapeDef.density = 1;
-		mBox2DShapeDef.friction = 0.3f;
+		init();
 
 		// TODO: Check for correct order of vertices
-		// First approach: We assume cubes. We just take the smallest and biggest value
-		// and generate a box out of it. 
+		// First approach: We assume cubes. We just take the smallest and
+		// biggest value
+		// and generate a box out of it.
 		float xmin = Float.MAX_VALUE;
 		float xmax = Float.MIN_VALUE;
 		float ymin = Float.MAX_VALUE;
@@ -47,30 +45,43 @@ public class Box2DShape {
 			if (coord.y > ymax) {
 				ymax = coord.y;
 			}
-			
-			
+
 		}
-		setAsBox((xmax-xmin)/2, (ymax-ymin)/2);
+		setAsBox((xmax - xmin) / 2, (ymax - ymin) / 2);
+	}
+
+	private void init() {
+		mFixtureDef = new FixtureDef();
+		// Some random default values
+		mFixtureDef.density = 1;
+		mFixtureDef.friction = 0.3f;
+		
+		mPolygonShape = new PolygonShape();
 	}
 
 	void setDensity(float dens) {
-		mBox2DShapeDef.density = dens;
+		mFixtureDef.density = dens;
 	}
 
 	void setFriction(float friction) {
-		mBox2DShapeDef.friction = friction;
+		mFixtureDef.friction = friction;
 	}
 
 	/*
 	 * Package Scope
 	 */
 
-	public void setAsBox(float x, float y) {
-		mBox2DShapeDef.setAsBox(x, y);
+	void setAsBox(float x, float y) {
+		mPolygonShape.setAsBox(x, y);
 	}
 
-	PolygonDef getPolygonDef() {
-		return mBox2DShapeDef;
+	FixtureDef getFixtureDef() {
+		mFixtureDef.shape = mPolygonShape;
+		return mFixtureDef;
+	}
+	
+	PolygonShape getPolygonShape() {
+		return mPolygonShape;
 	}
 
 	/*
@@ -90,10 +101,10 @@ public class Box2DShape {
 			vertices[i] = verticesBuffer.get(i);
 		}
 		// Fixed Point Conversion
-//		float[] vertices = new float[verticesInt.length];
-//		for (int i = 0; i < verticesInt.length; i++) {
-//			vertices[i] = (float) verticesInt[i] / 65536;
-//		}
+		// float[] vertices = new float[verticesInt.length];
+		// for (int i = 0; i < verticesInt.length; i++) {
+		// vertices[i] = (float) verticesInt[i] / 65536;
+		// }
 
 		// read closest points based on their z-value
 

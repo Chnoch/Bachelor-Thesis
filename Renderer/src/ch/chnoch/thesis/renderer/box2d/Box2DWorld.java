@@ -12,7 +12,7 @@ import ch.chnoch.thesis.renderer.interfaces.*;
 
 public class Box2DWorld {
 
-	private World mBox2DWorld;
+	private World mWorld;
 	private AABB mBox2DsurroundingBox;
 	private SceneManagerInterface mSceneManager;
 	private Box2DBody mGroundBody;
@@ -25,15 +25,14 @@ public class Box2DWorld {
 	 * @param high the highest point (x,y) of the world
 	 */
 	public Box2DWorld(Vector2f low, Vector2f high, Vector2f gravity) {
-		mBox2DsurroundingBox = new AABB(new Vec2(low.x, low.y), new Vec2(high.x, high.y));
-		mBox2DWorld = new World(mBox2DsurroundingBox, new Vec2(gravity.x, gravity.y), true);
+		mWorld = new World(new Vec2(gravity.x, gravity.y), false);
 		
 		createGroundBody();
 //		createTopBody();
 	}
 	
-	public void step(float dt, int iterations){
-		mBox2DWorld.step(dt, iterations);
+	public void step(float dt, int velocityIterations, int positionIterations){
+		mWorld.step(dt, velocityIterations, positionIterations);
 	}
 	
 	
@@ -42,11 +41,15 @@ public class Box2DWorld {
 	 */
 	
 	Body createBody(Box2DBody body) {
-		return mBox2DWorld.createBody(body.getDefinition());
+		return mWorld.createBody(body.getDefinition());
 	}
 	
 	Joint createJoint(Box2DJoint joint) {
-		return mBox2DWorld.createJoint(joint.getJointDef());
+		return mWorld.createJoint(joint.getJointDef());
+	}
+	
+	void destroyJoint(Box2DJoint joint) {
+		mWorld.destroyJoint(joint.getJoint());
 	}
 	
 	Box2DBody getGroundBody() {
@@ -66,6 +69,7 @@ public class Box2DWorld {
 		Box2DShape groundShape = new Box2DShape();
 		groundShape.setAsBox(50,5);
 		mGroundBody = new Box2DBody(new Vector2f(-25,-10), this, groundShape, false, false);
+		
 //		mGroundBody.setType(TType.STATIC);
 		
 //		groundBody.setMassFromShapes();

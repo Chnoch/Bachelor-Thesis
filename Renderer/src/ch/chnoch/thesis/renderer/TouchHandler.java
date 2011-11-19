@@ -5,6 +5,7 @@ import java.util.List;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.Util;
 import android.opengl.GLSurfaceView;
@@ -74,6 +75,7 @@ public class TouchHandler implements OnTouchListener {
 			try {
 				mEventStart = e.getEventTime();
 				unproject(x, y);
+				translatePhysics(x, y, 1);
 
 				break;
 			} catch (Exception exc) {
@@ -93,7 +95,8 @@ public class TouchHandler implements OnTouchListener {
 				// || (mIsTranslation && !mRotate) || mRotationDisabled) {
 				if (mRotationDisabled) {
 					Log.d("TouchHandler", "Moving Object");
-					translate(x, y);
+					// translate(x, y);
+					translatePhysics(x, y, 0);
 
 				} else if (distance > 0.1f) {
 					// Short press: Rotate object
@@ -117,6 +120,8 @@ public class TouchHandler implements OnTouchListener {
 			mIsTranslation = false;
 			mOnNode = false;
 			mRotate = false;
+
+			translatePhysics(x, y, 2);
 
 			if (mUpScaled) {
 				mIntersection.node
@@ -185,6 +190,43 @@ public class TouchHandler implements OnTouchListener {
 			}
 		} catch (Exception exc) {
 			// Log.e(TAG, exc.getMessage());
+		}
+	}
+
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param mode
+	 *            1: start, 2: end, 0: common
+	 */
+	private void translatePhysics(float x, float y, int mode) {
+		Ray curRay = mViewer.unproject(x, y);
+		switch (mode) {
+		case 0:
+			// common action
+
+			Ray prevRay = mViewer.unproject(mPreviousX, mPreviousY);
+			RayShapeIntersection startIntersection = mPlane.intersect(prevRay);
+			RayShapeIntersection endIntersection = mPlane.intersect(curRay);
+			mPlane.update(endIntersection.hitPoint, startIntersection.hitPoint);
+			Log.d("TouchHandler",
+					"Moving from " + startIntersection.hitPoint.toString()
+							+ " to " + endIntersection.hitPoint.toString());
+			break;
+		case 1:
+			// start of translation
+			RayShapeIntersection hitPointInter = mIntersection.node
+					.intersect(curRay);
+
+			mPlane.setPointOnPlane(hitPointInter.hitPoint);
+			mPlane.setNode(mIntersection.node);
+		case 2:
+			// end of translation
+			Node node = mPlane.getNode();
+			if (node instanceof ShapeNode) {
+				((ShapeNode) node).releaseNode();
+			}
 		}
 	}
 

@@ -43,6 +43,6 @@ public interface Node {
     
     public RayShapeIntersection intersect(Ray ray);
 	public void enablePhysicsProperties(Box2DWorld world);
-	public void updatePhysics();
+	public void updatePositionFromPhysic();
 	public Box2DBody getPhysicsProperties();
 }
