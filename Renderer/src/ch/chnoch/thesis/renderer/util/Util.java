@@ -78,25 +78,17 @@ public class Util {
 	}
 
 	public static Shape loadCube(float scale) {
+		return loadCuboid(scale, scale, scale);
+	}
+	
+	public static Shape loadCuboid(float width, float height, float depth) {
 		VertexBuffers vertexBuffer = new VertexBuffers();
 		vertexBuffer.setColorBuffer(colors);
-		vertexBuffer.setIndexBuffer(indices);
-		float vertexArray[] = new float[vertices.length];
-
-		for (int i = 0; i < vertexArray.length; i++) {
-			vertexArray[i] = vertices[i] * scale;
-		}
-
-		float texCoordsArray[] = new float[vertices.length];
-		for (int i = 0; i < vertexArray.length; i++) {
-			texCoordsArray[i] = vertices[i];
-		}
-
-		vertexBuffer.setTexCoordsBuffer(texCoordsArray);
-		vertexBuffer.setVertexBuffer(vertexArray);
+		vertexBuffer.setVertexBuffer(generateCuboidVertices(width, height, depth));
 		vertexBuffer.setNormalBuffer(normals);
-
-		// Make a shape and add the object
+		vertexBuffer.setIndexBuffer(indices);
+		vertexBuffer.setTexCoordsBuffer(generateCuboidVertices(width, height, depth));
+		
 		return new Shape(vertexBuffer);
 	}
 
@@ -165,22 +157,28 @@ public class Util {
 
 	public static int one = 1;
 	public static int oneNormal = 1;
-	static float vertices[] = { one, -one, -one, one, -one, -one, one, -one,
-			-one,
-
-			one, -one, one, one, -one, one, one, -one, one,
-
-			-one, -one, one, -one, -one, one, -one, -one, one,
-
-			-one, -one, -one, -one, -one, -one, -one, -one, -one,
-
-			one, one, -one, one, one, -one, one, one, -one,
-
-			one, one, one, one, one, one, one, one, one,
-
-			-one, one, one, -one, one, one, -one, one, one,
-
-			-one, one, -one, -one, one, -one, -one, one, -one };
+	
+	private static float[] generateCuboidVertices(float x, float y, float z) {
+		
+		float vertices[] = { x, -y, -z, x, -y, -z, x, -y,
+			-z,
+			
+			x, -y, z, x, -y, z, x, -y, z,
+			
+			-x, -y, z, -x, -y, z, -x, -y, z,
+			
+			-x, -y, -z, -x, -y, -z, -x, -y, -z,
+			
+			x, y, -z, x, y, -z, x, y, -z,
+			
+			x, y, z, x, y, z, x, y, z,
+			
+			-x, y, z, -x, y, z, -x, y, z,
+			
+			-x, y, -z, -x, y, -z, -x, y, -z };
+		
+		return vertices;
+	}
 
 	static float colors[] = { 0, 0, 0, one, one, 0, 0, one, one, one, 0, one,
 			0, one, 0, one, 0, 0, one, one, one, 0, one, one, one, one, one,

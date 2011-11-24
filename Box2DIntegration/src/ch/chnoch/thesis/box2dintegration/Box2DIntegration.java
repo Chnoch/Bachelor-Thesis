@@ -50,9 +50,11 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mViewer.setFocusableInTouchMode(true);
 
 		mSceneManager.enablePhysicsEngine();
+		addGroundBodyToShapes();
 		// mViewer.setOnClickListener(this);
 
-		mViewer.setOnTouchListener(new TouchHandler(mRenderer, mViewer, true));
+		mViewer.setOnTouchListener(new TouchHandler(mSceneManager, mRenderer,
+				mViewer, true));
 
 		runSimulation();
 
@@ -79,10 +81,8 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 			public void run() {
 				while (true) {
 					for (int i = 0; i < 1; i++) {
-//						 Log.d("Simulation", "Updating scene");
-						synchronized (mSceneManager) {
-							mSceneManager.updateScene();
-						}
+						// Log.d("Simulation", "Updating scene");
+						mSceneManager.updateScene();
 						mViewer.requestRender();
 
 					}
@@ -113,7 +113,8 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private void createShapes() {
 
 		Node root = new TransformGroup();
-//		 Node root = new ShapeNode(Util.loadCube(1));
+		mRoot = root;
+		// Node root = new ShapeNode(Util.loadCube(1));
 		// mBullet = new ShapeNode(Util.loadCube(1));
 		// Matrix4f trans = new Matrix4f();
 		// trans.setTranslation(new Vector3f(13, 5, 0));
@@ -124,6 +125,21 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		buildHalfPyramid(root, 1);
 		buildHalfPyramid(root, -1);
 		mSceneManager.setRoot(root);
+	}
+
+	private void addGroundBodyToShapes() {
+
+		ShapeNode groundBody = new ShapeNode(Util.loadCuboid(50, 5, 10));
+		groundBody.move(new Vector3f(-25, -10, 0));
+		groundBody.setActiveState(false);
+		
+		Material mat = createMaterial();
+		mat.mAmbient.set(0, 1, 0);
+		mat.mDiffuse.set(0, 1, 0);
+		mat.mSpecular.set(0, 1, 0);
+		groundBody.setMaterial(mat);
+		mRoot.addChild(groundBody);
+
 	}
 
 	private Material createMaterial() {

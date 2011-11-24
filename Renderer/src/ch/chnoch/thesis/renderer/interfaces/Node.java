@@ -30,6 +30,8 @@ public interface Node {
     public float getScale();
     public Matrix4f getTransformationMatrix();
     
+    public void setActiveState(boolean b);
+    
     public Shape getShape();
     public void setShape(Shape shape);
     public Material getMaterial();

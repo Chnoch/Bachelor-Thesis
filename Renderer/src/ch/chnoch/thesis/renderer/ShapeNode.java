@@ -71,9 +71,6 @@ public class ShapeNode extends Leaf {
 					+ ", y: " + v.y);
 			mBox2DBody.move(v.x, v.y, PTM_RATIO);
 		} else {
-			if (mBox2DBody != null) {
-				mBox2DBody.checkForJoints();
-			}
 			Matrix4f t = getTranslationMatrix();
 			Matrix4f move = new Matrix4f();
 			move.setTranslation(v);
@@ -115,29 +112,33 @@ public class ShapeNode extends Leaf {
 	}
 
 	public void updatePositionFromPhysic() {
-		// Temporarily disable the automatic translation of the
-		// graphical model back to the physical one.
-		mPhysicsEnabled = false;
+		if (mPhysicsEnabled) {
+			// Temporarily disable the automatic translation of the
+			// graphical model back to the physical one.
+			mPhysicsEnabled = false;
 
-		Vector2f prevPos = mBox2DBody.getPreviousPosition();
-		Vector2f curPos = mBox2DBody.getCurrentPosition();
+			Vector2f prevPos = mBox2DBody.getPreviousPosition();
+			Vector2f curPos = mBox2DBody.getCurrentPosition();
 
-		Vector3f trans = new Vector3f();
-		trans.x = curPos.x - prevPos.x;
-		trans.y = curPos.y - prevPos.y;
-		trans.z = 0;
+			Vector3f trans = new Vector3f();
+			trans.x = curPos.x - prevPos.x;
+			trans.y = curPos.y - prevPos.y;
+			trans.z = 0;
 
-		move(trans);
+			move(trans);
 
-		mBox2DBody.setPreviousPosition(curPos);
+			mBox2DBody.setPreviousPosition(curPos);
 
-		rotZ(mBox2DBody.getAngle());
+			rotZ(mBox2DBody.getAngle());
 
-		mPhysicsEnabled = true;
+			mPhysicsEnabled = true;
+		}
 	}
 
-	public void releaseNode() {
-		mBox2DBody.removeJoint();
+	public void destroyJoint() {
+		if (mPhysicsEnabled) {
+			mBox2DBody.removeJoint();
+		}
 	}
 
 	public void setParent(Node parent) {
@@ -145,31 +146,35 @@ public class ShapeNode extends Leaf {
 	}
 
 	/**
-	 * For now this only tests on the Shape as a cube. Will need to generalize
-	 * that to work with any shape.
+	 * Intersects the given ray with the node. Returns an empty RayShapeIntersection if
+	 * the Node is inactive. Otherwise tests the Bounding Box of the shape for quick access
+	 * and if it's hit tests against the actual shape.
 	 * 
 	 * @param ray
 	 * @return the intersection
 	 */
 	public RayShapeIntersection intersect(Ray ray) {
-		RayShapeIntersection intersection;
+		RayShapeIntersection intersection = new RayShapeIntersection();
+		// only test on active nodes
+		if (mIsActive) {
 
-		// Test against BoundingBox for fast check
-		intersection = this.getBoundingBox().hitPoint(ray);
-		if (intersection.hit) {
-			Log.d("ShapeNode", "Hit Bounding Box: "
-					+ getBoundingBox().toString());
-			// Test against Shape if BoundingBox is hit
-			intersection = mShape.intersect(ray,
-					getCompleteTransformationMatrix());
-			// if shape ist hit
+			// Test against BoundingBox for fast check
+			intersection = this.getBoundingBox().hitPoint(ray);
 			if (intersection.hit) {
-				Log.d("ShapeNode",
-						"Hit Shape at: " + intersection.hitPoint.toString());
-				intersection.node = this;
+				Log.d("ShapeNode", "Hit Bounding Box: "
+						+ getBoundingBox().toString());
+				// Test against Shape if BoundingBox is hit
+				intersection = mShape.intersect(ray,
+						getCompleteTransformationMatrix());
+				// if shape ist hit
+				if (intersection.hit) {
+					Log.d("ShapeNode",
+							"Hit Shape at: " + intersection.hitPoint.toString());
+					intersection.node = this;
+				}
 			}
-		}
 
+		}
 		return intersection;
 	}
 

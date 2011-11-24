@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 import ch.chnoch.thesis.renderer.util.Util;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -26,6 +27,7 @@ public class TouchHandler implements OnTouchListener {
 	private long mEventStart, mEventEnd;
 
 	private RenderContext mRenderer;
+	private SceneManagerInterface mSceneManager;
 
 	private Trackball mTrackball;
 	private Plane mPlane;
@@ -42,8 +44,9 @@ public class TouchHandler implements OnTouchListener {
 
 	private final String TAG = "TouchHandler";
 
-	public TouchHandler(RenderContext renderer, GLSurfaceView viewer,
+	public TouchHandler(SceneManagerInterface sceneManager, RenderContext renderer, GLSurfaceView viewer,
 			boolean disableRotation) {
+		mSceneManager = sceneManager;
 		mRenderer = renderer;
 		mTrackball = new Trackball();
 		mPlane = new Plane();
@@ -223,10 +226,7 @@ public class TouchHandler implements OnTouchListener {
 			mPlane.setNode(mIntersection.node);
 		case 2:
 			// end of translation
-			Node node = mPlane.getNode();
-			if (node instanceof ShapeNode) {
-				((ShapeNode) node).releaseNode();
-			}
+			mSceneManager.destroyJoints();
 		}
 	}
 

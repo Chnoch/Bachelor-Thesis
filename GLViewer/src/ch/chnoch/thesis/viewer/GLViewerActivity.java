@@ -81,7 +81,7 @@ public class GLViewerActivity extends Activity implements OnClickListener {
 		mViewer = new GLViewer(this, mRenderer, openGlES20);
 		mRenderer.setSceneManager(mSceneManager);
 
-		TouchHandler touchHandler = new TouchHandler(mRenderer, mViewer, false);
+		TouchHandler touchHandler = new TouchHandler(mSceneManager, mRenderer, mViewer, false);
 		mViewer.setOnTouchListener(touchHandler);
 		KeyHandler keyHandler = new KeyHandler(mRenderer);
 		mViewer.setOnKeyListener(keyHandler);

@@ -88,6 +88,16 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 			it.next().getNode().enablePhysicsProperties(mWorld);
 		}
 	}
+	
+	public void destroyJoints() {
+		SceneManagerIterator it = this.iterator();
+		while(it.hasNext()) {
+			Node node = it.next().getNode();
+			if (node instanceof ShapeNode) {
+				((ShapeNode) node).destroyJoint();
+			}
+		}
+	}
 		
 	@Override
 	public void updateScene() {

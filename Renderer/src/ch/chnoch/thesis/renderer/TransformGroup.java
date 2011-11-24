@@ -12,6 +12,7 @@ public class TransformGroup extends Group {
 
 	private Matrix4f mTranslationMatrix, mRotationMatrix,
 			mTransformationMatrix;
+	
 
 	public TransformGroup() {
 		super();
