@@ -15,6 +15,7 @@ public abstract class Leaf implements Node {
 	protected Matrix4f mTranslationMatrix, mRotationMatrix,
 			mTransformationMatrix;
 	protected float mScale;
+	protected boolean mIsActive = true;
 
 	public Leaf() {
 		super();
@@ -81,6 +82,10 @@ public abstract class Leaf implements Node {
 
 	public void setParent(Node parent) {
 		this.parent = parent;
+	}
+	
+	public void setActiveState(boolean b) {
+		this.mIsActive = b;
 	}
 
 }

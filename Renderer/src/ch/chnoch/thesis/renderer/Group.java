@@ -13,16 +13,17 @@ import ch.chnoch.thesis.renderer.interfaces.Node;
 
 public abstract class Group implements Node {
 
-	public Node parent;
-    protected List<Node> children;
+	public Node mParent;
+    protected List<Node> mChildren;
+    protected boolean mIsActive = true;
     
     public Group() {
         super();
-        children = new LinkedList<Node>();
+        mChildren = new LinkedList<Node>();
     }
     
     public List<Node> getChildren() {
-        return this.children;
+        return this.mChildren;
     }
 
     public Shape getShape() {
@@ -55,21 +56,25 @@ public abstract class Group implements Node {
     }
     
     public void addChild(Node child) {
-        this.children.add(child);
+        this.mChildren.add(child);
         child.setParent(this);
     }
     
     public void removeChild(Node child) {
-        this.children.remove(child);
+        this.mChildren.remove(child);
         child.setParent(null);
     }
     
     public Node getParent() {
-    	return this.parent;
+    	return this.mParent;
     }
     
     public void setParent(Node parent) {
-    	this.parent = parent;
+    	this.mParent = parent;
+    }
+    
+    public void setActiveState(boolean b) {
+    	this.mIsActive = b;
     }
     
 

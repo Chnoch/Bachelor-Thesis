@@ -97,7 +97,7 @@ public class BoundingBox {
 
 		float za = (mHigh.z - mLow.z) / 2f;
 		float z = mLow.z + za;
-		Log.d("Bounding Box", "Center: " + x + ", " + y + ", " + z);
+//		Log.d("Bounding Box", "Center: " + x + ", " + y + ", " + z);
 		return new Point3f(x, y, z);
 	}
 
@@ -311,8 +311,8 @@ public class BoundingBox {
 
 	public BoundingBox update(Matrix4f rot) {
 		if (updated) {
-			Log.d("Bounding Box", "Pre Low: " + mLow.toString() + " High: "
-					+ mHigh.toString());
+//			Log.d("Bounding Box", "Pre Low: " + mLow.toString() + " High: "
+//					+ mHigh.toString());
 			// create all possible points
 			Point3f[] box = new Point3f[8];
 			box[0] = new Point3f(mLow);
@@ -353,8 +353,8 @@ public class BoundingBox {
 			}
 
 			updated = false;
-			Log.d("Bounding Box", "Past Low: " + low.toString() + " High: "
-					+ high.toString());
+//			Log.d("Bounding Box", "Past Low: " + low.toString() + " High: "
+//					+ high.toString());
 
 			mLowUpdated = low;
 			mHighUpdated = high;

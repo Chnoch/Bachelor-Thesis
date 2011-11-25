@@ -30,6 +30,8 @@ public interface Node {
     public float getScale();
     public Matrix4f getTransformationMatrix();
     
+    public void setActiveState(boolean b);
+    
     public Shape getShape();
     public void setShape(Shape shape);
     public Material getMaterial();
@@ -43,6 +45,6 @@ public interface Node {
     
     public RayShapeIntersection intersect(Ray ray);
 	public void enablePhysicsProperties(Box2DWorld world);
-	public void updatePhysics();
+	public void updatePositionFromPhysic();
 	public Box2DBody getPhysicsProperties();
 }

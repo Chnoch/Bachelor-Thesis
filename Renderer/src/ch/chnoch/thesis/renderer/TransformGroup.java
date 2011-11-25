@@ -12,6 +12,7 @@ public class TransformGroup extends Group {
 
 	private Matrix4f mTranslationMatrix, mRotationMatrix,
 			mTransformationMatrix;
+	
 
 	public TransformGroup() {
 		super();
@@ -109,7 +110,7 @@ public class TransformGroup extends Group {
 	}
 
 	@Override
-	public void updatePhysics() {
+	public void updatePositionFromPhysic() {
 		// TODO Auto-generated method stub
 		
 	}

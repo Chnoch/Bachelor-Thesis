@@ -24,7 +24,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private GLSurfaceView mViewer;
 
 	private Simulation mSimulation;
-	
+
 	private static final String TAG = "Box2DIntegration";
 
 	/** Called when the activity is first created. */
@@ -35,7 +35,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 20));
 		mSceneManager.getFrustum().setVertFOV(90);
 
-//		mRenderer = new GLES20Renderer(getApplicationContext());
+		// mRenderer = new GLES20Renderer(getApplicationContext());
 		mRenderer = new GLES11Renderer();
 		// mRenderer = new GL2DRenderer();
 		mRenderer.setSceneManager(mSceneManager);
@@ -45,43 +45,18 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		createLights();
 		createShapes();
 
-		// Shape cube = Util.loadCube(1);
-		// Node root = new ShapeNode(cube);
-		// mSceneManager.setRoot(root);
-
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 
 		mSceneManager.enablePhysicsEngine();
-//		 mViewer.setOnClickListener(this);
+		// mViewer.setOnClickListener(this);
 
-		mViewer.setOnTouchListener(new TouchHandler(mRenderer, mViewer, true));
+		mViewer.setOnTouchListener(new TouchHandler(mSceneManager, mRenderer,
+				mViewer, true));
 
 		runSimulation();
 
-		// mNode.getPhysicsProperties().setType(TType.STATIC);
-		/*
-		 * Vec2 gravity = new Vec2(0.0f, -10.0f); boolean doSleep = true; AABB
-		 * completeBoundingBox = new AABB(new Vec2(-100f, -100f), new Vec2(
-		 * 100f, 100f)); world = new World(completeBoundingBox, gravity,
-		 * doSleep);
-		 * 
-		 * BodyDef groundBodyDef = new BodyDef();
-		 * groundBodyDef.position.set(0.0f, -10.0f); Body groundBody =
-		 * world.createBody(groundBodyDef); PolygonDef groundBox = new
-		 * PolygonDef(); groundBox.setAsBox(50f, 10f);
-		 * groundBody.createShape(groundBox); BodyDef bodyDef = new BodyDef();
-		 * bodyDef.position.set(0.0f, 4.0f); body = world.createBody(bodyDef);
-		 * body.m_type = Body.e_dynamicType;
-		 * 
-		 * PolygonDef shapeDef = new PolygonDef(); shapeDef.density = 1.0f;
-		 * shapeDef.friction = 0.3f; shapeDef.setAsBox(1.f, 1.f);
-		 * 
-		 * org.jbox2d.collision.Shape dynamicBox = body.createShape(shapeDef);
-		 * 
-		 * body.createShape(shapeDef); body.setMassFromShapes();
-		 */
 	}
 
 	@Override
@@ -90,7 +65,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mViewer.onPause();
 		// mSimulation.stopThread();
 	}
-	
 
 	@Override
 	public void onResume() {
@@ -111,7 +85,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 						mViewer.requestRender();
 					}
 					try {
-						Thread.sleep(50);
+						Thread.sleep(10);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -137,16 +111,51 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	private void createShapes() {
 
 		Node root = new TransformGroup();
-		mBullet = new ShapeNode(Util.loadCube(1));
-		Matrix4f trans = new Matrix4f();
-		trans.setTranslation(new Vector3f(13, 5, 0));
-		mBullet.setTranslationMatrix(trans);
-		root.addChild(mBullet);
-		
+		mRoot = root;
+		// Node root = new ShapeNode(Util.loadCube(1));
+		// mBullet = new ShapeNode(Util.loadCube(1));
+		// Matrix4f trans = new Matrix4f();
+		// trans.setTranslation(new Vector3f(13, 5, 0));
+		// mBullet.setTranslationMatrix(trans);
+		// root.addChild(mBullet);
+
 		root.setMaterial(createMaterial());
 		buildHalfPyramid(root, 1);
 		buildHalfPyramid(root, -1);
+		addGroundBodyToShapes();
 		mSceneManager.setRoot(root);
+	}
+
+	private void addGroundBodyToShapes() {
+
+		ShapeNode groundBody = new ShapeNode(Util.loadCuboid(50, 1, 10));
+		groundBody.move(new Vector3f(0, -5.5f, 0));
+		groundBody.setActiveState(false);
+		
+		Shape side = Util.loadCuboid(0.1f, 10, 10);
+		ShapeNode rightSideBody = new ShapeNode(side);
+		rightSideBody.move(new Vector3f(15, 5f,0));
+		rightSideBody.setActiveState(false);
+		ShapeNode leftSideBody = new ShapeNode(side);
+		leftSideBody.move(new Vector3f(-15,5f,0));
+		leftSideBody.setActiveState(false);
+		
+		
+		Material mat = new GLMaterial();
+		mat.shininess = 5;
+		mat.mAmbient.set(0, 1, 0);
+		mat.mDiffuse.set(0, 1, 0);
+		mat.mSpecular.set(0, 1, 0);
+		
+		rightSideBody.setMaterial(mat);
+		leftSideBody.setMaterial(mat);
+		groundBody.setMaterial(mat);
+		
+		mRoot.addChild(rightSideBody);
+		mRoot.addChild(leftSideBody);
+		
+		mRoot.addChild(groundBody);
+
 	}
 
 	private Material createMaterial() {
@@ -156,29 +165,31 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mat.mAmbient.set(1, 0, 0);
 		mat.mDiffuse.set(1f, 0, 0);
 		mat.mSpecular.set(1f, 0f, 0f);
-//		mat.setShader(createShaders());
+		// mat.setShader(createShaders());
 		return mat;
 	}
-	
-//	private Shader createShaders() {
-//		String vertexShader = Util.readRawText(getApplication(), R.raw.phongvert);
-//		String fragmentShader = Util.readRawText(getApplication(), R.raw.phongfrag);
-//		Shader shader = null;
-//		Log.d(TAG, "VertexShader: " + vertexShader);
-//		Log.d(TAG, "FragmentShader: " + fragmentShader);
-//		try {
-//			mRenderer.createShader(shader, vertexShader, fragmentShader);
-//			return shader;
-//			// if (shader.getProgram() == 0) {
-//			// throw new RuntimeException();
-//			// }
-//		} catch (GLException exc) {
-//			Log.e(TAG, exc.getError());
-//		} catch (Exception e) {
-//			Log.e(TAG, "Error loading Shaders", e);
-//		}
-//		return null;
-//	}
+
+	// private Shader createShaders() {
+	// String vertexShader = Util.readRawText(getApplication(),
+	// R.raw.phongvert);
+	// String fragmentShader = Util.readRawText(getApplication(),
+	// R.raw.phongfrag);
+	// Shader shader = null;
+	// Log.d(TAG, "VertexShader: " + vertexShader);
+	// Log.d(TAG, "FragmentShader: " + fragmentShader);
+	// try {
+	// mRenderer.createShader(shader, vertexShader, fragmentShader);
+	// return shader;
+	// // if (shader.getProgram() == 0) {
+	// // throw new RuntimeException();
+	// // }
+	// } catch (GLException exc) {
+	// Log.e(TAG, exc.getError());
+	// } catch (Exception e) {
+	// Log.e(TAG, "Error loading Shaders", e);
+	// }
+	// return null;
+	// }
 
 	private void buildHalfPyramid(Node root, int mirror) {
 		Shape shape = Util.loadCube(1);

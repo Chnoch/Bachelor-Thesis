@@ -48,7 +48,7 @@ public class TranslationTest extends AndroidTestCase {
 		mPlane = new Plane(pointOnPlane, normal);
 		mPlane.setNode(root);
 		mSceneManager.setRoot(root);
-		root.initTranslationMatrix(mIdentity);
+//		root.initTranslationMatrix(mIdentity);
 	}
 
 	public void testOnNodeTranslation() {

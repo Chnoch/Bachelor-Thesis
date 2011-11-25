@@ -88,18 +88,29 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 			it.next().getNode().enablePhysicsProperties(mWorld);
 		}
 	}
+	
+	public void destroyJoints() {
+		SceneManagerIterator it = this.iterator();
+		while(it.hasNext()) {
+			Node node = it.next().getNode();
+			if (node instanceof ShapeNode) {
+				((ShapeNode) node).destroyJoint();
+			}
+		}
+	}
 		
 	@Override
 	public void updateScene() {
-		float dt = 1f/20f;
-		int iterations = 8;
+		float dt = 1f/60f;
+		int velocityIterations = 8;
+		int positionIterations = 3;
 		// update the world
-		mWorld.step(dt, iterations);
+		mWorld.step(dt, velocityIterations, positionIterations);
 //		Log.d("AbstractSceneManager", "Updated World, now going through scene");
 		// reflect the updated values onto the Nodes
 		SceneManagerIterator it = this.iterator();
 		while (it.hasNext()) {
-			it.next().getNode().updatePhysics();
+			it.next().getNode().updatePositionFromPhysic();
 		}
 	}
 

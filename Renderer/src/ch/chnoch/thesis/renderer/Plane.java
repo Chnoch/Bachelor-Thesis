@@ -24,9 +24,6 @@ public class Plane {
 		mNormal = normal;
 	}
 
-	public void setNode(Node node) {
-		mNode = node;
-	}
 
 	public RayShapeIntersection intersect(Ray ray) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
@@ -91,6 +88,14 @@ public class Plane {
 //		mNode.setTranslationMatrix(t);
 	}
 
+	public void setNode(Node node) {
+		mNode = node;
+	}
+	
+	public Node getNode() {
+		return mNode;
+	}
+	
 	public Vector3f getPointOnPlane() {
 		return mPointOnPlane;
 	}
