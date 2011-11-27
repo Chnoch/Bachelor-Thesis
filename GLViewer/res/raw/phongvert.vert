@@ -42,7 +42,7 @@ void main() {
 	vSpecular_exponent = material.specular_exponent;
 	vLightPosition = light.position;
 	
-	vNormal = (uNormalMatrix * aNormals).xyz;
+	vNormal = (uNormalMatrix * aNormals);
 	vViewPosition = (uMVMatrix * aPosition).xyz;
 	
 	gl_Position = uMVPMatrix * aPosition;

@@ -4,12 +4,14 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Matrix3f;
 
 import android.opengl.GLES20;
 import android.util.Log;
 
 public class GLUtil {
-	private static float[] f = new float[16];
+	private static float[] f4 = new float[16];
+	private static float[] f3 = new float[9];
 
 	/**
 	 * Checks for the last GL error that occured. Throws a runtime exception if
@@ -32,8 +34,17 @@ public class GLUtil {
 	public static float[] matrix4fToFloat16(Matrix4f m) {
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				f[j * 4 + i] = m.getElement(i, j);
-		return f;
+				f4[j * 4 + i] = m.getElement(i, j);
+		return f4;
+	}
+	
+	public static float[] matrix3fToFloat9(Matrix3f m) {
+		for (int i= 0; i< 3; i++) {
+			for (int j=0;j<3;j++) {
+				f3[j*3 + i] = m.getElement(i, j);
+			}
+		}
+		return f3;
 	}
 	
 	/**

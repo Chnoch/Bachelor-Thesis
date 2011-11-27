@@ -3,10 +3,12 @@ package ch.chnoch.thesis.renderer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.AxisAngle4f;
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import android.opengl.*;
+import android.os.SystemClock;
 import android.util.Log;
 import static android.opengl.GLES20.*;
 
@@ -18,17 +20,11 @@ import ch.chnoch.thesis.renderer.util.Util;
 public class BasicGLES20Renderer extends BasicRenderer {
 
 	private int mProgram;
-	private int mTextureID;
 	private int muMVPMatrixHandle;
 	private int muNormalMatrixHandle;
 	private int muModelViewMatrixHandle;
 	private int maVertexHandle;
-	private int maTextureHandle;
-	private int maHasTextureHandle;
 	private int maNormalHandle;
-	private int maEyeVectorHandle;
-	private int maLightHandle;
-	private int maMaterialHandle;
 
 	private Matrix4f mModelMatrix = Util.getIdentityMatrix();
 
@@ -39,12 +35,38 @@ public class BasicGLES20Renderer extends BasicRenderer {
 	private final String TAG = "BasicGLES20Renderer";
 	private String mVertexShaderFileName;
 	private String mFragmentShaderFileName;
+	private float[] mMVPMatrix = new float[16];
+	private float[] mProjMatrix = new float[16];
+	private float[] mMMatrix = new float[16];
+	private float[] mVMatrix = new float[16];
+	private float[] mMVMatrix = new float[16];
+	private float[] mNormalMatrix = new float[16];
 
 	public void onDrawFrame(GL10 gl) {
+//		GLES20.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+//		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+		GLES20.glUseProgram(mProgram);
+		for (int i = 0; i < mMVPMatrix.length; i++) {
+			Log.d(TAG, "MVPMatrix Android: " + mMVPMatrix[i]);
+		}
+		
+		float radius = 20;
 		for (int i = 0; i < 72; i++) {
-			mModelMatrix.setIdentity();
-			mModelMatrix.setTranslation(new Vector3f(0, 0, -25));
-			mModelMatrix.setRotation(new AxisAngle4f(0f, 1f, 0f, 5f * i));
+			float angleDegree = 5f*i;
+			float angle = (float) (5f*i * Math.PI / 180);
+			float x = (float) Math.sin(angle) * radius;
+			float z = (float) Math.cos(angle) * radius;
+			Log.d(TAG, "angle: " + angleDegree + "x: " + x + "z: " + z);
+			Matrix.setIdentityM(mMMatrix, 0);
+			Matrix.rotateM(mMMatrix, 0, angleDegree, 0, 1, 0);
+			Matrix.translateM(mMMatrix, 0, x, 0, z);
+
+			Matrix.multiplyMM(mMVPMatrix, 0, mVMatrix, 0, mMMatrix, 0);
+			Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mMVPMatrix, 0);
+			Matrix.multiplyMM(mMVMatrix,0, mVMatrix, 0, mMMatrix, 0);
+//			mModelMatrix.setIdentity();
+			// mModelMatrix.setTranslation(new Vector3f(0, 0, 0));
+			// mModelMatrix.set(new AxisAngle4f(0f, 0f, 25f, 5f * i));
 			draw();
 		}
 	}
@@ -53,28 +75,34 @@ public class BasicGLES20Renderer extends BasicRenderer {
 		try {
 			drawMaterial();
 			glUniformMatrix4fv(muMVPMatrixHandle, 1, false,
-					GLUtil.matrix4fToFloat16(mModelMatrix), 0);
+					mMVPMatrix, 0);
+
 			glVertexAttribPointer(maVertexHandle, 3, GL_FLOAT, false, 0,
 					mVertexBuffer);
 			glEnableVertexAttribArray(maVertexHandle);
-			
+
 			glVertexAttribPointer(maNormalHandle, 3, GL_FLOAT, true, 0,
 					mNormalBuffer);
 			glEnableVertexAttribArray(maNormalHandle);
-			Matrix4f t = new Matrix4f(mModelMatrix);
-			t.transpose();
-			t.invert();
+			GLUtil.checkGlError("maNormal", TAG);
+
+			Matrix.setIdentityM(mNormalMatrix, 0);
+			Matrix.multiplyMM(mNormalMatrix, 0, mNormalMatrix, 0, mMVMatrix, 0);
+			Matrix.transposeM(mNormalMatrix, 0, mNormalMatrix, 0);
+			Matrix.invertM(mNormalMatrix, 0, mNormalMatrix, 0);
+//			Log.d(TAG, "Handle: " + muNormalMatrixHandle);
 			glUniformMatrix4fv(muNormalMatrixHandle, 1, false,
-					GLUtil.matrix4fToFloat16(t), 0);
-			
-			glUniformMatrix4fv(muModelViewMatrixHandle, 1, 
-					false, GLUtil.matrix4fToFloat16(mModelMatrix), 0);
-			
+					mNormalMatrix, 0);
+			GLUtil.checkGlError("muNormalMatrix", TAG);
+
+			glUniformMatrix4fv(muModelViewMatrixHandle, 1, false,
+					mMVMatrix, 0);
+
+			GLUtil.checkGlError("mModelMatrix", TAG);
 			mGLLight.draw(null);
 			glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 					GL_UNSIGNED_SHORT, mIndexBuffer);
-			
-			
+
 			GLUtil.checkGlError("glDraw", TAG);
 
 		} catch (Exception exc) {
@@ -90,10 +118,13 @@ public class BasicGLES20Renderer extends BasicRenderer {
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
 		glViewport(0, 0, w, h);
+		float ratio = (float) w / h;
+		Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 1, 100);
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		glDisable(GL_DITHER);
+		Matrix.setLookAtM(mVMatrix, 0, 0, 0, 0, 0f, 0f, 1f, 0f, 1.0f, 0.0f);
 		try {
 
 			makeShader();
@@ -106,21 +137,11 @@ public class BasicGLES20Renderer extends BasicRenderer {
 
 			// Log.d(TAG, "Vertex Handle");
 			maVertexHandle = glGetAttribLocation(mProgram, "aPosition");
-			GLUtil.checkGlError("glUseProgram", TAG);
-
-			// Log.d(TAG, "Texture Handle");
-			maTextureHandle = glGetAttribLocation(mProgram, "aTextureCoord");
-			GLUtil.checkGlError("glUseProgram", TAG);
-
-			maHasTextureHandle = glGetAttribLocation(mProgram, "aHasTexture");
-			GLUtil.checkGlError("glUseProgram", TAG);
+			GLUtil.checkGlError("maVertexHandle", TAG);
 
 			// Log.d(TAG, "Normal Handle");
 			maNormalHandle = glGetAttribLocation(mProgram, "aNormals");
-			GLUtil.checkGlError("glUseProgram", TAG);
-
-			maEyeVectorHandle = glGetAttribLocation(mProgram, "aEyeVector");
-			GLUtil.checkGlError("glUseProgram", TAG);
+			GLUtil.checkGlError("maNormalHandle", TAG);
 
 			// Log.d(TAG, "MVP Handle");
 			muMVPMatrixHandle = glGetUniformLocation(mProgram, "uMVPMatrix");
@@ -130,6 +151,9 @@ public class BasicGLES20Renderer extends BasicRenderer {
 
 			muNormalMatrixHandle = glGetUniformLocation(mProgram,
 					"uNormalMatrix");
+			if (muNormalMatrixHandle == -1) {
+				throw new RuntimeException("No NormalMatrix Handle");
+			}
 
 			muModelViewMatrixHandle = glGetUniformLocation(mProgram,
 					"uMVMatrix");
@@ -140,7 +164,7 @@ public class BasicGLES20Renderer extends BasicRenderer {
 
 			GLUtil.checkGlError("glUseProgram", TAG);
 		} catch (Exception exc) {
-
+			Log.e(TAG, "Error creating surface", exc);
 		}
 	}
 
@@ -165,20 +189,12 @@ public class BasicGLES20Renderer extends BasicRenderer {
 		return null;
 	}
 
-	private void beginFrame() throws Exception {
-		// setLights();
-
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		glUseProgram(mProgram);
-	}
-
-	/**
-	 * This method is called at the end of each frame, i.e., after scene drawing
-	 * is complete.
-	 */
-	private void endFrame() {
-		glFlush();
+	private void checkGlError(String op) {
+		int error;
+		while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+			Log.e(TAG, op + ": glError " + error);
+			throw new RuntimeException(op + ": glError " + error);
+		}
 	}
 
 }

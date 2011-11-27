@@ -44,11 +44,15 @@ public class BasicGLActivityActivity extends Activity {
 	}
 	
 	private void init() {
-		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
-		vbb.order(ByteOrder.nativeOrder());
-		FloatBuffer mVertexBuffer = vbb.asFloatBuffer();
-		mVertexBuffer.put(vertices);
-		mVertexBuffer.position(0);
+		FloatBuffer mVertexBuffer = ByteBuffer.allocateDirect(vertices.length
+                * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mVertexBuffer.put(vertices).position(0);
+		
+//		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
+//		vbb.order(ByteOrder.nativeOrder());
+//		FloatBuffer mVertexBuffer = vbb.asFloatBuffer();
+//		mVertexBuffer.put(vertices);
+//		mVertexBuffer.position(0);
 
 		ByteBuffer nbb = ByteBuffer.allocateDirect(normals.length * 4);
 		nbb.order(ByteOrder.nativeOrder());
@@ -62,6 +66,7 @@ public class BasicGLActivityActivity extends Activity {
 		mIndexBuffer.put(indices);
 		mIndexBuffer.position(0);
 		
+		
 		mRenderer.setIndexBuffer(mIndexBuffer);
 		mRenderer.setNormalBuffer(mNormalBuffer);
 		mRenderer.setVertexBuffer(mVertexBuffer);
@@ -69,6 +74,7 @@ public class BasicGLActivityActivity extends Activity {
 		initLight();
 		initMaterial();
 	}
+	
 	
 	private void initLight() {
 		float[] position = { 0f, 0f, 0, 1 };
@@ -85,23 +91,19 @@ public class BasicGLActivityActivity extends Activity {
 	}
 	
 	private void initMaterial(){
-		float shininess = 30;
-		float[] ambient = { 0, 0, 0.3f, 1 };
-		float[] diffuse = { 0, 0, .7f, 1 };
-		float[] specular = { 1, 1, 1, 1 };
-		
 		Material mat = new GLMaterial();
 		
-		mat.mAmbient = new Vector3f(0, 0, 0.3f);
+		mat.mAmbient = new Vector3f(0, 0, .3f);
 		mat.mDiffuse = new Vector3f(0, 0, .7f);
 		mat.mSpecular = new Vector3f(1, 1, 1);
-		mat.shininess = 128;
+		mat.shininess = 30;
 		
 		Shader shader = createShaders();
 		mat.setShader(shader);
 		
 		mRenderer.setMaterial(mat);
 	}
+	
 	
 	private Shader createShaders() {
 		String vertexShader = readRawText(R.raw.phongvert);
@@ -127,11 +129,13 @@ public class BasicGLActivityActivity extends Activity {
 		mGLView.onPause();
 	}
 
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
 		mGLView.onResume();
 	}
+	
 	
 	private String readRawText(int id) {
 		InputStream raw = getApplication().getResources().openRawResource(id);
