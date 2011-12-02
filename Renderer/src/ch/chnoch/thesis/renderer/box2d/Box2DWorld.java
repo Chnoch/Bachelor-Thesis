@@ -30,8 +30,6 @@ public class Box2DWorld {
 	 */
 	public Box2DWorld(Vector2f low, Vector2f high, Vector2f gravity) {
 		mWorld = new World(new Vec2(gravity.x, gravity.y), false);
-
-		createGroundBody();
 		// createTopBody();
 	}
 
@@ -39,6 +37,10 @@ public class Box2DWorld {
 		synchronized (this) {
 			mWorld.step(dt, velocityIterations, positionIterations);
 		}
+	}
+	
+	public void setGroundBody(Box2DBody body) {
+		mGroundBody = body;
 	}
 
 	/*
@@ -70,17 +72,6 @@ public class Box2DWorld {
 	/*
 	 * Private Methods
 	 */
-
-	private void createGroundBody() {
-		Box2DShape groundShape = new Box2DShape();
-		groundShape.setAsBox(50, 5);
-		mGroundBody = new Box2DBody(new Vector2f(-25, -10), this, groundShape,
-				false, false);
-
-		// mGroundBody.setType(TType.STATIC);
-
-		// groundBody.setMassFromShapes();
-	}
 
 	private void createTopBody() {
 		Box2DShape topShape = new Box2DShape();

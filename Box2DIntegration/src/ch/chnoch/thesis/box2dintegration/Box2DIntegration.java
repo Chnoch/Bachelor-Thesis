@@ -1,6 +1,7 @@
 package ch.chnoch.thesis.box2dintegration;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.*;
@@ -15,11 +16,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class Box2DIntegration extends Activity implements OnClickListener {
+public class Box2DIntegration extends Activity {
 
 	private GraphSceneManager mSceneManager;
 	private Shape mShape;
-	private Node mBullet, mRoot;
+	private Node mRoot;
+	private PhysicsGroup mPhysicsNode;
 	private RenderContext mRenderer;
 	private GLSurfaceView mViewer;
 
@@ -32,7 +34,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mSceneManager = new GraphSceneManager();
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 20));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 30));
 		mSceneManager.getFrustum().setVertFOV(90);
 
 		// mRenderer = new GLES20Renderer(getApplicationContext());
@@ -43,17 +45,18 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		mViewer = new GLViewer(this, mRenderer, false);
 
 		createLights();
-		createShapes();
+//		createShapes();
+//		mSceneManager.enablePhysicsEngine();
+		createShapesNewWay();
 
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 
-		mSceneManager.enablePhysicsEngine();
 		// mViewer.setOnClickListener(this);
 
-		mViewer.setOnTouchListener(new TouchHandler(mSceneManager, mRenderer,
-				mViewer, true));
+		mViewer.setOnTouchListener(new PhysicsTouchHandler(mSceneManager, mRenderer,
+				mViewer));
 
 		runSimulation();
 
@@ -125,19 +128,28 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		addGroundBodyToShapes();
 		mSceneManager.setRoot(root);
 	}
+	
+	private void createShapesNewWay() {
+		PhysicsGroup root = new PhysicsGroup(mSceneManager);
+		mPhysicsNode = root;
+		
+//		root.addRectangle(1, 0.3f, 1, new Vector2f(0,0), true, true);
+//		root.addRectangle(1, 2, 1,new Vector2f(5,2), true, true);
+		root.addCircle(2, new Vector2f(-3,4));
+		addGroundBodyToShapes();
+		mSceneManager.setRoot(root);
+		
+	}
 
 	private void addGroundBodyToShapes() {
 
-		ShapeNode groundBody = new ShapeNode(Util.loadCuboid(50, 1, 10));
-		groundBody.move(new Vector3f(0, -5.5f, 0));
+		ShapeNode groundBody = mPhysicsNode.addGroundBody(50, 0.1f, 10, new Vector2f(0,-6f));
 		groundBody.setActiveState(false);
 		
-		Shape side = Util.loadCuboid(0.1f, 10, 10);
-		ShapeNode rightSideBody = new ShapeNode(side);
-		rightSideBody.move(new Vector3f(15, 5f,0));
+		ShapeNode rightSideBody = mPhysicsNode.addRectangle(0.1f, 10, 10, new Vector2f(15,5),false, false);
 		rightSideBody.setActiveState(false);
-		ShapeNode leftSideBody = new ShapeNode(side);
-		leftSideBody.move(new Vector3f(-15,5f,0));
+		
+		ShapeNode leftSideBody = mPhysicsNode.addRectangle(0.1f, 10, 10, new Vector2f(-15,5),false, false);
 		leftSideBody.setActiveState(false);
 		
 		
@@ -150,12 +162,6 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		rightSideBody.setMaterial(mat);
 		leftSideBody.setMaterial(mat);
 		groundBody.setMaterial(mat);
-		
-		mRoot.addChild(rightSideBody);
-		mRoot.addChild(leftSideBody);
-		
-		mRoot.addChild(groundBody);
-
 	}
 
 	private Material createMaterial() {
@@ -237,9 +243,4 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 		}
 	}
 
-	public void onClick(View arg0) {
-		Log.d("Box2dIntegration", "onClick");
-		// new Thread(new Simulation()).run();
-		mBullet.getPhysicsProperties().setLinearVelocity(-200, 0);
-	}
 }

@@ -20,6 +20,7 @@ public class Box2DBody {
 	private Box2DWorld mWorld;
 	private List<Box2DJoint> mJointList;
 	private Box2DJoint mJoint;
+	private Box2DShape mShape;
 
 	private boolean mCreateJoint;
 
@@ -28,6 +29,7 @@ public class Box2DBody {
 		mPreviousPosition = position;
 		mCreateJoint = createJoint;
 		mWorld = world;
+		mShape = shape;
 		mJointList = new ArrayList<Box2DJoint>();
 
 		mBodyDef = new BodyDef();
@@ -126,8 +128,12 @@ public class Box2DBody {
 		if (hasMass) {
 			mBody.createFixture(shape.getFixtureDef());
 		} else {
-			mBody.createFixture(shape.getPolygonShape(), 0);
+			mBody.createFixture(shape.getShape(), 0);
 		}
+	}
+	
+	public Box2DShape getShape() {
+		return mShape;
 	}
 
 	/*

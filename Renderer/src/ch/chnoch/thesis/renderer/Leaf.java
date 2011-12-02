@@ -75,6 +75,20 @@ public abstract class Leaf implements Node {
 		}
 		mTransformationMatrix.set(trans);
 	}
+	
+	public Matrix4f getCompleteTransformationMatrix() {
+		Matrix4f transform = new Matrix4f(getTransformationMatrix());
+		Matrix4f temp = Util.getIdentityMatrix();
+		Node current = this;
+		while (current.getParent() != null) {
+			current = current.getParent();
+			temp.set(current.getTransformationMatrix());
+			temp.mul(transform);
+			transform.set(temp);
+		}
+
+		return transform;
+	}
 
 	public Node getParent() {
 		return this.parent;

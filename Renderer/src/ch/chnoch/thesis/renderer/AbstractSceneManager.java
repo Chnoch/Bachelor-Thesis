@@ -119,6 +119,10 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 		return mWorld;
 	}
 	
+	public void setPhysicsWorld(Box2DWorld world) {
+		mWorld = world;
+	}
+	
 	
 	/**
 	 * These methods do nothing except if the scene manager is a graph

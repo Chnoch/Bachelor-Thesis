@@ -1,5 +1,7 @@
 package ch.chnoch.thesis.renderer;
 
+import java.util.List;
+
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
@@ -8,6 +10,7 @@ import android.util.Log;
 
 import ch.chnoch.thesis.renderer.box2d.Box2DBody;
 import ch.chnoch.thesis.renderer.box2d.Box2DShape;
+import ch.chnoch.thesis.renderer.box2d.Box2DShape.Box2DShapeType;
 import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.util.Util;
@@ -25,10 +28,52 @@ public class ShapeNode extends Leaf {
 	public ShapeNode(Shape shape) {
 		super();
 		mShape = shape;
-		mBoundingBox = mShape.getBoundingBox().clone();
+		mBoundingBox = mShape.getBoundingBox();
 		setTransformationMatrix();
 	}
-
+	
+	public ShapeNode(Box2DBody body, float depth) {
+		mBox2DBody = body;
+		
+		// create a shape from the Box2DBody
+		Box2DShape shape = mBox2DBody.getShape();
+		Box2DShapeType type = shape.getType();
+		switch (type) {
+		case BOX:
+			mShape = loadBox(shape, depth);
+			break;
+		case CIRCLE:
+			mShape = loadCircle(shape);
+			break;
+		default:
+			mShape= Util.loadCube(1);
+			break;
+		}
+		
+		mBoundingBox = mShape.getBoundingBox();
+		move(new Vector3f(body.getCurrentPosition().x, body.getCurrentPosition().y, 0));
+		mPhysicsEnabled = true;
+		setTransformationMatrix();
+	}
+	
+	private Shape loadBox(Box2DShape shape, float depth) {
+		List<Vector2f> coord =  shape.getCoordinates();
+		// As found in PolygonShape.class
+		Vector2f bottomLeft = coord.get(0);
+		Vector2f bottomRight = coord.get(1);
+		Vector2f topLeft = coord.get(3);
+		
+		float width = bottomRight.x - bottomLeft.x;
+		float height = topLeft.y - bottomLeft.y;
+		
+		return Util.loadCuboid(width, height, depth);
+	}
+	
+	private Shape loadCircle(Box2DShape shape) {
+		float radius = shape.getRadius();
+		return Util.loadSphere(20, 20, radius);
+	}
+	
 	public void setShape(Shape shape) {
 		this.mShape = shape;
 	}
@@ -63,7 +108,7 @@ public class ShapeNode extends Leaf {
 		super.setScale(scale);
 		updateBoundingBox();
 	}
-
+	
 	public void move(Vector3f v) {
 
 		if (mPhysicsEnabled) {
@@ -79,19 +124,6 @@ public class ShapeNode extends Leaf {
 		}
 	}
 
-	public Matrix4f getCompleteTransformationMatrix() {
-		Matrix4f transform = new Matrix4f(getTransformationMatrix());
-		Matrix4f temp = Util.getIdentityMatrix();
-		Node current = this;
-		while (current.getParent() != null) {
-			current = current.getParent();
-			temp.set(current.getTransformationMatrix());
-			temp.mul(transform);
-			transform.set(temp);
-		}
-
-		return transform;
-	}
 
 	@Override
 	public Box2DBody getPhysicsProperties() {
