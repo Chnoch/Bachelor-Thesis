@@ -135,10 +135,21 @@ public class Box2DIntegration extends Activity {
 		
 //		root.addRectangle(1, 0.3f, 1, new Vector2f(0,0), true, true);
 //		root.addRectangle(1, 2, 1,new Vector2f(5,2), true, true);
-		root.addCircle(2, new Vector2f(-3,4));
 		addGroundBodyToShapes();
+		createNewTower();
 		mSceneManager.setRoot(root);
 		
+	}
+	
+	private void createNewTower() {
+		for (int i=-1;i<2;i++) {
+			for (int j=0;j<5;j++) {
+				mPhysicsNode.addRectangle(1, 1, 1, new Vector2f(3*i, j*2), true, true);
+			}
+		}
+		
+		mPhysicsNode.addCircle(2, new Vector2f(-5,4));
+		mPhysicsNode.addCircle(2, new Vector2f(5,4));
 	}
 
 	private void addGroundBodyToShapes() {
@@ -146,10 +157,10 @@ public class Box2DIntegration extends Activity {
 		ShapeNode groundBody = mPhysicsNode.addGroundBody(50, 0.1f, 10, new Vector2f(0,-6f));
 		groundBody.setActiveState(false);
 		
-		ShapeNode rightSideBody = mPhysicsNode.addRectangle(0.1f, 10, 10, new Vector2f(15,5),false, false);
+		ShapeNode rightSideBody = mPhysicsNode.addRectangle(0.1f, 10, 10, new Vector2f(20,0),false, false);
 		rightSideBody.setActiveState(false);
 		
-		ShapeNode leftSideBody = mPhysicsNode.addRectangle(0.1f, 10, 10, new Vector2f(-15,5),false, false);
+		ShapeNode leftSideBody = mPhysicsNode.addRectangle(0.1f, 10, 10, new Vector2f(-20,0),false, false);
 		leftSideBody.setActiveState(false);
 		
 		

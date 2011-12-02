@@ -30,7 +30,7 @@ public class Plane {
 
 		// if conditional fails, ray and plane are parallel
 		float denominator = mNormal.dot(ray.getDirection());
-		if (denominator != 0) {
+		if (denominator != 0 && mPointOnPlane!=null) {
 			Vector3f dist = new Vector3f();
 			dist.sub(mPointOnPlane, ray.getOrigin());
 			float numerator = dist.dot(mNormal);

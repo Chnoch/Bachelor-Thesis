@@ -12,10 +12,10 @@ import android.view.View;
 
 public class PhysicsTouchHandler extends AbstractTouchHandler {
 
-	private static float SCALE_FACTOR = 0.5f; 
-	
+	private static float SCALE_FACTOR = 1f;
+
 	private static final String TAG = "PhysicsTouchHandler";
-	
+
 	public PhysicsTouchHandler(SceneManagerInterface sceneManager,
 			RenderContext renderer, GLSurfaceView viewer) {
 		super(sceneManager, renderer, viewer);
@@ -110,17 +110,16 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
 
-			if (mIntersection != null) {
-				mScaleFactor *= detector.getScaleFactor() * SCALE_FACTOR;
-				 mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
-				// Log.d("TouchHandler", "ScaleFactor: " + mScaleFactor);
-				Camera camera = mSceneManager.getCamera();
-				Vector3f centerOfProjection = camera.getCenterOfProjection();
+			mScaleFactor = detector.getScaleFactor() * SCALE_FACTOR;
+			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
+			 Log.d("TouchHandler", "ScaleFactor: " + mScaleFactor);
+			Camera camera = mSceneManager.getCamera();
+			Vector3f centerOfProjection = camera.getCenterOfProjection();
 
-				centerOfProjection.z *= 1f/mScaleFactor;
-				camera.setCenterOfProjection(centerOfProjection);
-				mViewer.requestRender();
-			}
+			centerOfProjection.z *= 1f/mScaleFactor;
+			Log.d(TAG, "New CenterOfProjection: " + centerOfProjection.toString());
+			camera.setCenterOfProjection(centerOfProjection);
+			mViewer.requestRender();
 			return true;
 
 		}

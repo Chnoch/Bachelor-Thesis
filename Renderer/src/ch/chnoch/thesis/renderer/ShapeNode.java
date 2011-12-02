@@ -63,10 +63,14 @@ public class ShapeNode extends Leaf {
 		Vector2f bottomRight = coord.get(1);
 		Vector2f topLeft = coord.get(3);
 		
+		Vector2f topRight = coord.get(2);
+		
 		float width = bottomRight.x - bottomLeft.x;
 		float height = topLeft.y - bottomLeft.y;
+		Log.d("ShapeNode", "width: " + width + " height: " + height);
 		
-		return Util.loadCuboid(width, height, depth);
+//		return Util.loadCuboid(width, height, depth);
+		return Util.loadCuboid(topRight.x, topRight.y, depth);
 	}
 	
 	private Shape loadCircle(Box2DShape shape) {
@@ -148,15 +152,17 @@ public class ShapeNode extends Leaf {
 			// graphical model back to the physical one.
 			mPhysicsEnabled = false;
 
-			Vector2f prevPos = mBox2DBody.getPreviousPosition();
+//			Vector2f prevPos = mBox2DBody.getPreviousPosition();
 			Vector2f curPos = mBox2DBody.getCurrentPosition();
 
-			Vector3f trans = new Vector3f();
-			trans.x = curPos.x - prevPos.x;
-			trans.y = curPos.y - prevPos.y;
-			trans.z = 0;
+//			Vector3f trans = new Vector3f();
+//			trans.x = curPos.x - prevPos.x;
+//			trans.y = curPos.y - prevPos.y;
+//			trans.z = 0;
 
-			move(trans);
+//			move(trans);
+			Matrix4f trans = getTranslationMatrix();
+			trans.setTranslation(new Vector3f(curPos.x, curPos.y, 0));
 
 			mBox2DBody.setPreviousPosition(curPos);
 

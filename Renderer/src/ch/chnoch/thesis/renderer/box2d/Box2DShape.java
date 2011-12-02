@@ -68,7 +68,7 @@ public class Box2DShape {
 	private void init() {
 		mFixtureDef = new FixtureDef();
 		// Some random default values
-		mFixtureDef.density = 1;
+		mFixtureDef.density = 10;
 		mFixtureDef.friction = 0.3f;
 		
 		switch (mType) {
