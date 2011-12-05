@@ -114,7 +114,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 //		setCamera(gl);
-		gl.glLightfv(GL10.GL_LIGHT0, GL_POSITION, mLight.createPositionArray(null), 0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL_POSITION, mLight.createPositionArray(), 0);
 
 		gl.glLightfv(GL10.GL_LIGHT0, GL_DIFFUSE, mLight.createDiffuseArray(), 0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL_AMBIENT, mLight.createAmbientArray(), 0);

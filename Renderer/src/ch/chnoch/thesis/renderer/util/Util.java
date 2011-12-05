@@ -85,7 +85,7 @@ public class Util {
 		VertexBuffers vertexBuffer = new VertexBuffers();
 		vertexBuffer.setColorBuffer(colors);
 		vertexBuffer.setVertexBuffer(generateCuboidVertices(width, height, depth));
-		vertexBuffer.setNormalBuffer(normals);
+		vertexBuffer.setNormalBuffer(newNormals);
 		vertexBuffer.setIndexBuffer(indices);
 		vertexBuffer.setTexCoordsBuffer(generateCuboidVertices(width, height, depth));
 		
@@ -160,22 +160,38 @@ public class Util {
 	
 	private static float[] generateCuboidVertices(float x, float y, float z) {
 		
-		float vertices[] = { x, -y, -z, x, -y, -z, x, -y,
-			-z,
+		float vertices[] = { 
+				x, -y, -z, 
+				x, -y, -z,
+				x, -y, -z,
 			
-			x, -y, z, x, -y, z, x, -y, z,
+			x, -y, z, 
+			x, -y, z, 
+			x, -y, z,
 			
-			-x, -y, z, -x, -y, z, -x, -y, z,
+			-x, -y, z, 
+			-x, -y, z, 
+			-x, -y, z,
 			
-			-x, -y, -z, -x, -y, -z, -x, -y, -z,
+			-x, -y, -z, 
+			-x, -y, -z, 
+			-x, -y, -z,
 			
-			x, y, -z, x, y, -z, x, y, -z,
+			x, y, -z, 
+			x, y, -z, 
+			x, y, -z,
 			
-			x, y, z, x, y, z, x, y, z,
+			x, y, z, 
+			x, y, z, 
+			x, y, z,
 			
-			-x, y, z, -x, y, z, -x, y, z,
+			-x, y, z, 
+			-x, y, z, 
+			-x, y, z,
 			
-			-x, y, -z, -x, y, -z, -x, y, -z };
+			-x, y, -z, 
+			-x, y, -z, 
+			-x, y, -z };
 		
 		return vertices;
 	}
@@ -187,26 +203,86 @@ public class Util {
 	static int indices_old[] = { 0, 4, 5, 0, 5, 1, 1, 5, 6, 1, 6, 2, 2, 6, 7,
 			2, 7, 3, 3, 7, 4, 3, 4, 0, 4, 7, 6, 4, 6, 5, 3, 0, 1, 3, 1, 2 };
 
-	static int indices[] = { 0, 12, 15, 0, 15, 3, 4, 17, 19, 4, 19, 8, 6, 18,
-			21, 6, 21, 9, 10, 22, 13, 10, 13, 2, 14, 23, 20, 14, 20, 16, 11, 1,
-			5, 11, 5, 7 };
+	static int indices[] = { 
+		0, 12, 15, 
+		0, 15, 3, 
+		4, 17, 19, 
+		4, 19, 8, 
+		6, 18, 21, 
+		6, 21, 9, 
+		10, 22, 13, 
+		10, 13, 2, 
+		14, 23, 20, 
+		14, 20, 16,
+		11, 1, 5, 
+		11, 5, 7 };
+	
+	static float newNormals[] = {
+		one, 0, 0,
+		0, -one, 0,
+		0, 0, -one,
+		
+		one, 0, 0,
+		0, 0, one,
+		0, -one, 0,
+		
+		-one, 0, 0,
+		0, -one, 0,
+		0, 0, one,
+		
+		-one, 0, 0,
+		0, 0, -one,
+		0, -one, 0,
+		
+		one, 0, 0,
+		0, 0, -one,
+		0, one, 0,
+		
+		one, 0, 0,
+		0, one, 0,
+		0, 0, one,
+		
+		-one, 0, 0,
+		0, 0, one,
+		0, one, 0,
+		
+		-one, 0, 0,
+		0, 0, -one,
+		0, one, 0
+	};
 
-	static float normals[] = { 0, 0, -oneNormal, 0, 0, -oneNormal, -oneNormal,
-			0, 0,
+	static float normals[] = { 
+		0, 0, -oneNormal, 
+		0, 0, -oneNormal, 
+		-oneNormal,	0, 0,
+		
+		0, -oneNormal, 0, 
+		oneNormal, 0, 0, 
+		0, 0, -oneNormal,
+		
+		0, oneNormal, 0, 
+		0, 0, -oneNormal, 
+		oneNormal, 0, 0,
 
-			0, -oneNormal, 0, oneNormal, 0, 0, 0, 0, -oneNormal,
+		0, oneNormal, 0, 
+		-oneNormal, 0, 0, 
+		0, 0, -oneNormal,
 
-			0, oneNormal, 0, 0, 0, -oneNormal, oneNormal, 0, 0,
+		0, -oneNormal, 0, 
+		-oneNormal, 0, 0, 
+		0, 0, oneNormal,
 
-			0, oneNormal, 0, -oneNormal, 0, 0, 0, 0, -oneNormal,
+		0, -oneNormal, 0, 
+		0, 0, oneNormal, 
+		oneNormal, 0, 0,
 
-			0, -oneNormal, 0, -oneNormal, 0, 0, 0, 0, oneNormal,
+		0, oneNormal, 0, 
+		oneNormal, 0, 0, 
+		0, 0, oneNormal,
 
-			0, -oneNormal, 0, 0, 0, oneNormal, oneNormal, 0, 0,
-
-			0, oneNormal, 0, oneNormal, 0, 0, 0, 0, oneNormal,
-
-			0, oneNormal, 0, -oneNormal, 0, 0, 0, 0, oneNormal };
+		0, oneNormal, 0, 
+		-oneNormal, 0, 0, 
+		0, 0, oneNormal };
 
 	public static void transform(Matrix4f m, Vector3f point) {
 		float x, y, z, w;

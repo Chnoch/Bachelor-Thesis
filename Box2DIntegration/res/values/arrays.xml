@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="select_dialog_items">
+        <item>Tower</item>
+        <item>Pyramid</item>
+        <item>Command three</item>
+        <item>Command four</item>
+    </string-array>
+    
+</resources>
