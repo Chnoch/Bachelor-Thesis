@@ -26,23 +26,18 @@ public class GLLight {
 		muSpecularColorHandle = glGetUniformLocation(program, "light.specular");
 	}
 
-	public void draw(Matrix4f viewMatrix) throws Exception {
-
-		Matrix3f rotMatrix = new Matrix3f();
-		if (viewMatrix != null) {
-			viewMatrix.getRotationScale(rotMatrix);
-		}
+	public void draw() throws Exception {
 
 		if (muDirectionHandle != -1) {
 			float[] dir = new float[3];
-			dir = mLight.createDirectionArray(rotMatrix);
+			dir = mLight.createDirectionArray();
 			glUniform3f(muDirectionHandle, dir[0], dir[1], dir[2]);
 			GLUtil.checkGlError("glUniform3f muDirectionHandle", TAG);
 		}
 
 		if (muPositionHandle != -1) {
 			float[] pos = new float[3];
-			pos = mLight.createPositionArray(rotMatrix);
+			pos = mLight.createPositionArray();
 			glUniform3f(muPositionHandle, pos[0], pos[1], pos[2]);
 			GLUtil.checkGlError("glUniform3f muPositionHandle", TAG);
 		}

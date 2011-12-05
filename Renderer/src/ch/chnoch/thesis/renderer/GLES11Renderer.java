@@ -245,7 +245,7 @@ public class GLES11Renderer extends AbstractRenderer {
 						l.createDirectionArray(), 0);
 			}
 			if (l.getType() == Light.Type.POINT || l.getType() == Light.Type.SPOT) {
-				float[] position = l.createPositionArray(null);
+				float[] position = l.createPositionArray();
 				gl.glLightfv(lightIndex[i], GL_POSITION, position
 						, 0);
 				

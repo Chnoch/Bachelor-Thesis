@@ -30,7 +30,7 @@ public class Plane {
 
 		// if conditional fails, ray and plane are parallel
 		float denominator = mNormal.dot(ray.getDirection());
-		if (denominator != 0) {
+		if (denominator != 0 && mPointOnPlane!=null) {
 			Vector3f dist = new Vector3f();
 			dist.sub(mPointOnPlane, ray.getOrigin());
 			float numerator = dist.dot(mNormal);
@@ -71,8 +71,6 @@ public class Plane {
 	}
 
 	public void update(Vector3f cur, Vector3f prev) {
-		Log.d("Plane",
-				"Hitpoint cur: " + cur.toString() + " prev: " + prev.toString());
 		float dx = cur.x - prev.x;
 		float dy = cur.y - prev.y;
 		float dz = cur.z - prev.z;

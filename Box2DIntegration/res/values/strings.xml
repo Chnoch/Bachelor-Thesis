@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, Box2DIntegration!</string>
     <string name="app_name">Box2DIntegration</string>
+    <string name="newSimulation">New Simulation</string>
+    <string name="pyramid">Pyramid</string>
+    <string name="tower">Tower</string>
 </resources>

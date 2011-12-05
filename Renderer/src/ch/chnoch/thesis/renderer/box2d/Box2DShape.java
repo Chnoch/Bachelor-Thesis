@@ -1,24 +1,39 @@
 package ch.chnoch.thesis.renderer.box2d;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Vector2f;
 
 import org.jbox2d.collision.*;
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.collision.shapes.Shape;
+import org.jbox2d.collision.shapes.ShapeType;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.FixtureDef;
 
 public class Box2DShape {
 
 	private FixtureDef mFixtureDef;
-	private PolygonShape mPolygonShape;
+	private Shape mShape;
+	private Box2DShapeType mType;
 
 	public Box2DShape() {
 		init();
+	}
+	
+	public Box2DShape(float width, float height){
+		mType = Box2DShapeType.BOX;
+		init();
+		setAsBox(width, height);
+	}
+	
+	public Box2DShape(float radius) {
+		mType = Box2DShapeType.CIRCLE;
+		init();
+		setAsCircle(radius);
 	}
 
 	public Box2DShape(FloatBuffer vertices) {
@@ -53,35 +68,70 @@ public class Box2DShape {
 	private void init() {
 		mFixtureDef = new FixtureDef();
 		// Some random default values
-		mFixtureDef.density = 1;
+		mFixtureDef.density = 10;
 		mFixtureDef.friction = 0.3f;
 		
-		mPolygonShape = new PolygonShape();
+		switch (mType) {
+		case CIRCLE:
+			mShape = new CircleShape();
+			break;
+		default:
+			mShape = new PolygonShape();
+		}
+		
+		
 	}
 
-	void setDensity(float dens) {
+	public void setDensity(float dens) {
 		mFixtureDef.density = dens;
 	}
-
-	void setFriction(float friction) {
+	
+	public void setFriction(float friction) {
 		mFixtureDef.friction = friction;
 	}
+	
+	public List<Vector2f> getCoordinates() {
+		List<Vector2f> vectorList = new ArrayList<Vector2f>();
+		Vec2[] vertices = ((PolygonShape)mShape).getVertices();
+		for (Vec2 vertex : vertices) {
+			vectorList.add(new Vector2f(vertex.x, vertex.y));
+		}
+		return vectorList;
+	}
+	
+	public float getRadius() {
+		return mShape.m_radius;
+	}
+	
+	public Box2DShapeType getType() {
+		return mType;
+	}
+	
 
 	/*
 	 * Package Scope
 	 */
 
 	void setAsBox(float x, float y) {
-		mPolygonShape.setAsBox(x, y);
+		mShape.m_type = ShapeType.POLYGON;
+		mType = Box2DShapeType.BOX;
+		((PolygonShape)mShape).setAsBox(x, y);
+	}
+	
+	void setAsCircle(float radius) {
+		mShape.m_type = ShapeType.CIRCLE;
+		mType = Box2DShapeType.CIRCLE;
+		mShape.m_radius = radius;
+		
 	}
 
 	FixtureDef getFixtureDef() {
-		mFixtureDef.shape = mPolygonShape;
+		mFixtureDef.shape = mShape;
 		return mFixtureDef;
 	}
 	
-	PolygonShape getPolygonShape() {
-		return mPolygonShape;
+	Shape getShape() {
+		return mShape;
 	}
 
 	/*
@@ -129,5 +179,9 @@ public class Box2DShape {
 		}
 
 		return finalList;
+	}
+	
+	public enum Box2DShapeType {
+		BOX, CIRCLE, POLYGON
 	}
 }

@@ -30,7 +30,7 @@ public class Frustum {
 		this.mAspectRatio = 1;
 		this.mVertFOV = 60;
 		this.mNearPlane = 2;
-		this.mFarPlane = 50;
+		this.mFarPlane = 100;
 
 		this.updateFrustum();
 	}

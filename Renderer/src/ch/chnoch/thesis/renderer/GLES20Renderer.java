@@ -310,8 +310,7 @@ public class GLES20Renderer extends AbstractRenderer {
 			if (muNormalMatrixHandle != -1 && maNormalHandle != -1
 					&& mNormalBuffer != null) {
 				// rotate normals
-				t.set(mSceneManager.getFrustum().getProjectionMatrix());
-				t.mul(mSceneManager.getCamera().getCameraMatrix());
+				t.set(mSceneManager.getCamera().getCameraMatrix());
 				t.mul(renderItem.getT());
 				t.invert();
 				t.transpose();
@@ -338,11 +337,7 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			// Light
 			if (mLight != null) {
-//				t.set(mSceneManager.getFrustum().getProjectionMatrix());
-				t.set(mSceneManager.getCamera().getCameraMatrix());
-//				t.set(Util.getIdentityMatrix());
-//				t.invert();
-				mLight.draw(t);
+				mLight.draw();
 			}
 
 			// Material
@@ -352,7 +347,7 @@ public class GLES20Renderer extends AbstractRenderer {
 				mat.draw();
 			}
 
-			Log.d(TAG, "Draw");
+//			Log.d(TAG, "Draw");
 			glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 					GL_UNSIGNED_SHORT, mIndexBuffer);
 			GLUtil.checkGlError("glDrawArrays", TAG);

@@ -32,16 +32,6 @@ public class Light {
 //		mHalfPlane = camera.createHalfwayVector(this);
 	}
 
-	public float[] createDirectionArray(Matrix3f viewMatrix) {
-		Vector3f tempDir = new Vector3f(mDirection);
-		viewMatrix.transform(tempDir);
-		float[] dir = new float[3];
-		dir[0] = tempDir.x;
-		dir[1] = tempDir.y;
-		dir[2] = tempDir.z;
-		return dir;
-	}
-
 	public float[] createDirectionArray() {
 		float[] dir = new float[4];
 		dir[0] = mDirection.x;
@@ -51,17 +41,12 @@ public class Light {
 		return dir;
 	}
 
-	public float[] createPositionArray(Matrix3f viewMatrix) {
-		Vector3f tempPos = new Vector3f(mPosition);
-		if (viewMatrix != null) {
-			viewMatrix.transform(tempPos);
-		}
+	public float[] createPositionArray() {
 		float[] pos = new float[4];
-		pos[0] = tempPos.x;
-		pos[1] = tempPos.y;
-		pos[2] = tempPos.z;
+		pos[0] = mPosition.x;
+		pos[1] = mPosition.y;
+		pos[2] = mPosition.z;
 		pos[3] = 1.f;
-		Log.d("Light", "Light Position: " + pos[0] + "," +pos[1] + "," + pos[2] + "," + pos[3]);
 		return pos;
 	}
 

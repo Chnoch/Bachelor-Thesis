@@ -33,6 +33,7 @@ public interface SceneManagerInterface {
 	public void enablePhysicsEngine();
 	
 	public Box2DWorld getPhysicsWorld();
+	public void setPhysicsWorld(Box2DWorld world);
 	
 	public void destroyJoints();
 

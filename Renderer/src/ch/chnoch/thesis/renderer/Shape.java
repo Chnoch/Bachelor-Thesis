@@ -49,7 +49,7 @@ public class Shape {
 	}
 
 	public BoundingBox getBoundingBox() {
-		return mBox;
+		return mBox.clone();
 	}
 
 	Box2DShape enableBox2D() {

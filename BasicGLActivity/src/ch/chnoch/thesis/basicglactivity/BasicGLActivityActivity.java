@@ -43,6 +43,7 @@ public class BasicGLActivityActivity extends Activity {
 		setContentView(mGLView);
 	}
 	
+	
 	private void init() {
 		FloatBuffer mVertexBuffer = ByteBuffer.allocateDirect(vertices.length
                 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
