@@ -32,7 +32,7 @@ public class Box2DIntegration extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mSceneManager = new GraphSceneManager();
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 20));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 30));
 		mSceneManager.getFrustum().setVertFOV(90);
 
 		// mRenderer = new GLES20Renderer(getApplicationContext());

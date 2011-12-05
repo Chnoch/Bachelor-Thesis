@@ -88,8 +88,8 @@ public class BasicGLES20Renderer extends BasicRenderer {
 
 			Matrix.setIdentityM(mNormalMatrix, 0);
 			Matrix.multiplyMM(mNormalMatrix, 0, mNormalMatrix, 0, mMVMatrix, 0);
-			Matrix.transposeM(mNormalMatrix, 0, mNormalMatrix, 0);
 			Matrix.invertM(mNormalMatrix, 0, mNormalMatrix, 0);
+			Matrix.transposeM(mNormalMatrix, 0, mNormalMatrix, 0);
 //			Log.d(TAG, "Handle: " + muNormalMatrixHandle);
 			glUniformMatrix4fv(muNormalMatrixHandle, 1, false,
 					mNormalMatrix, 0);
