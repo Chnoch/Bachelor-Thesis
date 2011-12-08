@@ -1,12 +1,9 @@
 package ch.chnoch.thesis.renderer;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import android.util.Log;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
-import ch.chnoch.thesis.renderer.util.Util;
 
 public class Plane {
 
@@ -44,27 +41,6 @@ public class Plane {
 			intersection.hit = true;
 			intersection.hitPoint = hitPoint;
 			
-//			Log.d("Plane", "HitPoint: " + intersection.hitPoint.toString());
-		}
-
-		return intersection;
-	}
-
-	public RayShapeIntersection intersect2(Ray ray) {
-		RayShapeIntersection intersection = new RayShapeIntersection();
-
-		float d = -mPointOnPlane.dot(mNormal);
-
-		float numerator = -(ray.getOrigin().dot(mNormal) + d);
-		float denominator = ray.getDirection().dot(mNormal);
-
-		if (denominator != 0) {
-			float t = numerator / denominator;
-
-			Vector3f hitPoint = new Vector3f();
-			hitPoint.scaleAdd(t, ray.getDirection(), ray.getOrigin());
-			intersection.hit = true;
-			intersection.hitPoint = hitPoint;
 		}
 
 		return intersection;
@@ -77,13 +53,6 @@ public class Plane {
 
 		// translation vector. 3rd dimension??
 		mNode.move(new Vector3f(dx, dy, dz));
-
-//		Matrix4f transMatrix = new Matrix4f();
-//		transMatrix.setTranslation(trans);
-//		Matrix4f t = mNode.getTranslationMatrix();
-//		t.add(transMatrix);
-//		Log.d("Plane", "Translation Matrix:\n" + t.toString());
-//		mNode.setTranslationMatrix(t);
 	}
 
 	public void setNode(Node node) {

@@ -9,8 +9,6 @@ import org.jbox2d.dynamics.joints.JointType;
 import org.jbox2d.dynamics.joints.MouseJoint;
 import org.jbox2d.dynamics.joints.MouseJointDef;
 
-import android.util.Log;
-
 public class Box2DJoint {
 	private MouseJoint mJoint;
 	private MouseJointDef mJointDef;
@@ -26,12 +24,23 @@ public class Box2DJoint {
 		mJointDef.type = JointType.MOUSE;
 		mJointDef.target.set(target);
 		mJointDef.maxForce = 1000 * body1.getBody().m_mass;
-		mJoint = (MouseJoint) world.createJoint(this);
+		int i = 0;
+		while (mJoint == null) {
+			mJoint = (MouseJoint) world.createJoint(this);
+			i++;
+			if (mJoint == null) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
 	}
 
 	public void update(float x, float y) {
 		if (mJoint instanceof MouseJoint) {
 			Vec2 target = mJoint.getTarget();
+			Vec2 t = new Vec2(target);
 			target.x += x;
 			target.y += y;
 			mJoint.setTarget(target);
@@ -39,11 +48,8 @@ public class Box2DJoint {
 	}
 
 	public void remove() {
-		Log.d("Box2DBody", "Called remove Method of Box2DJoint");
 		if (mJoint != null) {
-			Log.d("Box2DBody", "Joint is not null");
 			mWorld.destroyJoint(this);
-			
 		}
 	}
 

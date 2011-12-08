@@ -26,16 +26,15 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 	@Override
 	public boolean onTouch(View view, MotionEvent e) {
 		// Let the gesture detector analyze the input first
-//		mScaleDetector.onTouchEvent(e);
+		mScaleDetector.onTouchEvent(e);
 		Log.d(TAG, "onTouch");
 
 		float x = e.getX();
 		float y = e.getY();
-
 		y = view.getHeight() - y;
 		
 
-//		if (!mScaleDetector.isInProgress()) {
+		if (!mScaleDetector.isInProgress()) {
 			switch (e.getAction()) {
 
 			case MotionEvent.ACTION_DOWN:
@@ -53,7 +52,6 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 
 				if (mOnNode) {
 					moveNode(x, y);
-
 				}
 				mEventStart = e.getEventTime();
 				break;
@@ -68,7 +66,7 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 			mViewer.requestRender();
 			mPreviousX = x;
 			mPreviousY = y;
-//		}
+		}
 		return true;
 	}
 
@@ -91,11 +89,7 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 
 	private void findNode(float x, float y) {
 		if (mOnNode) {
-			Ray curRay = mViewer.unproject(x, y);
-			RayShapeIntersection hitPointInter = mIntersection.node
-					.intersect(curRay);
-
-			mPlane.setPointOnPlane(hitPointInter.hitPoint);
+			mPlane.setPointOnPlane(mIntersection.hitPoint);
 			mPlane.setNode(mIntersection.node);
 		}
 	}
@@ -113,12 +107,10 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 
 			mScaleFactor = detector.getScaleFactor() * SCALE_FACTOR;
 			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
-			 Log.d("TouchHandler", "ScaleFactor: " + mScaleFactor);
 			Camera camera = mSceneManager.getCamera();
 			Vector3f centerOfProjection = camera.getCenterOfProjection();
 
 			centerOfProjection.z *= 1f/mScaleFactor;
-			Log.d(TAG, "New CenterOfProjection: " + centerOfProjection.toString());
 			camera.setCenterOfProjection(centerOfProjection);
 			mViewer.requestRender();
 			return true;

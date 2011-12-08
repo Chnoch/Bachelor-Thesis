@@ -45,7 +45,6 @@ public class Box2DBody {
 
 	public Vector2f getCurrentPosition() {
 		Vec2 pos = mBody.getPosition();
-		// Log.d("Box2DBody", "Current Position: " + pos.toString());
 		return new Vector2f(pos.x, pos.y);
 	}
 
@@ -57,24 +56,15 @@ public class Box2DBody {
 		mPreviousPosition.set(pos);
 	}
 
-	public void move(float x, float y, float ptm_ratio) {
-		// mBox2DBody.setLinearVelocity(new Vec2(x,y));
-		// Log.d("Box2DBody", "move: x: " + x + " y: " + y);
-		// Log.d("Box2DBody", "CurrentPosition: "
-		// + getCurrentPosition().toString());
+	public void move(float x, float y) {
 		if (mCreateJoint) {
 			if (mJoint == null) {
-				float targetX = getCurrentPosition().x + ptm_ratio * x;
-				float targetY = getCurrentPosition().y + ptm_ratio * y;
+				float targetX = getCurrentPosition().x + x;
+				float targetY = getCurrentPosition().y + y;
 				Vec2 target = new Vec2(targetX, targetY);
-				 Log.d("Box2DBody", "Create new Joint with target " + target.toString());
 				mJoint = new Box2DJoint(this, mWorld, target);
 				mJointList.add(mJoint);
 			} else {
-				// Log.d("Box2DBody", "ElseCase: Current Position: "
-				// + getCurrentPosition().toString() + ", Target: "
-				// + mJoint.getTarget().toString());
-//				Log.d("Box2DBody", "Updating body");
 				mJoint.update(x, y);
 			}
 		}
@@ -83,7 +73,6 @@ public class Box2DBody {
 	public void removeJoint() {
 		for (Box2DJoint joint : mJointList) {
 			joint.remove();
-			Log.d("Box2DBody", "Destroyed a Joint");
 		}
 		mJointList.clear();
 		mJoint = null;
