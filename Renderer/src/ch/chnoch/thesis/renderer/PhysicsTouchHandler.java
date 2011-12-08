@@ -26,15 +26,16 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 	@Override
 	public boolean onTouch(View view, MotionEvent e) {
 		// Let the gesture detector analyze the input first
-		mScaleDetector.onTouchEvent(e);
+//		mScaleDetector.onTouchEvent(e);
 		Log.d(TAG, "onTouch");
 
 		float x = e.getX();
 		float y = e.getY();
 
 		y = view.getHeight() - y;
+		
 
-		if (!mScaleDetector.isInProgress()) {
+//		if (!mScaleDetector.isInProgress()) {
 			switch (e.getAction()) {
 
 			case MotionEvent.ACTION_DOWN:
@@ -67,7 +68,7 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 			mViewer.requestRender();
 			mPreviousX = x;
 			mPreviousY = y;
-		}
+//		}
 		return true;
 	}
 

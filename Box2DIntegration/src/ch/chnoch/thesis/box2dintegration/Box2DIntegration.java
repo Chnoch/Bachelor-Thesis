@@ -119,6 +119,7 @@ public class Box2DIntegration extends Activity {
 		mViewer.setOnTouchListener(new PhysicsTouchHandler(mSceneManager,
 				mRenderer, mViewer));
 	}
+	
 
 	private void runSimulation() {
 		// mSimulation = new Simulation();
