@@ -31,6 +31,10 @@ varying vec4 vDiffuse;
 varying vec4 vAmbient;
 varying vec4 vSpecular;
 
+attribute vec2 aTextureCoord;
+
+varying vec2 vTextureCoord;
+
 uniform mat4 uMVPMatrix;  // mvp = ModelViewProjection
 uniform mat4 uMVMatrix; // mv = ModelView
 uniform mat4 uNormalMatrix;
@@ -41,6 +45,8 @@ void main() {
 	vSpecular = material.specular * light.specular;
 	vSpecular_exponent = material.specular_exponent;
 	vLightPosition = light.position;
+	
+	vTextureCoord = aTextureCoord;
 	
 	vNormal = (uNormalMatrix * vec4(aNormals, 0.0)).xyz;
 	vNormal = normalize(vNormal);

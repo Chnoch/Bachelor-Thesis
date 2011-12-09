@@ -21,21 +21,23 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 		super(sceneManager, renderer, viewer);
 		mScaleDetector = new ScaleGestureDetector(viewer.getContext(),
 				new ScaleListener());
+		mPlane.set2DMode(true);
 	}
 
 	@Override
 	public boolean onTouch(View view, MotionEvent e) {
+		int action = e.getAction();
+		int actionCode = action & MotionEvent.ACTION_MASK;
 		// Let the gesture detector analyze the input first
-		mScaleDetector.onTouchEvent(e);
+		// mScaleDetector.onTouchEvent(e);
 		Log.d(TAG, "onTouch");
 
 		float x = e.getX();
 		float y = e.getY();
 		y = view.getHeight() - y;
-		
 
 		if (!mScaleDetector.isInProgress()) {
-			switch (e.getAction()) {
+			switch (actionCode) {
 
 			case MotionEvent.ACTION_DOWN:
 				mEventStart = e.getEventTime();
@@ -45,19 +47,31 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 				break;
 			case MotionEvent.ACTION_MOVE:
 				mEventEnd = e.getEventTime();
-				if (!mOnNode) {
-					unproject(x, y);
-					findNode(x, y);
-				}
+				if (mMultitouch) {
+					Log.d(TAG, "Multitouch");
+					rotateWorld(x, y);
+				} else {
+					if (!mOnNode) {
+						unproject(x, y);
+						findNode(x, y);
+					}
 
-				if (mOnNode) {
-					moveNode(x, y);
+					if (mOnNode) {
+						moveNode(x, y);
+					}
 				}
 				mEventStart = e.getEventTime();
+				break;
+			case MotionEvent.ACTION_POINTER_DOWN:
+				Log.d(TAG, "ACTION_POINTER_DOWN");
+				mOnNode = false;
+				endTranslation();
+				mMultitouch = true;
 				break;
 			case MotionEvent.ACTION_UP:
 				// reset all flags
 				mOnNode = false;
+				mMultitouch = false;
 
 				endTranslation();
 				break;
@@ -94,6 +108,20 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 		}
 	}
 
+	private void rotateWorld(float x, float y) {
+		mTrackball.setNodeToRoot(mSceneManager.getRoot(),
+				mSceneManager.getCamera());
+
+		Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
+		Ray endRay = mViewer.unproject(x, y);
+
+		RayShapeIntersection startIntersection = mTrackball.intersect(startRay);
+		RayShapeIntersection endIntersection = mTrackball.intersect(endRay);
+
+		mTrackball.update(startIntersection.hitPoint, endIntersection.hitPoint,
+				TOUCH_SCALE_FACTOR);
+	}
+
 	private void endTranslation() {
 		mSceneManager.destroyJoints();
 	}
@@ -110,7 +138,7 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 			Camera camera = mSceneManager.getCamera();
 			Vector3f centerOfProjection = camera.getCenterOfProjection();
 
-			centerOfProjection.z *= 1f/mScaleFactor;
+			centerOfProjection.z *= 1f / mScaleFactor;
 			camera.setCenterOfProjection(centerOfProjection);
 			mViewer.requestRender();
 			return true;

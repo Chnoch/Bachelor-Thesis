@@ -248,6 +248,7 @@ public class GLES20Renderer extends AbstractRenderer {
 		mTextureBound = false;
 
 		try {
+			GLUtil.checkGlError("First test", TAG);
 			// Set the modelview matrix by multiplying the camera matrix and the
 			// transformation matrix of the object
 			if (muMVPMatrixHandle != -1) {
@@ -299,12 +300,13 @@ public class GLES20Renderer extends AbstractRenderer {
 					glEnableVertexAttribArray(maTextureHandle);
 					GLUtil.checkGlError(
 							"glEnableVertexAttribArray maTextureHandle", TAG);
-					glVertexAttrib1f(maHasTextureHandle, 2);
+//					glVertexAttrib1f(maHasTextureHandle, 2);
 				} else if (maHasTextureHandle != -1) {
 					glVertexAttrib1f(maHasTextureHandle, 0);
 				}
 			} else if (maHasTextureHandle != -1) {
 				glVertexAttrib1f(maHasTextureHandle, 0);
+				GLUtil.checkGlError("glVertexAttribPointer maNormalHandle", TAG);
 			}
 
 			if (muNormalMatrixHandle != -1 && maNormalHandle != -1
@@ -337,7 +339,7 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			// Light
 			if (mLight != null) {
-				mLight.draw();
+				mLight.draw(mSceneManager.getRoot().getTransformationMatrix());
 			}
 
 			// Material

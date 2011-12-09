@@ -4,6 +4,7 @@ import static android.opengl.GLES20.*;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
@@ -26,7 +27,7 @@ public class GLLight {
 		muSpecularColorHandle = glGetUniformLocation(program, "light.specular");
 	}
 
-	public void draw() throws Exception {
+	public void draw(Matrix4f transformation) throws Exception {
 
 		if (muDirectionHandle != -1) {
 			float[] dir = new float[3];
@@ -36,9 +37,9 @@ public class GLLight {
 		}
 
 		if (muPositionHandle != -1) {
-			float[] pos = new float[3];
-			pos = mLight.createPositionArray();
-			glUniform3f(muPositionHandle, pos[0], pos[1], pos[2]);
+			Vector3f pos = new Vector3f(mLight.getPosition());
+			transformation.transform(pos);
+			glUniform3f(muPositionHandle, pos.x, pos.y, pos.z);
 			GLUtil.checkGlError("glUniform3f muPositionHandle", TAG);
 		}
 

@@ -12,23 +12,28 @@ import ch.chnoch.thesis.renderer.interfaces.Node;
 public class Trackball {
 
 	private Node mNode;
-	private Point3f mCenter;
+	private Vector3f mCenter;
 	private float mRadius;
+	private boolean mRotateWholeWorld = false;
+	private Camera mCamera;
 
 	public Trackball() {
 	}
 
 	public void setNode(Node node) {
 		mNode = node;
+		BoundingBox box = mNode.getBoundingBox();
+		mCenter = box.getCenter();
+		mRadius = box.getRadius();
+		mRotateWholeWorld = false;
+	}
 
-		mCenter = mNode.getBoundingBox().getCenter();
-		mRadius = mNode.getBoundingBox().getRadius();
-
-		// float width = mViewer.width();
-		// float height = mViewer.height();
-		//
-		// mCenter = new Vector3f(width/2, height/2, 0);
-		// mRadius = (float) Math.sqrt(height*height/4 + width*width/4);
+	public void setNodeToRoot(Node root, Camera camera) {
+		mNode = root;
+		mRadius = camera.getCenterOfProjection().length() - 1;
+		mCenter = camera.getLookAtPoint();
+		mCamera = camera;
+		mRotateWholeWorld = true;
 	}
 
 	public Node getNode() {
@@ -49,15 +54,25 @@ public class Trackball {
 			float angle = prev.angle(cur) * factor;
 			Log.d("Trackball", "Axis: " + axisVector.toString());
 			Log.d("Trackball", "Angle: " + angle);
-			
-			AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
-			Matrix4f rot = new Matrix4f();
-			rot.set(axisAngle);
-			rot.mul(t);
-			mNode.setRotationMatrix(rot);
 
-			mCenter = mNode.getBoundingBox().getCenter();
-			mRadius = mNode.getBoundingBox().getRadius();
+			if (!mRotateWholeWorld) {
+				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
+				Matrix4f rot = new Matrix4f();
+				rot.set(axisAngle);
+				rot.mul(t);
+				mNode.setRotationMatrix(rot);
+
+				// Update the center and radius
+				setNode(mNode);
+			} else {
+				float angleFactor = mCamera.getCenterOfProjection().length()/3;
+				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, -angle*angleFactor);
+				Matrix4f rot = new Matrix4f();
+				rot.set(axisAngle);
+				Vector3f camera = mCamera.getCenterOfProjection();
+				rot.transform(camera);
+				mCamera.setCenterOfProjection(camera);
+			}
 		}
 	}
 

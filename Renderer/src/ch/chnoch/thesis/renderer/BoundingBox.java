@@ -88,7 +88,7 @@ public class BoundingBox {
 	}
 
 
-	public Point3f getCenter() {
+	public Vector3f getCenter() {
 		float xa = (mHigh.x - mLow.x) / 2f;
 		float x = mLow.x + xa;
 
@@ -98,7 +98,7 @@ public class BoundingBox {
 		float za = (mHigh.z - mLow.z) / 2f;
 		float z = mLow.z + za;
 //		Log.d("Bounding Box", "Center: " + x + ", " + y + ", " + z);
-		return new Point3f(x, y, z);
+		return new Vector3f(x, y, z);
 	}
 
 	public float getRadius() {

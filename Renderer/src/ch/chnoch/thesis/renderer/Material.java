@@ -27,6 +27,7 @@ public abstract class Material {
 
 	public void setTexture(Texture tex) {
 		texture = tex;
+		setTextureChanged(true);
 	}
 
 	public Texture getTexture() {

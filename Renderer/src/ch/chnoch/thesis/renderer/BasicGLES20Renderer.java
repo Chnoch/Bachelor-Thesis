@@ -99,7 +99,7 @@ public class BasicGLES20Renderer extends BasicRenderer {
 					mMVMatrix, 0);
 
 			GLUtil.checkGlError("mModelMatrix", TAG);
-			mGLLight.draw();
+			mGLLight.draw(Util.getIdentityMatrix());
 			glDrawElements(GL_TRIANGLES, mIndexBuffer.capacity(),
 					GL_UNSIGNED_SHORT, mIndexBuffer);
 

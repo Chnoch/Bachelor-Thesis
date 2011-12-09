@@ -45,7 +45,8 @@ public class TranslationTest extends AndroidTestCase {
 		root = new ShapeNode(shape);
 		pointOnPlane = new Vector3f();
 		normal = new Vector3f(1, 0, 0);
-		mPlane = new Plane(pointOnPlane, normal);
+		mPlane = new Plane(mSceneManager.getCamera());
+		mPlane.setPointOnPlane(pointOnPlane);
 		mPlane.setNode(root);
 		mSceneManager.setRoot(root);
 //		root.initTranslationMatrix(mIdentity);

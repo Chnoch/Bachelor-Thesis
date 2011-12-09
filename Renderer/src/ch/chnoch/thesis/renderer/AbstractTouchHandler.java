@@ -15,6 +15,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 
 	protected boolean mOnNode = false;
 	protected boolean mUpScaled = false;
+	protected boolean mMultitouch = false;
 
 	protected float mPreviousX, mPreviousY;
 	protected float mEventStart, mEventEnd;
@@ -37,11 +38,9 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		mSceneManager = sceneManager;
 		mRenderer = renderer;
 		mTrackball = new Trackball();
-		mPlane = new Plane();
-		mPlane.setNormal(new Vector3f(0, 0, 1));
-		
+		mPlane = new Plane(mSceneManager.getCamera());
+
 		mViewer = (GLViewer)viewer;
-		
 	}
 
 	@Override

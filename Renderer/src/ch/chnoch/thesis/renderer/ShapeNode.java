@@ -203,7 +203,7 @@ public class ShapeNode extends Leaf {
 				// Test against Shape if BoundingBox is hit
 				intersection = mShape.intersect(ray,
 						getCompleteTransformationMatrix());
-				// if shape ist hit
+				// if shape is hit
 				if (intersection.hit) {
 					Log.d("ShapeNode",
 							"Hit Shape at: " + intersection.hitPoint.toString());
