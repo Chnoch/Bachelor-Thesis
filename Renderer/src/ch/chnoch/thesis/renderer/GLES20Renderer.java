@@ -12,6 +12,7 @@ import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.*;
 import ch.chnoch.thesis.renderer.util.GLUtil;
+import ch.chnoch.thesis.renderer.util.Util;
 
 import android.content.Context;
 import android.opengl.*;

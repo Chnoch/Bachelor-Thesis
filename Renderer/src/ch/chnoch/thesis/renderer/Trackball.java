@@ -65,7 +65,7 @@ public class Trackball {
 				// Update the center and radius
 				setNode(mNode);
 			} else {
-				float angleFactor = mCamera.getCenterOfProjection().length()/3;
+				float angleFactor = mCamera.getCenterOfProjection().length();
 				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, -angle*angleFactor);
 				Matrix4f rot = new Matrix4f();
 				rot.set(axisAngle);

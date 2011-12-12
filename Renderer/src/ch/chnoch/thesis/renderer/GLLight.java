@@ -6,6 +6,8 @@ import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import android.util.Log;
+
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
 public class GLLight {
@@ -39,6 +41,7 @@ public class GLLight {
 		if (muPositionHandle != -1) {
 			Vector3f pos = new Vector3f(mLight.getPosition());
 			transformation.transform(pos);
+			Log.d("GLLight", "position after transformation: " + pos.toString());
 			glUniform3f(muPositionHandle, pos.x, pos.y, pos.z);
 			GLUtil.checkGlError("glUniform3f muPositionHandle", TAG);
 		}
