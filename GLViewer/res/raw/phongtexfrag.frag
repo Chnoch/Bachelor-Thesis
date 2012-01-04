@@ -40,5 +40,5 @@ void main(void) {
 	diffuse = clamp(diffuse, 0.0, 1.0);
 	specular = clamp(specular, 0.0, 1.0);
 	
-	gl_FragColor = vAmbient + diffuse + specular + texture2D(sTexture, vTextureCoord);
+	gl_FragColor = vAmbient + diffuse + specular; //+ texture2D(sTexture, vTextureCoord);
 }

@@ -106,18 +106,16 @@ public class Box2DIntegration extends Activity {
 		mSceneManager.getFrustum().setVertFOV(90);
 
 		mRenderer = new GLES20Renderer(getApplicationContext());
-		// mRenderer = new GLES11Renderer();
-		// mRenderer = new GL2DRenderer();
 		mRenderer.setSceneManager(mSceneManager);
 
 		mViewer = new GLViewer(this, mRenderer, true);
 
+		mViewer.setOnTouchListener(new PhysicsTouchHandler(mSceneManager,
+				mRenderer, mViewer));
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);
 
-		mViewer.setOnTouchListener(new PhysicsTouchHandler(mSceneManager,
-				mRenderer, mViewer));
 	}
 	
 
@@ -143,15 +141,16 @@ public class Box2DIntegration extends Activity {
 			}
 		}).start();
 	}
+	
 
 	private void createLights() {
 
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
-		light.setPosition(0, 5, 10);
+		light.setPosition(0, 10, 20);
 		light.setSpecular(1, 1, 1);
-		light.setAmbient(0.3f, 0.3f, 0.3f);
 		light.setDiffuse(0.7f, 0.7f, 0.7f);
+		light.setAmbient(0.3f, 0.3f, 0.3f);
 
 		mSceneManager.addLight(light);
 	}
@@ -240,9 +239,9 @@ public class Box2DIntegration extends Activity {
 
 	private Shader createShaders() {
 		String vertexShader = Util.readRawText(getApplication(),
-				R.raw.phongvert);
+				R.raw.phongtexvert);
 		String fragmentShader = Util.readRawText(getApplication(),
-				R.raw.phongfrag);
+				R.raw.phongtexfrag);
 		Shader shader = null;
 		Log.d(TAG, "VertexShader: " + vertexShader);
 		Log.d(TAG, "FragmentShader: " + fragmentShader);
@@ -259,6 +258,7 @@ public class Box2DIntegration extends Activity {
 		}
 		return null;
 	}
+	
 	
 	private Shape loadStructure(int resource, float scale) {
 		// Construct a data structure that stores the vertices, their

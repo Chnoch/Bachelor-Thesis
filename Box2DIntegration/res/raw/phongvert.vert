@@ -18,7 +18,7 @@ uniform material_properties material;
 uniform point_light light;
 
 attribute vec4 aPosition;
-attribute vec4 aNormals;
+attribute vec3 aNormals;
 
 varying float vSpecular_exponent;
 
@@ -42,7 +42,8 @@ void main() {
 	vSpecular_exponent = material.specular_exponent;
 	vLightPosition = light.position;
 	
-	vNormal = (uNormalMatrix * aNormals).xyz;
+	vNormal = (uNormalMatrix * vec4(aNormals,0.0)).xyz;
+	vNormal = normalize(vNormal);
 	vViewPosition = (uMVMatrix * aPosition).xyz;
 	
 	gl_Position = uMVPMatrix * aPosition;

@@ -46,7 +46,7 @@ void main() {
 	vSpecular_exponent = material.specular_exponent;
 	vLightPosition = light.position;
 	
-	vTextureCoord = aTextureCoord;
+	//vTextureCoord = aTextureCoord;
 	
 	vNormal = (uNormalMatrix * vec4(aNormals, 0.0)).xyz;
 	vNormal = normalize(vNormal);

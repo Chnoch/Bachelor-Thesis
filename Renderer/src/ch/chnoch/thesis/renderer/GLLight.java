@@ -41,6 +41,7 @@ public class GLLight {
 		if (muPositionHandle != -1) {
 			Vector3f pos = new Vector3f(mLight.getPosition());
 			transformation.transform(pos);
+			
 			Log.d("GLLight", "position after transformation: " + pos.toString());
 			glUniform3f(muPositionHandle, pos.x, pos.y, pos.z);
 			GLUtil.checkGlError("glUniform3f muPositionHandle", TAG);

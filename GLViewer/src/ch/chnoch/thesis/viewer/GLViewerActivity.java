@@ -125,7 +125,7 @@ public class GLViewerActivity extends Activity {
 	 * Private Instantiation Methods
 	 */
 	private void addCube() {
-		Shape shape = loadStructure(R.raw.cubetex);
+		Shape shape = Util.loadCuboid(1, 1, 1);
 		ShapeNode node = new ShapeNode(shape);
 		Vector3f ambient = new Vector3f(0.3f,0.3f,0.3f);
 		Vector3f diffuse= new Vector3f(0.7f,0.7f,0.7f);
@@ -193,8 +193,10 @@ public class GLViewerActivity extends Activity {
 		Material mainMaterial = createMaterial(ambient, diffuse, specular, 100, R.raw.wall);
 		Material groundMaterial = createMaterial(ambient, diffuse, specular, 100, R.raw.wood);
 		
-		Shape sphere = loadStructure(R.raw.cubetex);
+//		Shape sphere = loadStructure(R.raw.cubetex);
+		Shape sphere = Util.loadSphere(25, 25, 2);
 		Shape teapot = loadStructure(R.raw.teapot_alt);
+		Shape cube = Util.loadCuboid(3, 1, 2);
 		 Shape groundShape = Util.loadCuboid(30, 0.1f, 30);
 
 		Vector3f transY = new Vector3f(0, 3, 0);
@@ -211,7 +213,7 @@ public class GLViewerActivity extends Activity {
 		Node sphereNode = new ShapeNode(sphere);
 		Node teapotsGroup = new TransformGroup();
 		Node teapot1 = new ShapeNode(teapot);
-		Node teapot2 = new ShapeNode(teapot);
+		Node teapot2 = new ShapeNode(cube);
 		
 		groundNode.move(transGround);
 		teapotsGroup.move(transY);

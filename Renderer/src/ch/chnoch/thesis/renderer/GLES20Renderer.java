@@ -146,19 +146,19 @@ public class GLES20Renderer extends AbstractRenderer {
 
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
 		Log.d(TAG, "onsurfacecreated method called");
-		int[] depthbits = new int[1];
-		glGetIntegerv(GL_DEPTH_BITS, depthbits, 0);
-		Log.d(TAG, "Depth Bits: " + depthbits[0]);
-		
-		int[] redbits = new int[1];
-		int[] bluebits = new int[1];
-		int[] greenbits = new int[1];
-		glGetIntegerv(GL_RED_BITS, redbits, 0);
-		glGetIntegerv(GL_BLUE_BITS, bluebits, 0);
-		glGetIntegerv(GL_GREEN_BITS, greenbits, 0);
-		Log.d(TAG, "Red Bits: " + redbits[0]);
-		Log.d(TAG, "Blue Bits: " + bluebits[0]);
-		Log.d(TAG, "Green Bits: " + greenbits[0]);
+//		int[] depthbits = new int[1];
+//		glGetIntegerv(GL_DEPTH_BITS, depthbits, 0);
+//		Log.d(TAG, "Depth Bits: " + depthbits[0]);
+//		
+//		int[] redbits = new int[1];
+//		int[] bluebits = new int[1];
+//		int[] greenbits = new int[1];
+//		glGetIntegerv(GL_RED_BITS, redbits, 0);
+//		glGetIntegerv(GL_BLUE_BITS, bluebits, 0);
+//		glGetIntegerv(GL_GREEN_BITS, greenbits, 0);
+//		Log.d(TAG, "Red Bits: " + redbits[0]);
+//		Log.d(TAG, "Blue Bits: " + bluebits[0]);
+//		Log.d(TAG, "Green Bits: " + greenbits[0]);
 
 		if (mEnableShader) {
 			Log.d(TAG, "Enabling Shader");
@@ -340,7 +340,10 @@ public class GLES20Renderer extends AbstractRenderer {
 
 			// Light
 			if (mLight != null) {
-				mLight.draw(mSceneManager.getRoot().getTransformationMatrix());
+				t.set(mSceneManager.getCamera().getCameraMatrix());
+//				t.invert();
+				mLight.draw(t);
+//				mLight.draw(Util.getIdentityMatrix());
 			}
 
 			// Material

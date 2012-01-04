@@ -28,7 +28,7 @@ public class GLViewer extends GLSurfaceView {
 		mRenderer = renderer;
 		mRenderer.setViewer(this);
 
-		setEGLConfigChooser(true);
+//		setEGLConfigChooser(true);
 		if (openGLES20) {
 			setEGLContextClientVersion(2);
 		}

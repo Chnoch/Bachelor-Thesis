@@ -59,17 +59,8 @@ public class ShapeNode extends Leaf {
 	private Shape loadBox(Box2DShape shape, float depth) {
 		List<Vector2f> coord =  shape.getCoordinates();
 		// As found in PolygonShape.class
-		Vector2f bottomLeft = coord.get(0);
-		Vector2f bottomRight = coord.get(1);
-		Vector2f topLeft = coord.get(3);
-		
 		Vector2f topRight = coord.get(2);
 		
-		float width = bottomRight.x - bottomLeft.x;
-		float height = topLeft.y - bottomLeft.y;
-		Log.d("ShapeNode", "width: " + width + " height: " + height);
-		
-//		return Util.loadCuboid(width, height, depth);
 		return Util.loadCuboid(topRight.x, topRight.y, depth);
 	}
 	
