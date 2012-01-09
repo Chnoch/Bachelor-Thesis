@@ -20,4 +20,12 @@ public class RayShapeIntersection {
 		this.hitPoint = hitPoint;
 		this.node = shape;
 	}
+	
+	public String toString() {
+		if (hit) {
+			return "Hitpoint: " + hitPoint.toString() + " on Node: " + node.toString(); 
+		} else {
+			return "No hit";
+		}
+	}
 }

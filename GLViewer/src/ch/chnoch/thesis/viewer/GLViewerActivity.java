@@ -194,7 +194,7 @@ public class GLViewerActivity extends Activity {
 		Material groundMaterial = createMaterial(ambient, diffuse, specular, 100, R.raw.wood);
 		
 //		Shape sphere = loadStructure(R.raw.cubetex);
-		Shape sphere = Util.loadSphere(25, 25, 2);
+		Shape sphere = Util.loadSphere(5, 5, 1);
 		Shape teapot = loadStructure(R.raw.teapot_alt);
 		Shape cube = Util.loadCuboid(3, 1, 2);
 		 Shape groundShape = Util.loadCuboid(30, 0.1f, 30);

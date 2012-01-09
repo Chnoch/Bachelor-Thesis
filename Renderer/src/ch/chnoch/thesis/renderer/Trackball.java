@@ -40,8 +40,8 @@ public class Trackball {
 		return mNode;
 	}
 
-	public void update(Vector3f cur, Vector3f prev, float factor) {
-		if (!cur.epsilonEquals(prev, 0.01f)) {
+	public boolean update(Vector3f cur, Vector3f prev, float factor) {
+		if (!cur.epsilonEquals(prev, 0.005f)) {
 			Matrix4f t = mNode.getRotationMatrix();
 
 			cur.sub(mCenter);
@@ -52,19 +52,8 @@ public class Trackball {
 			axisVector.normalize();
 
 			float angle = prev.angle(cur) * factor;
-			Log.d("Trackball", "Axis: " + axisVector.toString());
-			Log.d("Trackball", "Angle: " + angle);
 
-			if (!mRotateWholeWorld) {
-				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
-				Matrix4f rot = new Matrix4f();
-				rot.set(axisAngle);
-				rot.mul(t);
-				mNode.setRotationMatrix(rot);
-
-				// Update the center and radius
-				setNode(mNode);
-			} else {
+			if (mRotateWholeWorld) {
 				float angleFactor = mCamera.getCenterOfProjection().length();
 				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, -angle*angleFactor);
 				Matrix4f rot = new Matrix4f();
@@ -72,7 +61,19 @@ public class Trackball {
 				Vector3f camera = mCamera.getCenterOfProjection();
 				rot.transform(camera);
 				mCamera.setCenterOfProjection(camera);
+			} else {
+				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
+				Matrix4f rot = new Matrix4f();
+				rot.set(axisAngle);
+				rot.mul(t);
+				mNode.setRotationMatrix(rot);
+				
+				// Update the center and radius
+				setNode(mNode);
 			}
+			return true;
+		} else {
+			return false;
 		}
 	}
 

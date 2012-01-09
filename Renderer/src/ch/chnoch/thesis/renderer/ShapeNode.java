@@ -107,8 +107,8 @@ public class ShapeNode extends Leaf {
 	public void move(Vector3f v) {
 
 		if (mPhysicsEnabled) {
-			Log.d("PhysicsTouchHandler", "Moved ShapeNode with enabledPhysics: x: " + v.x
-					+ ", y: " + v.y);
+//			Log.d("PhysicsTouchHandler", "Moved ShapeNode with enabledPhysics: x: " + v.x
+//					+ ", y: " + v.y);
 			mBox2DBody.move(v.x, v.y);
 		} else {
 			Matrix4f t = getTranslationMatrix();

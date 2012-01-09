@@ -147,7 +147,7 @@ public class Box2DIntegration extends Activity {
 
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
-		light.setPosition(0, 10, 20);
+		light.setPosition(0, 0, -30);
 		light.setSpecular(1, 1, 1);
 		light.setDiffuse(0.7f, 0.7f, 0.7f);
 		light.setAmbient(0.3f, 0.3f, 0.3f);
