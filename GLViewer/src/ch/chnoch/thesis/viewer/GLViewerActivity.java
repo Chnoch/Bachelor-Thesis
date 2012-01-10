@@ -47,7 +47,7 @@ public class GLViewerActivity extends Activity {
 		mSceneManager = new GraphSceneManager();
 
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 10));
-		mSceneManager.getFrustum().setVertFOV(90);
+		mSceneManager.getFrustum().setVertFOV(45);
 
 		boolean openGlES20 = detectOpenGLES20();
 
@@ -194,7 +194,8 @@ public class GLViewerActivity extends Activity {
 		Material groundMaterial = createMaterial(ambient, diffuse, specular, 100, R.raw.wood);
 		
 //		Shape sphere = loadStructure(R.raw.cubetex);
-		Shape sphere = Util.loadSphere(5, 5, 1);
+		Shape sphere = Util.loadSphere(50, 50, 1);
+//		sphere = loadStructure(R.raw.sphere_prec);
 		Shape teapot = loadStructure(R.raw.teapot_alt);
 		Shape cube = Util.loadCuboid(3, 1, 2);
 		 Shape groundShape = Util.loadCuboid(30, 0.1f, 30);
@@ -238,7 +239,7 @@ public class GLViewerActivity extends Activity {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 
-		light.setPosition(new Vector3f(0, 10, 20));
+		light.setPosition(new Vector3f(0, 0, 10));
 		light.setSpecular(new Vector3f(0, 1, 0));
 		light.setDiffuse(new Vector3f(.5f, .5f, 0.5f));
 		light.setAmbient(new Vector3f(.2f, .2f, 0.2f));

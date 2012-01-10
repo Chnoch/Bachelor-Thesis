@@ -10,6 +10,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import android.app.Application;
+import android.util.Log;
 
 import ch.chnoch.thesis.renderer.*;
 
@@ -98,19 +99,20 @@ public class Util {
 		List<Float> texCoordsList = new ArrayList<Float>();
 		List<Float> verticesList = new ArrayList<Float>();
 
-		for (int latNumber = 0; latNumber <= latitudeBands; latNumber++) {
-			double theta = latNumber * Math.PI / latitudeBands;
+		for (int latNumber = 0; latNumber < latitudeBands+1; latNumber++) {
+			double theta = latNumber * Math.PI / latitudeBands- Math.PI/2;
+			Log.d("Util", "Theta: " + theta);
 			double sinTheta = Math.sin(theta);
 			double cosTheta = Math.cos(theta);
 
-			for (int longNumber = 0; longNumber <= longitudeBands; longNumber++) {
+			for (int longNumber = 0; longNumber < longitudeBands+1; longNumber++) {
 				double phi = longNumber * 2 * Math.PI / longitudeBands;
 				double sinPhi = Math.sin(phi);
 				double cosPhi = Math.cos(phi);
 
-				double x = cosPhi * sinTheta;
-				double y = cosTheta;
-				double z = sinPhi * sinTheta;
+				double x = cosPhi * cosTheta;
+				double y = sinTheta;
+				double z = sinPhi * cosTheta;
 				double u = 1 - (longNumber / longitudeBands);
 				double v = latNumber / latitudeBands;
 

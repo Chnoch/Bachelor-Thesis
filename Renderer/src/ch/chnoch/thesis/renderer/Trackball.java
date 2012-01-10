@@ -58,9 +58,11 @@ public class Trackball {
 				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, -angle*angleFactor);
 				Matrix4f rot = new Matrix4f();
 				rot.set(axisAngle);
+				Log.d("Trackball", "Camera before: " + mCamera.getCenterOfProjection().toString());
 				Vector3f camera = mCamera.getCenterOfProjection();
 				rot.transform(camera);
 				mCamera.setCenterOfProjection(camera);
+				Log.d("Trackball", "Camera after: " + mCamera.getCenterOfProjection().toString());
 			} else {
 				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
 				Matrix4f rot = new Matrix4f();

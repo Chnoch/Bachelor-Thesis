@@ -13,9 +13,10 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 public abstract class AbstractTouchHandler implements OnTouchListener {
-	
+
 	private static final String TAG = "AbstractTouchHandler";
 	private static final float ZOOM_THRESHOLD = 10;
+	private static final float WORLD_ROTATE_FACTOR = 2f;
 
 	protected boolean mOnNode = false;
 	protected boolean mUpScaled = false;
@@ -34,7 +35,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	protected GLViewer mViewer;
 
 	protected ScaleGestureDetector mScaleDetector;
-	
+
 	protected float mTwoFingerDistance;
 	protected float mScaleFactor;
 	protected MultitouchMode mMultitouchMode = MultitouchMode.NONE;
@@ -55,7 +56,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 
 	@Override
 	public abstract boolean onTouch(View view, MotionEvent e);
-	
+
 	protected void unproject(float x, float y) {
 		Ray ray = mViewer.unproject(x, y);
 
@@ -69,14 +70,14 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			mOnNode = false;
 		}
 	}
-	
+
 	protected void multitouchMove(MotionEvent e, float x, float y) {
 		if (mMultitouchMode.equals(MultitouchMode.NONE)) {
 			mMultitouchMode = testMultitouch(e);
 		}
 		switch (mMultitouchMode) {
 		case ROTATE:
-//			Log.d(TAG, "Rotating World, x: " + x + " y: " + y);
+			// Log.d(TAG, "Rotating World, x: " + x + " y: " + y);
 			rotateWorld(x, y);
 			break;
 		case ZOOM:
@@ -86,30 +87,29 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			break;
 		}
 	}
-	
+
 	protected void actionPointerDown(MotionEvent e) {
 		mOnNode = false;
 		mEventCount = 0;
 		mTwoFingerDistance = calculateTwoFingerDistance(e);
 		mMultitouch = true;
 	}
-	
+
 	protected void actionPointerUp() {
 		mMultitouchMode = MultitouchMode.NONE;
 	}
-	
+
 	protected void actionUp() {
 		mOnNode = false;
 		mMultitouch = false;
 		mEventCount = 0;
 
 		if (mUpScaled) {
-			mIntersection.node
-					.setScale(mIntersection.node.getScale() - 0.1f);
+			mIntersection.node.setScale(mIntersection.node.getScale() - 0.1f);
 			mUpScaled = false;
 		}
 	}
-	
+
 	protected void finalizeOnTouch(float x, float y) {
 		if (mUpdateLocation) {
 			mPreviousX = x;
@@ -119,10 +119,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 		mViewer.requestRender();
 	}
-	
-	
-	
-	
+
 	private MultitouchMode testMultitouch(MotionEvent e) {
 		// Wait several events until the multitouch decision is made.
 		if (mEventCount < 5) {
@@ -131,39 +128,49 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			return MultitouchMode.NONE;
 		} else {
 			float newDist = calculateTwoFingerDistance(e);
-			Log.d(TAG, "Original dist: " + mTwoFingerDistance);
-			Log.d(TAG, "New dist: " + newDist);
-			float dist = Math.abs(newDist - mTwoFingerDistance);
-			Log.d(TAG, "TwoFingerDistance: " + dist);
-			if (dist < ZOOM_THRESHOLD) {
-				Log.d(TAG, "Rotate");
-				return MultitouchMode.ROTATE;
+			if (newDist > -1) {
+				Log.d(TAG, "Original dist: " + mTwoFingerDistance);
+				Log.d(TAG, "New dist: " + newDist);
+				float dist = Math.abs(newDist - mTwoFingerDistance);
+				Log.d(TAG, "TwoFingerDistance: " + dist);
+				if (dist < ZOOM_THRESHOLD) {
+					Log.d(TAG, "Rotate");
+					return MultitouchMode.ROTATE;
+				} else {
+					Log.d(TAG, "Zoom");
+					return MultitouchMode.ZOOM;
+				}
 			} else {
-				Log.d(TAG, "Zoom");
-				return MultitouchMode.ZOOM;
+				return MultitouchMode.NONE;
 			}
 		}
 	}
-	
+
 	private void zoom(MotionEvent e) {
 		float dist = calculateTwoFingerDistance(e);
-		mScaleFactor = dist / mTwoFingerDistance;
-		mTwoFingerDistance = dist;
-		mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
-		Log.d(TAG, "Scale Factor: " + mScaleFactor);
-		Camera camera = mSceneManager.getCamera();
-		Vector3f centerOfProjection = camera.getCenterOfProjection();
+		if (dist > -1) {
+			mScaleFactor = dist / mTwoFingerDistance;
+			mTwoFingerDistance = dist;
+			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
+			Log.d(TAG, "Scale Factor: " + mScaleFactor);
+			Camera camera = mSceneManager.getCamera();
+			Vector3f centerOfProjection = camera.getCenterOfProjection();
 
-		centerOfProjection.scale(1f / mScaleFactor);
-		camera.setCenterOfProjection(centerOfProjection);
+			centerOfProjection.scale(1f / mScaleFactor);
+			camera.setCenterOfProjection(centerOfProjection);
+		}
 	}
-	
+
 	private float calculateTwoFingerDistance(MotionEvent e) {
-		float x = e.getX(0) - e.getX(1);
-		float y = e.getY(0) - e.getY(1);
-		return FloatMath.sqrt(x * x + y * y);
+		if (e.getPointerCount() > 1) {
+			float x = e.getX(0) - e.getX(1);
+			float y = e.getY(0) - e.getY(1);
+			return FloatMath.sqrt(x * x + y * y);
+		} else {
+			return -1;
+		}
 	}
-	
+
 	private void rotateWorld(float x, float y) {
 		mTrackball.setNodeToRoot(mSceneManager.getRoot(),
 				mSceneManager.getCamera());
@@ -180,12 +187,11 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		Log.d(TAG, "endIntersection: " + endIntersection.toString());
 
 		mUpdateLocation = mTrackball.update(startIntersection.hitPoint,
-				endIntersection.hitPoint, TOUCH_SCALE_FACTOR);
+				endIntersection.hitPoint, WORLD_ROTATE_FACTOR);
 	}
-	
-	
+
 	protected enum MultitouchMode {
 		ZOOM, ROTATE, NONE
 	}
-	
+
 }
