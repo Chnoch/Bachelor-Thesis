@@ -26,7 +26,7 @@ public class Box2DIntegration extends Activity {
 	private Node mRoot;
 	private PhysicsGroup mPhysicsNode;
 	private RenderContext mRenderer;
-	private GLSurfaceView mViewer;
+	private GLViewer mViewer;
 
 	private boolean mSimulationRunning;
 

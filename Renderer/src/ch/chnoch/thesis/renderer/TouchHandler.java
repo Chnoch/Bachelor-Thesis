@@ -21,29 +21,20 @@ public class TouchHandler extends AbstractTouchHandler {
 
 	private boolean mIsTranslation;
 	private boolean mRotate;
-	
+
 	private static final float SCALE_THRESHOLD = 0.1f;
 
 	private static final String TAG = "TouchHandler";
 
 	public TouchHandler(SceneManagerInterface sceneManager,
-			RenderContext renderer, GLSurfaceView viewer) {
+			RenderContext renderer, GLViewer viewer) {
 		super(sceneManager, renderer, viewer);
 
-		mScaleDetector = new ScaleGestureDetector(viewer.getContext(),
-				new ScaleListener());
-
 	}
-	
+
 	public boolean onTouch(View view, MotionEvent e) {
 		int action = e.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
-		// Let the gesture detector analyze the input first
-//		mScaleDetector.onTouchEvent(e);
-
-		if (view instanceof GLViewer) {
-			mViewer = (GLViewer) view;
-		}
 
 		float x = e.getX();
 		float y = e.getY();
@@ -63,14 +54,14 @@ public class TouchHandler extends AbstractTouchHandler {
 			}
 		case MotionEvent.ACTION_POINTER_DOWN:
 			Log.d(TAG, "ACTION_POINTER_DOWN");
-			mMultitouch = true;
+			actionPointerDown(e);
 			break;
 		case MotionEvent.ACTION_MOVE:
 			Log.d(TAG, "ACTION_MOVE");
 			mEventEnd = e.getEventTime();
 			if (mMultitouch) {
 				Log.d(TAG, "Multitouch");
-				rotate(x, y, true);
+				multitouchMove(e, x, y);
 			} else if (mOnNode) {
 				Log.d(TAG, "Singletouch");
 				float distance = (float) Math.sqrt(Math.pow(mPreviousX - x, 2)
@@ -83,7 +74,7 @@ public class TouchHandler extends AbstractTouchHandler {
 
 				} else if (distance > 0.1f) {
 					// Short press: Rotate object
-					rotate(x, y, false);
+					rotate(x, y);
 				}
 			} else {
 				Log.d(TAG, "No movement");
@@ -94,24 +85,16 @@ public class TouchHandler extends AbstractTouchHandler {
 			Log.d(TAG, "ACTION_UP");
 			// reset all flags
 			mIsTranslation = false;
-			mOnNode = false;
 			mRotate = false;
-			mMultitouch = false;
-
-			if (mUpScaled) {
-				mIntersection.node
-						.setScale(mIntersection.node.getScale() - 0.1f);
-				mUpScaled = false;
-			}
+			actionUp();
 			break;
 		case MotionEvent.ACTION_POINTER_UP:
 			Log.d(TAG, "ACTION_POINTER_UP");
+			actionPointerUp();
 			break;
 		}
 
-		mViewer.requestRender();
-		mPreviousX = x;
-		mPreviousY = y;
+		finalizeOnTouch(x, y);
 		return true;
 	}
 
@@ -133,10 +116,6 @@ public class TouchHandler extends AbstractTouchHandler {
 			RayShapeIntersection startIntersection = mPlane.intersect(prevRay);
 			RayShapeIntersection endIntersection = mPlane.intersect(curRay);
 
-			Log.d("TouchHandler",
-					"Moving from " + startIntersection.hitPoint.toString()
-							+ " to " + endIntersection.hitPoint.toString());
-
 			mPlane.update(endIntersection.hitPoint, startIntersection.hitPoint);
 
 			mIsTranslation = true;
@@ -151,12 +130,8 @@ public class TouchHandler extends AbstractTouchHandler {
 		}
 	}
 
-	private void rotate(float x, float y, boolean root) {
-		if (root) {
-			mTrackball.setNodeToRoot(mSceneManager.getRoot(), mSceneManager.getCamera());
-		} else {
-			mTrackball.setNode(mIntersection.node);
-		}
+	private void rotate(float x, float y) {
+		mTrackball.setNode(mIntersection.node);
 
 		Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
 		Ray endRay = mViewer.unproject(x, y);
@@ -168,25 +143,4 @@ public class TouchHandler extends AbstractTouchHandler {
 				TOUCH_SCALE_FACTOR);
 		mRotate = true;
 	}
-
-	private class ScaleListener extends
-			ScaleGestureDetector.SimpleOnScaleGestureListener {
-
-		protected float mScaleFactor = 1;
-
-		@Override
-		public boolean onScale(ScaleGestureDetector detector) {
-			if (mIntersection != null) {
-				mScaleFactor *= detector.getScaleFactor();
-				mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
-				// Log.d("TouchHandler", "ScaleFactor: " + mScaleFactor);
-
-				mIntersection.node.setScale(mScaleFactor);
-				mViewer.requestRender();
-			}
-			return true;
-
-		}
-	}
-
 }
