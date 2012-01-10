@@ -51,18 +51,32 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 	@Override
 	public RayShapeIntersection intersectRayNode(Ray ray) {
 		SceneManagerIterator it = this.iterator();
+		RayShapeIntersection closestIntersection = new RayShapeIntersection();
+		
 		Node node;
 		while (it.hasNext()) {
 			RenderItem item = it.next();
 			node = item.getNode();
+			
 			RayShapeIntersection intersection = node.intersect(ray);
+			
 			if (intersection.hit) {
 				intersection.node = item.getNode();
-				return intersection;
+				if (closestIntersection.hit) {
+					Vector3f tempCur = new Vector3f(ray.getOrigin());
+					Vector3f tempNew = new Vector3f(ray.getOrigin());
+					tempNew.sub(intersection.hitPoint);
+					tempCur.sub(closestIntersection.hitPoint);
+					if (tempNew.length() < tempCur.length()) {
+						closestIntersection = intersection;
+					}
+				} else {
+					closestIntersection = intersection;
+				}
 			}
 		}
 
-		return new RayShapeIntersection();
+		return closestIntersection;
 	}
 
 	@Override

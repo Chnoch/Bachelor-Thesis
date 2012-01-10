@@ -200,9 +200,13 @@ public class GLViewerActivity extends Activity {
 		Shape cube = Util.loadCuboid(3, 1, 2);
 		 Shape groundShape = Util.loadCuboid(30, 0.1f, 30);
 
-		Vector3f transY = new Vector3f(0, 3, 0);
-		Vector3f transLeft = new Vector3f(-2, 0, 0);
-		Vector3f transRight = new Vector3f(2, 0, 0);
+//		Vector3f transY = new Vector3f(0, 3, 0);
+//		Vector3f transLeft = new Vector3f(-2, 0, 0);
+//		Vector3f transRight = new Vector3f(2, 0, 0);
+//		Vector3f transGround = new Vector3f(-15,-4,-15);
+		Vector3f transY = new Vector3f(0, 0, 0);
+		Vector3f transLeft = new Vector3f(0, 0, -3);
+		Vector3f transRight = new Vector3f(0, 0, -6);
 		Vector3f transGround = new Vector3f(-15,-4,-15);
 
 		mRoot = new TransformGroup();
