@@ -2,21 +2,20 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import android.opengl.GLSurfaceView;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 public abstract class AbstractTouchHandler implements OnTouchListener {
 
 	private static final String TAG = "AbstractTouchHandler";
-	private static final float ZOOM_THRESHOLD = 10;
-	private static final float WORLD_ROTATE_FACTOR = 2f;
+	protected static final float ZOOM_THRESHOLD = 10;
+	protected static final float WORLD_ROTATE_FACTOR = 2f;
 
 	protected boolean mOnNode = false;
 	protected boolean mUpScaled = false;
@@ -29,6 +28,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	protected SceneManagerInterface mSceneManager;
 
 	protected Trackball mTrackball;
+	protected WorldTrackball mWorldTrackball;
 	protected Plane mPlane;
 	protected RayShapeIntersection mIntersection;
 
@@ -40,7 +40,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	protected float mScaleFactor;
 	protected MultitouchMode mMultitouchMode = MultitouchMode.NONE;
 	protected int mEventCount;
-	private boolean mUpdateLocation = true;
+	protected boolean mUpdateLocation = true;
 
 	protected final float TOUCH_SCALE_FACTOR = 1;
 
@@ -49,6 +49,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		mSceneManager = sceneManager;
 		mRenderer = renderer;
 		mTrackball = new Trackball();
+		mWorldTrackball = new WorldTrackball();
 		mPlane = new Plane(mSceneManager.getCamera());
 
 		mViewer = viewer;
@@ -78,7 +79,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		switch (mMultitouchMode) {
 		case ROTATE:
 			// Log.d(TAG, "Rotating World, x: " + x + " y: " + y);
-			rotateWorld(x, y);
+			this.rotateWorld(x, y);
 			break;
 		case ZOOM:
 			zoom(e);
@@ -171,22 +172,25 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
-	private void rotateWorld(float x, float y) {
-		mTrackball.setNodeToRoot(mSceneManager.getRoot(),
-				mSceneManager.getCamera());
+	protected void rotateWorld(float x, float y) {
+		mWorldTrackball.setNode(mSceneManager.getRoot(),
+				mSceneManager.getCamera(),
+				false);
 
 		Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
 		Ray endRay = mViewer.unproject(x, y);
 
 		Log.d(TAG, "Previous x: " + mPreviousX + " y: " + mPreviousY);
 
-		RayShapeIntersection startIntersection = mTrackball.intersect(startRay);
-		RayShapeIntersection endIntersection = mTrackball.intersect(endRay);
+		RayShapeIntersection startIntersection = mWorldTrackball
+				.intersect(startRay);
+		RayShapeIntersection endIntersection = mWorldTrackball
+				.intersect(endRay);
 
 		Log.d(TAG, "startIntersection: " + startIntersection.toString());
 		Log.d(TAG, "endIntersection: " + endIntersection.toString());
 
-		mUpdateLocation = mTrackball.update(startIntersection.hitPoint,
+		mUpdateLocation = mWorldTrackball.update(startIntersection.hitPoint,
 				endIntersection.hitPoint, WORLD_ROTATE_FACTOR);
 	}
 

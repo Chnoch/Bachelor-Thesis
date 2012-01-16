@@ -11,29 +11,18 @@ import ch.chnoch.thesis.renderer.interfaces.Node;
 
 public class Trackball {
 
-	private Node mNode;
-	private Vector3f mCenter;
-	private float mRadius;
-	private boolean mRotateWholeWorld = false;
-	private Camera mCamera;
+	protected Node mNode;
+	protected Vector3f mCenter;
+	protected float mRadius;
+	protected Camera mCamera;
 
-	public Trackball() {
-	}
+	public Trackball() {}
 
 	public void setNode(Node node) {
 		mNode = node;
 		BoundingBox box = mNode.getBoundingBox();
 		mCenter = box.getCenter();
 		mRadius = box.getRadius();
-		mRotateWholeWorld = false;
-	}
-
-	public void setNodeToRoot(Node root, Camera camera) {
-		mNode = root;
-		mRadius = camera.getCenterOfProjection().length() - 1;
-		mCenter = camera.getLookAtPoint();
-		mCamera = camera;
-		mRotateWholeWorld = true;
 	}
 
 	public Node getNode() {
@@ -43,72 +32,53 @@ public class Trackball {
 	public boolean update(Vector3f cur, Vector3f prev, float factor) {
 		if (!cur.epsilonEquals(prev, 0.005f)) {
 			Matrix4f t = mNode.getRotationMatrix();
+			AxisAngle4f axisAngle = getAxisAngle(cur, prev, factor);
+			Matrix4f rot = new Matrix4f();
+			rot.set(axisAngle);
+			rot.mul(t);
+			mNode.setRotationMatrix(rot);
 
-			cur.sub(mCenter);
-			prev.sub(mCenter);
-
-			Vector3f axisVector = new Vector3f();
-			axisVector.cross(cur, prev);
-			axisVector.normalize();
-
-			float angle = prev.angle(cur) * factor;
-
-			if (mRotateWholeWorld) {
-				float angleFactor = mCamera.getCenterOfProjection().length();
-				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, -angle*angleFactor);
-				Matrix4f rot = new Matrix4f();
-				rot.set(axisAngle);
-				Log.d("Trackball", "Camera before: " + mCamera.getCenterOfProjection().toString());
-				Vector3f camera = mCamera.getCenterOfProjection();
-				rot.transform(camera);
-				mCamera.setCenterOfProjection(camera);
-				Log.d("Trackball", "Camera after: " + mCamera.getCenterOfProjection().toString());
-			} else {
-				AxisAngle4f axisAngle = new AxisAngle4f(axisVector, angle);
-				Matrix4f rot = new Matrix4f();
-				rot.set(axisAngle);
-				rot.mul(t);
-				mNode.setRotationMatrix(rot);
-				
-				// Update the center and radius
-				setNode(mNode);
-			}
+			// Update the center and radius
+			setNode(mNode);
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public RayShapeIntersection intersect2(Ray ray) {
-		RayShapeIntersection intersection = new RayShapeIntersection();
-		intersection.node = mNode;
-		Vector3f diff = new Vector3f(ray.getOrigin());
-		diff.sub(mCenter);
-		Vector3f dir = new Vector3f(ray.getDirection());
-		dir.normalize();
-		float v = diff.dot(dir);
+	protected AxisAngle4f getAxisAngle(Vector3f cur, Vector3f prev, float factor) {
+		cur.sub(mCenter);
+		prev.sub(mCenter);
 
-		float disc = mRadius * mRadius - (diff.dot(diff) - v * v);
+		Vector3f axisVector = new Vector3f();
+		axisVector.cross(cur, prev);
+		axisVector.normalize();
 
-		if (disc < 0) {
-			intersection.hit = false;
-		} else {
-			float d = (float) Math.sqrt(disc);
-			dir.scale(v - d);
-			Vector3f point = new Vector3f();
-			point.add(ray.getOrigin(), dir);
-			intersection.hit = true;
-			intersection.hitPoint = point;
-		}
+		float angle = prev.angle(cur) * factor;
 
-		if (!intersection.hit) {
-			intersection = projectOnTrackball(ray);
-		}
-
-		return intersection;
+		return new AxisAngle4f(axisVector, angle);
 	}
 
-	public RayShapeIntersection projectOnTrackball(Ray ray) {
+	/*
+	 * public RayShapeIntersection intersect2(Ray ray) { RayShapeIntersection
+	 * intersection = new RayShapeIntersection(); intersection.node = mNode;
+	 * Vector3f diff = new Vector3f(ray.getOrigin()); diff.sub(mCenter);
+	 * Vector3f dir = new Vector3f(ray.getDirection()); dir.normalize(); float v
+	 * = diff.dot(dir);
+	 * 
+	 * float disc = mRadius * mRadius - (diff.dot(diff) - v * v);
+	 * 
+	 * if (disc < 0) { intersection.hit = false; } else { float d = (float)
+	 * Math.sqrt(disc); dir.scale(v - d); Vector3f point = new Vector3f();
+	 * point.add(ray.getOrigin(), dir); intersection.hit = true;
+	 * intersection.hitPoint = point; }
+	 * 
+	 * if (!intersection.hit) { intersection = projectOnTrackball(ray); }
+	 * 
+	 * return intersection; }
+	 */
+
+	protected RayShapeIntersection projectOnTrackball(Ray ray) {
 
 		Vector3f center = new Vector3f(mCenter);
 		Vector3f dir = new Vector3f(ray.getDirection());

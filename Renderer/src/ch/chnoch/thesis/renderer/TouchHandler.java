@@ -143,4 +143,23 @@ public class TouchHandler extends AbstractTouchHandler {
 				TOUCH_SCALE_FACTOR);
 		mRotate = true;
 	}
+	
+	@Override
+	protected void rotateWorld(float x, float y) {
+		mWorldTrackball.setNode(mSceneManager.getRoot(), mSceneManager.getCamera(), true);
+		
+		Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
+		Ray endRay = mViewer.unproject(x, y);
+
+		Log.d(TAG, "Previous x: " + mPreviousX + " y: " + mPreviousY);
+
+		RayShapeIntersection startIntersection = mWorldTrackball.intersect(startRay);
+		RayShapeIntersection endIntersection = mWorldTrackball.intersect(endRay);
+
+		Log.d(TAG, "startIntersection: " + startIntersection.toString());
+		Log.d(TAG, "endIntersection: " + endIntersection.toString());
+
+		mUpdateLocation = mWorldTrackball.update(startIntersection.hitPoint,
+				endIntersection.hitPoint, WORLD_ROTATE_FACTOR);
+	}
 }

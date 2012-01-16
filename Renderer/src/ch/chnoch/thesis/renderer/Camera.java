@@ -1,11 +1,10 @@
 package ch.chnoch.thesis.renderer;
 
-import javax.vecmath.*;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.SingularMatrixException;
+import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-
+import android.util.Log;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 /**
@@ -79,16 +78,15 @@ public class Camera {
 	public Vector3f createHalfwayVector(Light light) {
 		Vector3f halfway;
 		Vector3f eyeVec = new Vector3f(mCenterOfProjection);
-//		eyeVec.sub(mLookAtPoint);
+		// eyeVec.sub(mLookAtPoint);
 		Vector3f lightSource = light.getDirection();
-//		lightSource.negate();
-//		lightSource.sub(light.getDirection());
+		// lightSource.negate();
+		// lightSource.sub(light.getDirection());
 		halfway = new Vector3f(eyeVec);
 		halfway.sub(lightSource);
-//		halfway.normalize();
+		// halfway.normalize();
 		return halfway;
 	}
-	
 
 	private void updateCamera() {
 		Vector3f x = new Vector3f();
@@ -113,8 +111,14 @@ public class Camera {
 		newMatrix.setColumn(2, z.getX(), z.getY(), z.getZ(), 0);
 		newMatrix.setColumn(3, mCenterOfProjection.getX(),
 				mCenterOfProjection.getY(), mCenterOfProjection.getZ(), 1);
-		newMatrix.invert();
-		this.mCameraMatrix.set(newMatrix);
+		try {
+			newMatrix.invert();
+			this.mCameraMatrix.set(newMatrix);
+		} catch (SingularMatrixException exc) {
+			Log.d("Camera",
+					"SingularMatrixException on Matrix: "
+							+ newMatrix.toString());
+		}
 	}
 
 	private void updateCamera2() {

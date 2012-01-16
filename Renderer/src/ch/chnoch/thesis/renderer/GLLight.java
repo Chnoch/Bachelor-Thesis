@@ -44,7 +44,6 @@ public class GLLight {
 			Util.transform(transformation, pos);
 //			transformation.transform(pos);
 			
-			Log.d("GLLight", "position after transformation: " + pos.toString());
 			glUniform3f(muPositionHandle, pos.x, pos.y, pos.z);
 			GLUtil.checkGlError("glUniform3f muPositionHandle", TAG);
 		}

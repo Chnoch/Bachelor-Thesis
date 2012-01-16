@@ -12,7 +12,6 @@ import ch.chnoch.thesis.renderer.util.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,8 +21,6 @@ import android.view.MenuItem;
 public class Box2DIntegration extends Activity {
 
 	private GraphSceneManager mSceneManager;
-	private Shape mShape;
-	private Node mRoot;
 	private PhysicsGroup mPhysicsNode;
 	private RenderContext mRenderer;
 	private GLViewer mViewer;
