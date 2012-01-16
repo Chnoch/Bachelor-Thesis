@@ -1,15 +1,10 @@
 package ch.chnoch.thesis.viewer;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.*;
-import ch.chnoch.thesis.renderer.interfaces.*;
-import ch.chnoch.thesis.renderer.util.*;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -19,9 +14,27 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ScaleGestureDetector;
-import android.view.View;
-import android.view.View.OnClickListener;
+import ch.chnoch.thesis.renderer.GLES11Renderer;
+import ch.chnoch.thesis.renderer.GLES20Renderer;
+import ch.chnoch.thesis.renderer.GLException;
+import ch.chnoch.thesis.renderer.GLMaterial;
+import ch.chnoch.thesis.renderer.GLViewer;
+import ch.chnoch.thesis.renderer.GraphSceneManager;
+import ch.chnoch.thesis.renderer.KeyHandler;
+import ch.chnoch.thesis.renderer.Light;
+import ch.chnoch.thesis.renderer.Material;
+import ch.chnoch.thesis.renderer.Shape;
+import ch.chnoch.thesis.renderer.ShapeNode;
+import ch.chnoch.thesis.renderer.TouchHandler;
+import ch.chnoch.thesis.renderer.TransformGroup;
+import ch.chnoch.thesis.renderer.VertexBuffers;
+import ch.chnoch.thesis.renderer.interfaces.Node;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+import ch.chnoch.thesis.renderer.util.ObjReader;
+import ch.chnoch.thesis.renderer.util.Util;
 
 public class GLViewerActivity extends Activity {
 
@@ -48,6 +61,7 @@ public class GLViewerActivity extends Activity {
 
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 10));
 		mSceneManager.getFrustum().setVertFOV(45);
+
 
 		boolean openGlES20 = detectOpenGLES20();
 
