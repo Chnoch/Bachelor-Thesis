@@ -1,15 +1,10 @@
 package ch.chnoch.thesis.renderer;
 
-import javax.vecmath.Vector3f;
-
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import android.opengl.GLSurfaceView;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 public class PhysicsTouchHandler extends AbstractTouchHandler {
 
@@ -21,8 +16,8 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 
 
 	public PhysicsTouchHandler(SceneManagerInterface sceneManager,
-			RenderContext renderer, GLViewer viewer) {
-		super(sceneManager, renderer, viewer);
+			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
+		super(sceneManager, renderer, viewer, cameraMode);
 		mPlane.set2DMode(true);
 	}
 

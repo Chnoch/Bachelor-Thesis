@@ -7,20 +7,23 @@ import javax.vecmath.Vector3f;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
+import ch.chnoch.thesis.renderer.AbstractTouchHandler.CameraMode;
 import ch.chnoch.thesis.renderer.GLES11Renderer;
 import ch.chnoch.thesis.renderer.GLES20Renderer;
 import ch.chnoch.thesis.renderer.GLException;
 import ch.chnoch.thesis.renderer.GLMaterial;
 import ch.chnoch.thesis.renderer.GLViewer;
 import ch.chnoch.thesis.renderer.GraphSceneManager;
-import ch.chnoch.thesis.renderer.KeyHandler;
 import ch.chnoch.thesis.renderer.Light;
 import ch.chnoch.thesis.renderer.Material;
 import ch.chnoch.thesis.renderer.Shape;
@@ -38,10 +41,13 @@ import ch.chnoch.thesis.renderer.util.Util;
 
 public class GLViewerActivity extends Activity {
 
+	private static final String TAG = "GLViewerActivity";
+
 	private GLViewer mViewer;
 	private SceneManagerInterface mSceneManager;
 	private RenderContext mRenderer;
-	private final String TAG = "GLViewerActivity";
+
+	private TouchHandler mTouchHandler;
 
 	private Node mRoot;
 	
@@ -79,11 +85,10 @@ public class GLViewerActivity extends Activity {
 		createLights();
 		mShader = createShaders(R.raw.phongtexvert, R.raw.phongtexfrag);
 		
-		TouchHandler touchHandler = new TouchHandler(mSceneManager, mRenderer,
-				mViewer);
-		mViewer.setOnTouchListener(touchHandler);
-		KeyHandler keyHandler = new KeyHandler(mRenderer);
-		mViewer.setOnKeyListener(keyHandler);
+		mTouchHandler = new TouchHandler(mSceneManager, mRenderer,
+ mViewer,
+				CameraMode.OBJECT_CENTRIC);
+		mViewer.setOnTouchListener(mTouchHandler);
 
 		setContentView(mViewer);
 		mViewer.requestFocus();
@@ -125,6 +130,10 @@ public class GLViewerActivity extends Activity {
 			addTeapot();
 		} else if (id == R.id.sphere) {
 			addSphere();
+		} else if (id == R.id.selectObject) {
+			selectObject();
+		} else if (id == R.id.changeCameraMode) {
+			showCameraOptions();
 		} else {
 			return super.onOptionsItemSelected(item);
 		}
@@ -132,6 +141,7 @@ public class GLViewerActivity extends Activity {
 		mViewer.requestRender();
 		return true;
 	}
+
 
 	/*
 	 * 
@@ -219,8 +229,8 @@ public class GLViewerActivity extends Activity {
 //		Vector3f transRight = new Vector3f(2, 0, 0);
 //		Vector3f transGround = new Vector3f(-15,-4,-15);
 		Vector3f transY = new Vector3f(0, 0, 0);
-		Vector3f transLeft = new Vector3f(0, 0, -3);
-		Vector3f transRight = new Vector3f(0, 0, -6);
+		Vector3f transLeft = new Vector3f(10, 0, -3);
+		Vector3f transRight = new Vector3f(0, 4, -6);
 		Vector3f transGround = new Vector3f(-15,-4,-15);
 
 		mRoot = new TransformGroup();
@@ -298,5 +308,34 @@ public class GLViewerActivity extends Activity {
 		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		ConfigurationInfo info = am.getDeviceConfigurationInfo();
 		return (info.reqGlEsVersion >= 0x20000);
+	}
+
+	private void selectObject() {
+		mTouchHandler.selectObjectForCameraMovement();
+		Toast.makeText(getApplication(), "Choose object to focus camera on", 2)
+				.show();
+	}
+
+	private void showCameraOptions() {
+		final CharSequence[] items = { "Camera Centric", "Origin Centric",
+				"Object Centric" };
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Select camera option");
+		builder.setItems(items, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) {
+				switch (item) {
+				case 0:
+					mTouchHandler.setCameraMode(CameraMode.CAMERA_CENTRIC);
+					break;
+				case 1:
+					mTouchHandler.setCameraMode(CameraMode.ORIGIN_CENTRIC);
+					break;
+				default:
+					mTouchHandler.setCameraMode(CameraMode.OBJECT_CENTRIC);
+				}
+			}
+		});
+		builder.show();
 	}
 }

@@ -7,7 +7,6 @@ import ch.chnoch.thesis.renderer.box2d.Box2DBody;
 import ch.chnoch.thesis.renderer.box2d.Box2DShape;
 import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.util.Util;
 
 public class PhysicsGroup extends Group {
 
@@ -51,7 +50,11 @@ public class PhysicsGroup extends Group {
 
 	@Override
 	public void move(Vector3f v) {
+	}
 
+	@Override
+	public Vector3f getCenter() {
+		return null;
 	}
 
 	@Override

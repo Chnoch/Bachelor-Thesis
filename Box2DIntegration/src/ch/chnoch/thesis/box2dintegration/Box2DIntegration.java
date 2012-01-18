@@ -5,10 +5,6 @@ import java.io.InputStream;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.*;
-import ch.chnoch.thesis.renderer.interfaces.*;
-import ch.chnoch.thesis.renderer.util.*;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,6 +13,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import ch.chnoch.thesis.renderer.AbstractTouchHandler.CameraMode;
+import ch.chnoch.thesis.renderer.GLES20Renderer;
+import ch.chnoch.thesis.renderer.GLException;
+import ch.chnoch.thesis.renderer.GLMaterial;
+import ch.chnoch.thesis.renderer.GLViewer;
+import ch.chnoch.thesis.renderer.GraphSceneManager;
+import ch.chnoch.thesis.renderer.Light;
+import ch.chnoch.thesis.renderer.Material;
+import ch.chnoch.thesis.renderer.PhysicsGroup;
+import ch.chnoch.thesis.renderer.PhysicsTouchHandler;
+import ch.chnoch.thesis.renderer.Shape;
+import ch.chnoch.thesis.renderer.ShapeNode;
+import ch.chnoch.thesis.renderer.VertexBuffers;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.util.ObjReader;
+import ch.chnoch.thesis.renderer.util.Util;
 
 public class Box2DIntegration extends Activity {
 
@@ -108,7 +121,7 @@ public class Box2DIntegration extends Activity {
 		mViewer = new GLViewer(this, mRenderer, true);
 
 		mViewer.setOnTouchListener(new PhysicsTouchHandler(mSceneManager,
-				mRenderer, mViewer));
+				mRenderer, mViewer, CameraMode.ORIGIN_CENTRIC));
 		setContentView(mViewer);
 		mViewer.requestFocus();
 		mViewer.setFocusableInTouchMode(true);

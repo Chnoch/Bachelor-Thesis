@@ -7,7 +7,6 @@ import javax.vecmath.Vector3f;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
@@ -17,14 +16,17 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 
 	private static final String TAG = "AbstractTouchHandler";
 	protected static final float ZOOM_THRESHOLD = 10;
-	protected static final float ROTATION_THRESHOLD = 0.2f;
+	protected static final float ROTATION_THRESHOLD = 0.15f;
 	protected static final float WORLD_ROTATE_FACTOR = 2f;
 	protected static final float CAMERA_ROTATION_FACTOR = 0.01f;
-	protected static final float ZOOM_FACTOR = 0.3f;
+	protected static final float ZOOM_FACTOR = 0.4f;
 
 	protected boolean mOnNode = false;
 	protected boolean mUpScaled = false;
 	protected boolean mMultitouch = false;
+	protected boolean mSetObjectForCameraFlag = false;
+
+	protected CameraMode mCameraMode;
 
 	protected float mPreviousX, mPreviousY, mPreviousDegree = Float.MIN_VALUE;
 	protected float mEventStart, mEventEnd;
@@ -39,8 +41,6 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 
 	protected GLViewer mViewer;
 
-	protected ScaleGestureDetector mScaleDetector;
-
 	protected float mTwoFingerDistance;
 	protected float mScaleFactor;
 	protected MultitouchMode mMultitouchMode = MultitouchMode.NONE;
@@ -50,18 +50,30 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	protected final float TOUCH_SCALE_FACTOR = 1;
 
 	public AbstractTouchHandler(SceneManagerInterface sceneManager,
-			RenderContext renderer, GLViewer viewer) {
+			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
 		mSceneManager = sceneManager;
 		mRenderer = renderer;
 		mTrackball = new Trackball();
 		mWorldTrackball = new WorldTrackball();
 		mPlane = new Plane(mSceneManager.getCamera());
 
+		mCameraMode = cameraMode;
+		
 		mViewer = viewer;
 	}
 
 	@Override
 	public abstract boolean onTouch(View view, MotionEvent e);
+
+	public void selectObjectForCameraMovement() {
+		if (mCameraMode == CameraMode.OBJECT_CENTRIC) {
+			mSetObjectForCameraFlag = true;
+		}
+	}
+
+	public void setCameraMode(CameraMode mode) {
+		mCameraMode = mode;
+	}
 
 	protected void unproject(float x, float y) {
 		Ray ray = mViewer.unproject(x, y);
@@ -84,10 +96,16 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		switch (mMultitouchMode) {
 		case ROTATE:
 			// Log.d(TAG, "Rotating World, x: " + x + " y: " + y);
-			this.rotateWorld(x, y);
+			this.rotateWorldOriginCentric(x, y);
+			break;
+		case ROTATE_CAMERA_CENTRIC:
+			this.rotateWorldCameraCentric(x, y);
 			break;
 		case ZOOM:
 			zoom(e);
+			break;
+		case ZOOM_ORIGIN:
+			zoomOrigin(e);
 			break;
 		case ROTATE_CAMERA:
 			rotateCamera(e);
@@ -142,23 +160,52 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			float newDist = calculateTwoFingerDistance(e);
 			float newAngle = calculateAngle(e);
 			if (newDist > -1) {
+				float dist = Math.abs(newDist - mTwoFingerDistance);
+				float angle = Math.abs(newAngle - mPreviousDegree);
+
 				Log.d(TAG, "Original dist: " + mTwoFingerDistance);
 				Log.d(TAG, "New dist: " + newDist);
-				float dist = Math.abs(newDist - mTwoFingerDistance);
 				Log.d(TAG, "TwoFingerDistance: " + dist);
-				float angle = Math.abs(newAngle - mPreviousDegree);
 				Log.d(TAG, "Angle difference: " + (newAngle - mPreviousDegree));
 
-				if (angle > ROTATION_THRESHOLD) {
-					Log.d(TAG, "RotateCamera");
-					return MultitouchMode.ROTATE_CAMERA;
-				} else if (dist < ZOOM_THRESHOLD) {
-					Log.d(TAG, "Rotate");
-					return MultitouchMode.ROTATE;
-				} else {
-					Log.d(TAG, "Zoom");
-					return MultitouchMode.ZOOM;
+				switch (mCameraMode) {
+				case ORIGIN_CENTRIC:
+					if (angle > ROTATION_THRESHOLD) {
+						Log.d(TAG, "RotateCamera");
+						return MultitouchMode.ROTATE_CAMERA;
+					} else if (dist < ZOOM_THRESHOLD) {
+						Log.d(TAG, "Rotate");
+						return MultitouchMode.ROTATE;
+					} else {
+						Log.d(TAG, "ZoomOrigin");
+						return MultitouchMode.ZOOM_ORIGIN;
+					}
+				case CAMERA_CENTRIC:
+					if (angle > ROTATION_THRESHOLD) {
+						Log.d(TAG, "RotateCamera");
+						return MultitouchMode.ROTATE_CAMERA;
+					} else if (dist < ZOOM_THRESHOLD) {
+						Log.d(TAG, "Rotate");
+						return MultitouchMode.ROTATE_CAMERA_CENTRIC;
+					} else {
+						Log.d(TAG, "Zoom");
+						return MultitouchMode.ZOOM;
+					}
+				case OBJECT_CENTRIC:
+					if (angle > ROTATION_THRESHOLD) {
+						Log.d(TAG, "RotateCamera");
+						return MultitouchMode.ROTATE_CAMERA;
+					} else if (dist < ZOOM_THRESHOLD) {
+						Log.d(TAG, "Rotate");
+						return MultitouchMode.ROTATE;
+					} else {
+						Log.d(TAG, "ZoomOrigin");
+						return MultitouchMode.ZOOM_ORIGIN;
+					}
+				default:
+					return MultitouchMode.NONE;
 				}
+
 			} else {
 				return MultitouchMode.NONE;
 			}
@@ -178,7 +225,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			moveVector.sub(camera.getLookAtPoint());
 
 			moveVector.normalize();
-			moveVector.scale(mScaleFactor);
+			moveVector.scale(-mScaleFactor * ZOOM_FACTOR);
 
 			Log.d(TAG, "MoveVector: " + moveVector.toString());
 			Vector3f centerOfProjection = camera.getCenterOfProjection();
@@ -187,6 +234,21 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			lookAtPoint.add(moveVector);
 			camera.setCenterOfProjection(centerOfProjection);
 			camera.setLookAtPoint(lookAtPoint);
+		}
+	}
+
+	private void zoomOrigin(MotionEvent e) {
+		float dist = calculateTwoFingerDistance(e);
+		if (dist > -1) {
+			mScaleFactor = dist / mTwoFingerDistance;
+			mTwoFingerDistance = dist;
+			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
+			Log.d(TAG, "Scale Factor: " + mScaleFactor);
+			Camera camera = mSceneManager.getCamera();
+			Vector3f centerOfProjection = camera.getCenterOfProjection();
+
+			centerOfProjection.scale(1f / mScaleFactor);
+			camera.setCenterOfProjection(centerOfProjection);
 		}
 	}
 
@@ -211,10 +273,21 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
-	protected void rotateWorld(float x, float y) {
+	protected void rotateWorldOriginCentric(float x, float y) {
 		mWorldTrackball.setNode(mSceneManager.getRoot(),
 				mSceneManager.getCamera(), false);
 
+		makeRotation(x, y);
+	}
+
+	protected void rotateWorldCameraCentric(float x, float y) {
+		mWorldTrackball.setNode(mSceneManager.getRoot(),
+				mSceneManager.getCamera(), true);
+
+		makeRotation(x, y);
+	}
+
+	private void makeRotation(float x, float y) {
 		Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
 		Ray endRay = mViewer.unproject(x, y);
 
@@ -248,7 +321,11 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	}
 
 	protected enum MultitouchMode {
-		ZOOM, ROTATE, ROTATE_CAMERA, NONE
+		ZOOM, ZOOM_ORIGIN, ROTATE, ROTATE_CAMERA_CENTRIC, ROTATE_CAMERA, NONE
+	}
+
+	public enum CameraMode {
+		CAMERA_CENTRIC, OBJECT_CENTRIC, ORIGIN_CENTRIC
 	}
 
 }

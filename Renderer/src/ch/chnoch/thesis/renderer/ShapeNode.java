@@ -7,7 +7,6 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 import android.util.Log;
-
 import ch.chnoch.thesis.renderer.box2d.Box2DBody;
 import ch.chnoch.thesis.renderer.box2d.Box2DShape;
 import ch.chnoch.thesis.renderer.box2d.Box2DShape.Box2DShapeType;
@@ -123,6 +122,11 @@ public class ShapeNode extends Leaf {
 	@Override
 	public Box2DBody getPhysicsProperties() {
 		return mBox2DBody;
+	}
+
+	@Override
+	public Vector3f getCenter() {
+		return this.getBoundingBox().getCenter();
 	}
 
 	@Override

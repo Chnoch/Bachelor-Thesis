@@ -1,34 +1,23 @@
 package ch.chnoch.thesis.renderer;
 
-import java.util.List;
-
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.interfaces.Node;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.util.Util;
-import android.opengl.GLSurfaceView;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.View;
-import android.view.View.OnTouchListener;
 
 public class TouchHandler extends AbstractTouchHandler {
 
 	private boolean mIsTranslation;
 	private boolean mRotate;
 
-	private static final float SCALE_THRESHOLD = 0.1f;
-
 	private static final String TAG = "TouchHandler";
 
 	public TouchHandler(SceneManagerInterface sceneManager,
-			RenderContext renderer, GLViewer viewer) {
-		super(sceneManager, renderer, viewer);
+			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
+		super(sceneManager, renderer, viewer, cameraMode);
 
 	}
 
@@ -40,6 +29,18 @@ public class TouchHandler extends AbstractTouchHandler {
 		float y = e.getY();
 
 		y = view.getHeight() - y;
+
+		if (mSetObjectForCameraFlag) {
+			unproject(x, y);
+			if (mOnNode) {
+				mSceneManager.getCamera().setLookAtPoint(
+						new Vector3f(mIntersection.node.getCenter()));
+			} else {
+				mSceneManager.getCamera().setLookAtPoint(new Vector3f(0, 0, 0));
+			}
+			mSetObjectForCameraFlag = false;
+			return true;
+		}
 
 		switch (actionCode) {
 
@@ -144,22 +145,4 @@ public class TouchHandler extends AbstractTouchHandler {
 		mRotate = true;
 	}
 	
-	@Override
-	protected void rotateWorld(float x, float y) {
-		mWorldTrackball.setNode(mSceneManager.getRoot(), mSceneManager.getCamera(), true);
-		
-		Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
-		Ray endRay = mViewer.unproject(x, y);
-
-		Log.d(TAG, "Previous x: " + mPreviousX + " y: " + mPreviousY);
-
-		RayShapeIntersection startIntersection = mWorldTrackball.intersect(startRay);
-		RayShapeIntersection endIntersection = mWorldTrackball.intersect(endRay);
-
-		Log.d(TAG, "startIntersection: " + startIntersection.toString());
-		Log.d(TAG, "endIntersection: " + endIntersection.toString());
-
-		mUpdateLocation = mWorldTrackball.update(startIntersection.hitPoint,
-				endIntersection.hitPoint, WORLD_ROTATE_FACTOR);
-	}
 }

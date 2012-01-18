@@ -29,6 +29,8 @@ public interface Node {
     public void move(Vector3f v);
     public float getScale();
     public Matrix4f getTransformationMatrix();
+
+	public Vector3f getCenter();
     
     public void setActiveState(boolean b);
     
