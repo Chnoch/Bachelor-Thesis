@@ -2,11 +2,9 @@ package ch.chnoch.thesis.renderer;
 
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import android.util.Log;
-
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
 public class Trackball {
@@ -53,6 +51,7 @@ public class Trackball {
 		Vector3f axisVector = new Vector3f();
 		axisVector.cross(cur, prev);
 		axisVector.normalize();
+		Log.d("WorldTrackball", "Axis Vector: " + axisVector.toString());
 
 		float angle = prev.angle(cur) * factor;
 

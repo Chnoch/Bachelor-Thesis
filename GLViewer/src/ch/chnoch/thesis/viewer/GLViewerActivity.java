@@ -67,6 +67,7 @@ public class GLViewerActivity extends Activity {
 
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 10));
 		mSceneManager.getFrustum().setVertFOV(45);
+		mSceneManager.getFrustum().setFarPlane(500);
 
 
 		boolean openGlES20 = detectOpenGLES20();
@@ -134,6 +135,8 @@ public class GLViewerActivity extends Activity {
 			selectObject();
 		} else if (id == R.id.changeCameraMode) {
 			showCameraOptions();
+		} else if (id == R.id.reset) {
+			resetCamera();
 		} else {
 			return super.onOptionsItemSelected(item);
 		}
@@ -233,6 +236,7 @@ public class GLViewerActivity extends Activity {
 		Vector3f transRight = new Vector3f(0, 4, -6);
 		Vector3f transGround = new Vector3f(-15,-4,-15);
 
+
 		mRoot = new TransformGroup();
 //		mRoot.move(new Vector3f(0,-5,0));
 		mSceneManager.setRoot(mRoot);
@@ -244,6 +248,7 @@ public class GLViewerActivity extends Activity {
 		Node teapot1 = new ShapeNode(teapot);
 		Node teapot2 = new ShapeNode(cube);
 		
+
 		groundNode.move(transGround);
 		teapotsGroup.move(transY);
 		sphereNode.move(transRight);
@@ -337,5 +342,9 @@ public class GLViewerActivity extends Activity {
 			}
 		});
 		builder.show();
+	}
+
+	private void resetCamera() {
+		mSceneManager.getCamera().reset();
 	}
 }

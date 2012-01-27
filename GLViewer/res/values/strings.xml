@@ -12,4 +12,5 @@
     <string name="changeTexture">Change Texture</string>
     <string name="cameraOptions">Camera Options</string>
     <string name="changeCameraMode">Change Camera Mode</string>
+    <string name="reset">Reset</string>
 </resources>

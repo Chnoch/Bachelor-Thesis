@@ -23,6 +23,8 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 
 	@Override
 	public boolean onTouch(View view, MotionEvent e) {
+		mEventList.addLast(e);
+
 		int action = e.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
 

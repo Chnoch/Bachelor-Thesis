@@ -167,7 +167,8 @@ public class Box2DIntegration extends Activity {
 
 	private void createPyramidShapes() {
 
-		PhysicsGroup root = new PhysicsGroup(mSceneManager);
+		PhysicsGroup root = new PhysicsGroup(mSceneManager,
+				new Vector2f(0, -10));
 		mPhysicsNode = root;
 
 		root.setMaterial(createMaterial());
@@ -190,7 +191,8 @@ public class Box2DIntegration extends Activity {
 	}
 
 	private void createTowerShapes() {
-		PhysicsGroup root = new PhysicsGroup(mSceneManager);
+		PhysicsGroup root = new PhysicsGroup(mSceneManager,
+				new Vector2f(0, -10));
 		mPhysicsNode = root;
 
 		// root.addRectangle(1, 0.3f, 1, new Vector2f(0,0), true, true);

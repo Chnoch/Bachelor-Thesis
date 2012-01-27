@@ -23,10 +23,14 @@ public class Camera {
 	/**
 	 * Construct a camera with a default camera matrix. The camera matrix
 	 * corresponds to the world-to-camera transform. This default matrix places
-	 * the camera at (0,0,10) in world space, facing towards the origin (0,0,0)
+	 * the camera at (0,0,15) in world space, facing towards the origin (0,0,0)
 	 * of world space, i.e., towards the negative z-axis.
 	 */
 	public Camera() {
+		reset();
+	}
+
+	public void reset() {
 		mCenterOfProjection = new Vector3f(0, 0, 15);
 		mLookAtPoint = new Vector3f(0, 0, 0);
 		mUpVector = new Vector3f(0, 1, 0);

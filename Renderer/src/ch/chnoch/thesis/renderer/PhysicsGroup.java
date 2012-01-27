@@ -12,15 +12,15 @@ public class PhysicsGroup extends Group {
 
 	private Box2DWorld mWorld;
 
-	public PhysicsGroup(SceneManagerInterface sceneManager) {
+	public PhysicsGroup(SceneManagerInterface sceneManager, Vector2f gravity) {
 		super();
-		createBox2DWorld(sceneManager);
+		createBox2DWorld(sceneManager, gravity);
 	}
 	
-	private void createBox2DWorld(SceneManagerInterface sceneManager) {
+	private void createBox2DWorld(SceneManagerInterface sceneManager,
+			Vector2f gravity) {
 		Vector2f low = new Vector2f(-100, -100);
 		Vector2f high = new Vector2f(100, 100);
-		Vector2f gravity = new Vector2f(0, -10);
 
 		mWorld = new Box2DWorld(low, high, gravity);
 		sceneManager.setPhysicsWorld(mWorld);

@@ -10,8 +10,6 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 
-import android.util.Log;
-
 public class Box2DBody {
 	private Body mBody;
 	private BodyDef mBodyDef;
@@ -34,6 +32,7 @@ public class Box2DBody {
 
 		mBodyDef = new BodyDef();
 		mBodyDef.position.set(position.x, position.y);
+		mBodyDef.linearDamping = 0.4f;
 		if (hasMass) {
 			mBodyDef.type = BodyType.DYNAMIC;
 		} else {

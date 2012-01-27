@@ -38,9 +38,16 @@ public class WorldTrackball extends Trackball {
 			Log.d(TAG, "Cur und Prev too similar; no update");
 			return false;
 		}
+		Vector3f temp = new Vector3f(cur);
+		// cur.normalize();
+		// prev.normalize();
+		// cur.add(mCamera.getLookAtPoint());
+		// prev.add(mCamera.getLookAtPoint());
+		// Log.d(TAG, "Cur: " + cur.toString() + " Prev: " + prev.toString());
 
+		factor *= -1;
 		if (!mCameraCentric)
-			factor *= -(mCamera.getCenterOfProjection().length() - 0.1f);
+			factor *= temp.length();
 
 		AxisAngle4f axisAngle = getAxisAngle(cur, prev, factor);
 		Matrix4f rot = new Matrix4f();
@@ -53,21 +60,25 @@ public class WorldTrackball extends Trackball {
 		}
 
 		if (mCameraCentric) {
-			Log.d(TAG, "Camera before: " + mCamera.getLookAtPoint().toString());
+			// Log.d(TAG, "Camera before: " +
+			// mCamera.getLookAtPoint().toString());
 			Vector3f camera = new Vector3f(mCamera.getLookAtPoint());
 			camera.sub(mCamera.getCenterOfProjection());
 			rot.transform(camera);
 			camera.add(mCamera.getCenterOfProjection());
 			mCamera.setLookAtPoint(camera);
-			Log.d(TAG, "Camera after: " + mCamera.getLookAtPoint().toString());
+			// Log.d(TAG, "Camera after: " +
+			// mCamera.getLookAtPoint().toString());
 		} else {
-			Log.d(TAG, "Camera before: "
-					+ mCamera.getCenterOfProjection().toString());
+			// Log.d(TAG, "Camera before: "
+			// + mCamera.getCenterOfProjection().toString());
+			Log.d(TAG, "Rot: " + rot.toString());
 			Vector3f camera = mCamera.getCenterOfProjection();
 			rot.transform(camera);
+			rot.transform(mCamera.getUpVector());
 			mCamera.setCenterOfProjection(camera);
-			Log.d(TAG, "Camera after: "
-					+ mCamera.getCenterOfProjection().toString());
+			// Log.d(TAG, "Camera after: "
+			// + mCamera.getCenterOfProjection().toString());
 		}
 		return true;
 	}

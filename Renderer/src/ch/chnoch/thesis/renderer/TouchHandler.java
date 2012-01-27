@@ -22,6 +22,8 @@ public class TouchHandler extends AbstractTouchHandler {
 	}
 
 	public boolean onTouch(View view, MotionEvent e) {
+		mEventList.addLast(e);
+
 		int action = e.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
 
