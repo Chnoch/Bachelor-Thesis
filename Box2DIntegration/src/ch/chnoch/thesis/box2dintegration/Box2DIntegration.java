@@ -112,8 +112,11 @@ public class Box2DIntegration extends Activity {
 
 	private void init() {
 		mSceneManager = new GraphSceneManager();
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 30));
-		mSceneManager.getFrustum().setVertFOV(90);
+		mSceneManager.getCamera()
+.setCenterOfProjection(new Vector3f(0, 0, 45));
+		mSceneManager.getFrustum().setVertFOV(45);
+		mSceneManager.getFrustum().setFarPlane(500);
+		mSceneManager.getFrustum().setNearPlane(0.1f);
 
 		mRenderer = new GLES20Renderer(getApplicationContext());
 		mRenderer.setSceneManager(mSceneManager);
@@ -212,8 +215,10 @@ public class Box2DIntegration extends Activity {
 			}
 		}
 
-		ShapeNode node = mPhysicsNode.addCircle(1, new Vector2f(-10, 4));
-		node.setShape(loadStructure(R.raw.teapot_alt, 1.5f));
+		// ShapeNode node = mPhysicsNode.addCircle(1, new Vector2f(-10, 4));
+		// node.setShape(loadStructure(R.raw.teapot_alt, 1.5f));
+		mPhysicsNode.addCircle(0.4f, new Vector2f(-10, 4))
+.setMaterial(mat);
 		mPhysicsNode.addCircle(2, new Vector2f(10, 4)).setMaterial(mat);
 	}
 

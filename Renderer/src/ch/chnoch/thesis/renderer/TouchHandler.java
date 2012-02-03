@@ -32,15 +32,7 @@ public class TouchHandler extends AbstractTouchHandler {
 
 		y = view.getHeight() - y;
 
-		if (mSetObjectForCameraFlag) {
-			unproject(x, y);
-			if (mOnNode) {
-				mSceneManager.getCamera().setLookAtPoint(
-						new Vector3f(mIntersection.node.getCenter()));
-			} else {
-				mSceneManager.getCamera().setLookAtPoint(new Vector3f(0, 0, 0));
-			}
-			mSetObjectForCameraFlag = false;
+		if (setCameraToObject(x, y)) {
 			return true;
 		}
 
@@ -63,7 +55,7 @@ public class TouchHandler extends AbstractTouchHandler {
 			Log.d(TAG, "ACTION_MOVE");
 			mEventEnd = e.getEventTime();
 			if (mMultitouch) {
-				Log.d(TAG, "Multitouch");
+				// Multitouch Action
 				multitouchMove(e, x, y);
 			} else if (mOnNode) {
 				Log.d(TAG, "Singletouch");
@@ -72,7 +64,7 @@ public class TouchHandler extends AbstractTouchHandler {
 
 				if (mEventEnd - mEventStart > 300
 						|| (mIsTranslation && !mRotate)) {
-					Log.d("TouchHandler", "Moving Object");
+					// Long Press: Moving object
 					translate(x, y);
 
 				} else if (distance > 0.1f) {
@@ -99,6 +91,13 @@ public class TouchHandler extends AbstractTouchHandler {
 
 		finalizeOnTouch(x, y);
 		return true;
+	}
+
+	protected void makeRotation(MotionEvent e, float x, float y) {
+		rotateCamera(e);
+		zoom(e);
+		moveCamera(x, y);
+
 	}
 
 	private void translate(float x, float y) {
@@ -147,4 +146,20 @@ public class TouchHandler extends AbstractTouchHandler {
 		mRotate = true;
 	}
 	
+	private boolean setCameraToObject(float x, float y) {
+		if (mSetObjectForCameraFlag) {
+			unproject(x, y);
+			if (mOnNode) {
+				mSceneManager.getCamera().setLookAtPoint(
+						new Vector3f(mIntersection.node.getCenter()));
+			} else {
+				mSceneManager.getCamera().setLookAtPoint(new Vector3f(0, 0, 0));
+			}
+			mSetObjectForCameraFlag = false;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

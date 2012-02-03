@@ -65,9 +65,10 @@ public class GLViewerActivity extends Activity {
 
 		mSceneManager = new GraphSceneManager();
 
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 10));
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 25));
 		mSceneManager.getFrustum().setVertFOV(45);
 		mSceneManager.getFrustum().setFarPlane(500);
+		mSceneManager.getFrustum().setNearPlane(0.1f);
 
 
 		boolean openGlES20 = detectOpenGLES20();
@@ -88,7 +89,7 @@ public class GLViewerActivity extends Activity {
 		
 		mTouchHandler = new TouchHandler(mSceneManager, mRenderer,
  mViewer,
-				CameraMode.OBJECT_CENTRIC);
+				CameraMode.CAMERA_CENTRIC);
 		mViewer.setOnTouchListener(mTouchHandler);
 
 		setContentView(mViewer);
@@ -214,57 +215,75 @@ public class GLViewerActivity extends Activity {
 
 	
 	private void createShapes() {
-		Vector3f ambient = new Vector3f(0.3f,0.3f,0.3f);
-		Vector3f diffuse= new Vector3f(0.7f,0.7f,0.7f);
-		Vector3f specular= new Vector3f(1,1,1);
-		Material mainMaterial = createMaterial(ambient, diffuse, specular, 100, R.raw.wall);
-		Material groundMaterial = createMaterial(ambient, diffuse, specular, 100, R.raw.wood);
+		// Vector3f ambient = new Vector3f(0.3f,0.3f,0.3f);
+		// Vector3f diffuse= new Vector3f(0.7f,0.7f,0.7f);
+		// Vector3f specular= new Vector3f(1,1,1);
+		Material mainMaterial = createMaterial(1, 0, 0, 100);
+		Material secondMaterial = createMaterial(0, 0, 1, 100);
+		Material groundMaterial = createMaterial(0, 1, 0, 100);
 		
-//		Shape sphere = loadStructure(R.raw.cubetex);
-		Shape sphere = Util.loadSphere(50, 50, 1);
-//		sphere = loadStructure(R.raw.sphere_prec);
+		Shape sphere = Util.loadSphere(20, 20, 1);
 		Shape teapot = loadStructure(R.raw.teapot_alt);
 		Shape cube = Util.loadCuboid(3, 1, 2);
-		 Shape groundShape = Util.loadCuboid(30, 0.1f, 30);
+		Shape groundShape = Util.loadCuboid(5000, 0.1f, 5000);
 
-//		Vector3f transY = new Vector3f(0, 3, 0);
-//		Vector3f transLeft = new Vector3f(-2, 0, 0);
-//		Vector3f transRight = new Vector3f(2, 0, 0);
-//		Vector3f transGround = new Vector3f(-15,-4,-15);
-		Vector3f transY = new Vector3f(0, 0, 0);
-		Vector3f transLeft = new Vector3f(10, 0, -3);
-		Vector3f transRight = new Vector3f(0, 4, -6);
-		Vector3f transGround = new Vector3f(-15,-4,-15);
+		Vector3f transSphere = new Vector3f(5, 9, 4);
+		Vector3f transCube = new Vector3f(0, 4, -6);
+		Vector3f transTeapot = new Vector3f(0, 0, 0);
+		Vector3f transLeft = new Vector3f(-5, 0, 0);
+		Vector3f transRight = new Vector3f(5, 0, 0);
+		Vector3f transGround = new Vector3f(-2500, -4, -2500);
 
 
 		mRoot = new TransformGroup();
-//		mRoot.move(new Vector3f(0,-5,0));
 		mSceneManager.setRoot(mRoot);
 
 		Node groundNode = new ShapeNode(groundShape);
 		groundNode.setActiveState(false);
-		Node sphereNode = new ShapeNode(sphere);
 		Node teapotsGroup = new TransformGroup();
-		Node teapot1 = new ShapeNode(teapot);
-		Node teapot2 = new ShapeNode(cube);
-		
+		Node sphereGroup = new TransformGroup();
+		Node cubeGroup = new TransformGroup();
+
+		Node cubeNode = new ShapeNode(cube);
+		Node cube2Node = new ShapeNode(cube);
+		Node sphereNode = new ShapeNode(sphere);
+		Node sphere2Node = new ShapeNode(sphere);
+		Node teapotNode = new ShapeNode(teapot);
+		Node teapot2Node = new ShapeNode(teapot);
 
 		groundNode.move(transGround);
-		teapotsGroup.move(transY);
-		sphereNode.move(transRight);
-		teapot1.move(transLeft);
-		teapot2.move(transRight);
+
+		teapotsGroup.move(transTeapot);
+		sphereGroup.move(transSphere);
+		cubeGroup.move(transCube);
+
+		sphereNode.move(transLeft);
+		teapotNode.move(transLeft);
+		cubeNode.move(transLeft);
+		sphere2Node.move(transRight);
+		teapot2Node.move(transRight);
+		cube2Node.move(transRight);
 		
 		groundNode.setMaterial(groundMaterial);
-		sphereNode.setMaterial(mainMaterial);
-		teapot1.setMaterial(mainMaterial);
-		teapot2.setMaterial(mainMaterial);
 
-		teapotsGroup.addChild(teapot1);
-		teapotsGroup.addChild(teapot2);
+		sphereNode.setMaterial(mainMaterial);
+		teapotNode.setMaterial(mainMaterial);
+		cubeNode.setMaterial(mainMaterial);
+
+		sphere2Node.setMaterial(secondMaterial);
+		teapot2Node.setMaterial(secondMaterial);
+		cube2Node.setMaterial(secondMaterial);
+
+		teapotsGroup.addChild(teapotNode);
+		teapotsGroup.addChild(teapot2Node);
+		cubeGroup.addChild(cubeNode);
+		cubeGroup.addChild(cube2Node);
+		sphereGroup.addChild(sphereNode);
+		sphereGroup.addChild(sphere2Node);
 		
 		mRoot.addChild(groundNode);
-		mRoot.addChild(sphereNode);
+		mRoot.addChild(cubeGroup);
+		mRoot.addChild(sphereGroup);
 		mRoot.addChild(teapotsGroup);
 	}
 
@@ -272,8 +291,8 @@ public class GLViewerActivity extends Activity {
 		Light light = new Light(mSceneManager.getCamera());
 		light.setType(Light.Type.POINT);
 
-		light.setPosition(new Vector3f(0, 0, 10));
-		light.setSpecular(new Vector3f(0, 1, 0));
+		light.setPosition(new Vector3f(0, 5, 15));
+		light.setSpecular(new Vector3f(1, 1, 1));
 		light.setDiffuse(new Vector3f(.5f, .5f, 0.5f));
 		light.setAmbient(new Vector3f(.2f, .2f, 0.2f));
 
@@ -290,6 +309,17 @@ public class GLViewerActivity extends Activity {
 		mat.setShader(mShader);
 		mat.setTexture(createTexture(texture));
 		
+		return mat;
+	}
+
+	private Material createMaterial(float r, float g, float b, float shininess) {
+		Material mat = new GLMaterial();
+
+		mat.shininess = shininess;
+		mat.mAmbient.set(0.3f * r, 0.3f * g, 0.3f * b);
+		mat.mDiffuse.set(0.7f * r, 0.7f * g, 0.7f * b);
+		mat.mSpecular.set(r, g, b);
+		mat.setShader(mShader);
 		return mat;
 	}
 
@@ -334,7 +364,10 @@ public class GLViewerActivity extends Activity {
 					mTouchHandler.setCameraMode(CameraMode.CAMERA_CENTRIC);
 					break;
 				case 1:
+					mSceneManager.getCamera().setLookAtPoint(
+							new Vector3f(0, 0, 0));
 					mTouchHandler.setCameraMode(CameraMode.ORIGIN_CENTRIC);
+					mViewer.requestRender();
 					break;
 				default:
 					mTouchHandler.setCameraMode(CameraMode.OBJECT_CENTRIC);

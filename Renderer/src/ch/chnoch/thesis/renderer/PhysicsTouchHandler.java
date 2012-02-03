@@ -8,10 +8,6 @@ import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 public class PhysicsTouchHandler extends AbstractTouchHandler {
 
-	private static float SCALE_FACTOR = 1f;
-
-	
-
 	private static final String TAG = "PhysicsTouchHandler";
 
 
@@ -75,6 +71,11 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 		
 		finalizeOnTouch(x,y);
 		return true;
+	}
+
+	protected void makeRotation(MotionEvent e, float x, float y) {
+		rotateCamera(e);
+		moveCamera(x, y);
 	}
 
 	/**
