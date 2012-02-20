@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 struct point_light {
 	vec3 position;

@@ -1,5 +1,8 @@
 package ch.chnoch.thesis.renderer;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.vecmath.Vector3f;
 
 import android.util.Log;
@@ -10,8 +13,11 @@ import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 public class TouchHandler extends AbstractTouchHandler {
 
-	private boolean mIsTranslation;
-	private boolean mRotate;
+	private boolean mIsTranslation = false;
+	private boolean mRotate = false;
+
+	private static final float ROTATION_THRESHOLD = 0.15f;
+	private static final float TRANSLATION_DELAY = 300;
 
 	private static final String TAG = "TouchHandler";
 
@@ -43,6 +49,7 @@ public class TouchHandler extends AbstractTouchHandler {
 			try {
 				mEventStart = e.getEventTime();
 				unproject(x, y);
+				startAsyncScaler();
 				break;
 			} catch (Exception exc) {
 				break;
@@ -62,12 +69,12 @@ public class TouchHandler extends AbstractTouchHandler {
 				float distance = (float) Math.sqrt(Math.pow(mPreviousX - x, 2)
 						+ Math.pow(mPreviousY - y, 2));
 
-				if (mEventEnd - mEventStart > 300
+				if (mEventEnd - mEventStart > TRANSLATION_DELAY
 						|| (mIsTranslation && !mRotate)) {
 					// Long Press: Moving object
 					translate(x, y);
 
-				} else if (distance > 0.1f) {
+				} else if (distance > ROTATION_THRESHOLD) {
 					// Short press: Rotate object
 					rotate(x, y);
 				}
@@ -121,12 +128,6 @@ public class TouchHandler extends AbstractTouchHandler {
 			mPlane.update(endIntersection.hitPoint, startIntersection.hitPoint);
 
 			mIsTranslation = true;
-
-			if (!mUpScaled) {
-				mIntersection.node
-						.setScale(mIntersection.node.getScale() + 0.1f);
-				mUpScaled = true;
-			}
 		} catch (Exception exc) {
 			// Log.e(TAG, exc.getMessage());
 		}
@@ -145,7 +146,7 @@ public class TouchHandler extends AbstractTouchHandler {
 				TOUCH_SCALE_FACTOR);
 		mRotate = true;
 	}
-	
+
 	private boolean setCameraToObject(float x, float y) {
 		if (mSetObjectForCameraFlag) {
 			unproject(x, y);
@@ -162,4 +163,27 @@ public class TouchHandler extends AbstractTouchHandler {
 		}
 	}
 
+	private void startAsyncScaler() {
+		Log.d(TAG, "startAsyncScaler");
+		Timer timer = new Timer();
+		TimerTask task = new ScaleTask();
+		timer.schedule(task, (long) TRANSLATION_DELAY);
+	}
+
+	private class ScaleTask extends TimerTask {
+		public void run() {
+			Log.d(TAG, "Running ScaleTask");
+			if (!mMultitouch && !mRotate && mOnNode) {
+				if (!mUpScaled) {
+					Log.d(TAG, "Upscaling Node");
+					mIntersection.node
+							.setScale(mIntersection.node.getScale() + 0.1f);
+					mUpScaled = true;
+					mViewer.requestRender();
+					mIsTranslation = true;
+					mRotate = false;
+				}
+			}
+		}
+	}
 }

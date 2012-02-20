@@ -68,7 +68,7 @@ public class GLViewerActivity extends Activity {
 		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 25));
 		mSceneManager.getFrustum().setVertFOV(45);
 		mSceneManager.getFrustum().setFarPlane(500);
-		mSceneManager.getFrustum().setNearPlane(0.1f);
+		mSceneManager.getFrustum().setNearPlane(1f);
 
 
 		boolean openGlES20 = detectOpenGLES20();
@@ -225,14 +225,14 @@ public class GLViewerActivity extends Activity {
 		Shape sphere = Util.loadSphere(20, 20, 1);
 		Shape teapot = loadStructure(R.raw.teapot_alt);
 		Shape cube = Util.loadCuboid(3, 1, 2);
-		Shape groundShape = Util.loadCuboid(5000, 0.1f, 5000);
+		Shape groundShape = Util.loadCuboid(200, 0.1f, 200);
 
 		Vector3f transSphere = new Vector3f(5, 9, 4);
 		Vector3f transCube = new Vector3f(0, 4, -6);
 		Vector3f transTeapot = new Vector3f(0, 0, 0);
 		Vector3f transLeft = new Vector3f(-5, 0, 0);
 		Vector3f transRight = new Vector3f(5, 0, 0);
-		Vector3f transGround = new Vector3f(-2500, -4, -2500);
+		Vector3f transGround = new Vector3f(-100, -4, -100);
 
 
 		mRoot = new TransformGroup();
