@@ -145,6 +145,11 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			mIntersection.node.setScale(mIntersection.node.getScale() - 0.1f);
 			mUpScaled = false;
 		}
+
+		// for (int i = 0; i < mEventList.size(); i++) {
+		// onTouch(mViewer, mEventList.getFirst());
+		// }
+		mEventList.clear();
 	}
 
 	protected void finalizeOnTouch(float x, float y) {
@@ -154,6 +159,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		} else {
 			mUpdateLocation = true;
 		}
+
 		if (mEventList.size() > 3) {
 			mEventList.remove();
 		}
@@ -223,8 +229,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			float angle3 = calculateAngle(mEventList.get(2));
 
 			float angle = (angle1 + angle2 + angle3) / 3f;
-			if (!(mPreviousDegree == Float.MIN_VALUE)
-					&& (Math.abs(angle - mPreviousDegree) > ROTATION_THRESHOLD / 8f)) {
+			if (!(mPreviousDegree == Float.MIN_VALUE)) {
 				Vector3f upVector = mSceneManager.getCamera().getUpVector();
 				Matrix4f rot = new Matrix4f();
 				rot.set(new AxisAngle4f(mSceneManager.getCamera()

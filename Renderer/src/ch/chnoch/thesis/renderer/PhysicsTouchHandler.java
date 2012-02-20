@@ -19,7 +19,6 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 
 	@Override
 	public boolean onTouch(View view, MotionEvent e) {
-		mEventList.addLast(e);
 
 		int action = e.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
@@ -37,6 +36,7 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 
 			break;
 		case MotionEvent.ACTION_MOVE:
+			mEventList.addLast(e);
 			mEventEnd = e.getEventTime();
 			if (mMultitouch) {
 				// Log.d(TAG, "Multitouch");

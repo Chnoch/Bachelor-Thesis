@@ -28,11 +28,9 @@ public class TouchHandler extends AbstractTouchHandler {
 	}
 
 	public boolean onTouch(View view, MotionEvent e) {
-		mEventList.addLast(e);
-
 		int action = e.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
-
+		Log.d(TAG, "ActionCode: " + actionCode);
 		float x = e.getX();
 		float y = e.getY();
 
@@ -61,6 +59,9 @@ public class TouchHandler extends AbstractTouchHandler {
 		case MotionEvent.ACTION_MOVE:
 			Log.d(TAG, "ACTION_MOVE");
 			mEventEnd = e.getEventTime();
+
+			mEventList.addLast(MotionEvent.obtain(e));
+
 			if (mMultitouch) {
 				// Multitouch Action
 				multitouchMove(e, x, y);
@@ -95,7 +96,7 @@ public class TouchHandler extends AbstractTouchHandler {
 			actionPointerUp();
 			break;
 		}
-
+		Log.d(TAG, "EventList count: " + mEventList.size());
 		finalizeOnTouch(x, y);
 		return true;
 	}

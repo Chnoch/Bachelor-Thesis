@@ -212,15 +212,17 @@ public class GLViewerActivity extends Activity {
 		}
 		return tex;
 	}
-
 	
 	private void createShapes() {
 		// Vector3f ambient = new Vector3f(0.3f,0.3f,0.3f);
 		// Vector3f diffuse= new Vector3f(0.7f,0.7f,0.7f);
 		// Vector3f specular= new Vector3f(1,1,1);
-		Material mainMaterial = createMaterial(1, 0, 0, 100);
-		Material secondMaterial = createMaterial(0, 0, 1, 100);
-		Material groundMaterial = createMaterial(0, 1, 0, 100);
+		// Material mainMaterial = createMaterial(1, 0, 0, 100);
+		Material sphereMaterial = createMaterial(1, 1, 1, 120, R.raw.earth);
+		Material teapotMaterial = createMaterial(1, 1, 1, 120,
+				R.raw.teapot_texture);
+		Material cubeMaterial = createMaterial(1, 1, 1, 120, R.raw.cube_texture);
+		Material groundMaterial = createMaterial(1, 1, 1, 100, R.raw.ground);
 		
 		Shape sphere = Util.loadSphere(20, 20, 1);
 		Shape teapot = loadStructure(R.raw.teapot_alt);
@@ -266,13 +268,13 @@ public class GLViewerActivity extends Activity {
 		
 		groundNode.setMaterial(groundMaterial);
 
-		sphereNode.setMaterial(mainMaterial);
-		teapotNode.setMaterial(mainMaterial);
-		cubeNode.setMaterial(mainMaterial);
+		sphereNode.setMaterial(sphereMaterial);
+		teapotNode.setMaterial(teapotMaterial);
+		cubeNode.setMaterial(cubeMaterial);
 
-		sphere2Node.setMaterial(secondMaterial);
-		teapot2Node.setMaterial(secondMaterial);
-		cube2Node.setMaterial(secondMaterial);
+		sphere2Node.setMaterial(sphereMaterial);
+		teapot2Node.setMaterial(teapotMaterial);
+		cube2Node.setMaterial(cubeMaterial);
 
 		teapotsGroup.addChild(teapotNode);
 		teapotsGroup.addChild(teapot2Node);
@@ -312,7 +314,8 @@ public class GLViewerActivity extends Activity {
 		return mat;
 	}
 
-	private Material createMaterial(float r, float g, float b, float shininess) {
+	private Material createMaterial(float r, float g, float b, float shininess,
+			int texture) {
 		Material mat = new GLMaterial();
 
 		mat.shininess = shininess;
@@ -320,6 +323,7 @@ public class GLViewerActivity extends Activity {
 		mat.mDiffuse.set(0.7f * r, 0.7f * g, 0.7f * b);
 		mat.mSpecular.set(r, g, b);
 		mat.setShader(mShader);
+		mat.setTexture(createTexture(texture));
 		return mat;
 	}
 
