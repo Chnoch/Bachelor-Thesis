@@ -115,8 +115,15 @@ public class Util {
 				double x = cosPhi * cosTheta;
 				double y = sinTheta;
 				double z = sinPhi * cosTheta;
-				double u = 1 - (longNumber / longitudeBands);
-				double v = latNumber / latitudeBands;
+				// double x = cosTheta * sinPhi;
+				// double y = sinTheta * sinPhi;
+				// double z = cosPhi;
+//				double u = 1 - (longNumber / longitudeBands);
+//				double v = latNumber / latitudeBands;
+				// double u = sinPhi * cosTheta;
+				// double v = sinPhi * cosPhi;
+				double u = Math.asin(x) / Math.PI + 0.5;
+				double v = Math.asin(y) / Math.PI + 0.5;
 
 				vertexNormalsList.add((float) x);
 				vertexNormalsList.add((float) y);
