@@ -11,23 +11,46 @@ import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.VertexBuffers;
 
+// TODO: Auto-generated Javadoc
 /*
  * this is the OBJReader class. vertex, normal, texture, mtl and polygon
  * information are stored here as vectors. ahmet.kizilay@gmail.com
  */
 
+/**
+ * The Class TestObjReader.
+ */
 public class TestObjReader {
+	
+	/** The file name. */
 	String fileName;
+	
+	/** The vertices. */
 	List<Vector3f> vertices;
+	
+	/** The normals. */
 	List<Vector3f> normals;
+	
+	/** The polygons. */
 	List<Polygon> polygons;
+	
+	/** The textures. */
 	List<Vector3f> textures;
+	
+	/** The wire frame. */
 	boolean wireFrame = false;
+	
+	/** The mtlincluded. */
 	boolean mtlincluded = false;
+	
+	/** The mtlnum. */
 	int mtlnum = -1; // mtlnum is initially -1 and it keeps the current
 						// index of the mtl.
 
-	public TestObjReader() {
+	/**
+						 * Instantiates a new test obj reader.
+						 */
+						public TestObjReader() {
 		vertices = new ArrayList<Vector3f>();
 		normals = new ArrayList<Vector3f>();
 		textures = new ArrayList<Vector3f>();
@@ -35,6 +58,11 @@ public class TestObjReader {
 		// mtlincluded = mtlexists;
 	}
 
+	/**
+	 * Read file.
+	 *
+	 * @param inputStream the input stream
+	 */
 	public void readFile(InputStream inputStream) {
 		// if(mtlincluded) readMTL();
 
@@ -83,6 +111,11 @@ public class TestObjReader {
 
 	}
 
+	/**
+	 * Creates the vertex buffers.
+	 *
+	 * @return the vertex buffers
+	 */
 	public VertexBuffers createVertexBuffers() {
 		VertexBuffers vertexBuffers = new VertexBuffers();
 		
@@ -152,6 +185,11 @@ public class TestObjReader {
 		return vertexBuffers;
 	}
 
+	/**
+	 * Read vertex.
+	 *
+	 * @param newLine the new line
+	 */
 	private void readVertex(String newLine) {
 		String pieces[] = newLine.split(" ");
 		Vector3f vert = new Vector3f(Float.parseFloat(pieces[1]),
@@ -159,6 +197,11 @@ public class TestObjReader {
 		vertices.add(vert);
 	}
 
+	/**
+	 * Read normal.
+	 *
+	 * @param newLine the new line
+	 */
 	private void readNormal(String newLine) {
 		String pieces[] = newLine.split(" ");
 		Vector3f norms = new Vector3f(Float.parseFloat(pieces[1]),
@@ -166,6 +209,11 @@ public class TestObjReader {
 		normals.add(norms);
 	}
 
+	/**
+	 * Read texture.
+	 *
+	 * @param newLine the new line
+	 */
 	private void readTexture(String newLine) {
 		String pieces[] = newLine.split(" ");
 		Vector3f tex = new Vector3f(Float.parseFloat(pieces[1]),
@@ -173,6 +221,11 @@ public class TestObjReader {
 		textures.add(tex);
 	}
 
+	/**
+	 * Read polygon.
+	 *
+	 * @param newLine the new line
+	 */
 	private void readPolygon(String newLine) {
 		String pieces[] = newLine.split(" ");
 		Polygon poly = new Polygon(pieces.length - 1, mtlnum);
@@ -192,18 +245,38 @@ public class TestObjReader {
 		polygons.add(poly);
 	}
 
+	/**
+	 * Gets the polygons.
+	 *
+	 * @return the polygons
+	 */
 	public List<Polygon> getPolygons() {
 		return polygons;
 	}
 
+	/**
+	 * Gets the vertices.
+	 *
+	 * @return the vertices
+	 */
 	public List<Vector3f> getVertices() {
 		return vertices;
 	}
 
+	/**
+	 * Gets the normals.
+	 *
+	 * @return the normals
+	 */
 	public List<Vector3f> getNormals() {
 		return normals;
 	}
 
+	/**
+	 * Gets the textures.
+	 *
+	 * @return the textures
+	 */
 	public List<Vector3f> getTextures() {
 		return textures;
 	}
@@ -212,13 +285,32 @@ public class TestObjReader {
 	 * this is a simple class to store info about the polygons
 	 * ahmet.kizilay@gmail.com
 	 */
+	/**
+	 * The Class Polygon.
+	 */
 	private class Polygon {
+		
+		/** The vertex indices. */
 		int vertexIndices[];
+		
+		/** The normal indices. */
 		int normalIndices[];
+		
+		/** The texture indices. */
 		int textureIndices[];
+		
+		/** The sides. */
 		int sides;
+		
+		/** The mtlnum. */
 		int mtlnum;
 
+		/**
+		 * Instantiates a new polygon.
+		 *
+		 * @param si the si
+		 * @param mtl the mtl
+		 */
 		Polygon(int si, int mtl) {
 			vertexIndices = new int[si];
 			normalIndices = new int[si];
@@ -227,26 +319,59 @@ public class TestObjReader {
 			mtlnum = mtl;
 		}
 
+		/**
+		 * Sets the vertex index.
+		 *
+		 * @param i the i
+		 * @param num the num
+		 */
 		void setVertexIndex(int i, int num) {
 			vertexIndices[i] = num;
 		}
 
+		/**
+		 * Sets the normal index.
+		 *
+		 * @param i the i
+		 * @param num the num
+		 */
 		void setNormalIndex(int i, int num) {
 			normalIndices[i] = num;
 		}
 
+		/**
+		 * Sets the texture index.
+		 *
+		 * @param i the i
+		 * @param num the num
+		 */
 		void setTextureIndex(int i, int num) {
 			textureIndices[i] = num;
 		}
 
+		/**
+		 * Gets the vertex indices.
+		 *
+		 * @return the vertex indices
+		 */
 		public int[] getVertexIndices() {
 			return vertexIndices;
 		}
 
+		/**
+		 * Gets the normal indices.
+		 *
+		 * @return the normal indices
+		 */
 		public int[] getNormalIndices() {
 			return normalIndices;
 		}
 
+		/**
+		 * Gets the texture indices.
+		 *
+		 * @return the texture indices
+		 */
 		public int[] getTextureIndices() {
 			return textureIndices;
 		}

@@ -17,31 +17,69 @@ import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BasicGLES20Renderer.
+ */
 public class BasicGLES20Renderer extends BasicRenderer {
 
+	/** The m program. */
 	private int mProgram;
+	
+	/** The mu mvp matrix handle. */
 	private int muMVPMatrixHandle;
+	
+	/** The mu normal matrix handle. */
 	private int muNormalMatrixHandle;
+	
+	/** The mu model view matrix handle. */
 	private int muModelViewMatrixHandle;
+	
+	/** The ma vertex handle. */
 	private int maVertexHandle;
+	
+	/** The ma normal handle. */
 	private int maNormalHandle;
 
+	/** The m model matrix. */
 	private Matrix4f mModelMatrix = Util.getIdentityMatrix();
 
+	/** The m shader. */
 	private Shader mShader;
 
+	/** The m gl light. */
 	private GLLight mGLLight;
 
+	/** The TAG. */
 	private final String TAG = "BasicGLES20Renderer";
+	
+	/** The m vertex shader file name. */
 	private String mVertexShaderFileName;
+	
+	/** The m fragment shader file name. */
 	private String mFragmentShaderFileName;
+	
+	/** The m mvp matrix. */
 	private float[] mMVPMatrix = new float[16];
+	
+	/** The m proj matrix. */
 	private float[] mProjMatrix = new float[16];
+	
+	/** The m m matrix. */
 	private float[] mMMatrix = new float[16];
+	
+	/** The m v matrix. */
 	private float[] mVMatrix = new float[16];
+	
+	/** The m mv matrix. */
 	private float[] mMVMatrix = new float[16];
+	
+	/** The m normal matrix. */
 	private float[] mNormalMatrix = new float[16];
 
+	/* (non-Javadoc)
+	 * @see ch.chnoch.thesis.renderer.BasicRenderer#onDrawFrame(javax.microedition.khronos.opengles.GL10)
+	 */
 	public void onDrawFrame(GL10 gl) {
 //		GLES20.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 //		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
@@ -71,6 +109,9 @@ public class BasicGLES20Renderer extends BasicRenderer {
 		}
 	}
 
+	/**
+	 * Draw.
+	 */
 	private void draw() {
 		try {
 			drawMaterial();
@@ -110,18 +151,29 @@ public class BasicGLES20Renderer extends BasicRenderer {
 		}
 	}
 
+	/**
+	 * Draw material.
+	 *
+	 * @throws Exception the exception
+	 */
 	private void drawMaterial() throws Exception {
 		GLMaterial mat = (GLMaterial) mMaterial;
 		mat.getHandles(mProgram);
 		mat.draw();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.chnoch.thesis.renderer.BasicRenderer#onSurfaceChanged(javax.microedition.khronos.opengles.GL10, int, int)
+	 */
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
 		glViewport(0, 0, w, h);
 		float ratio = (float) w / h;
 		Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 1, 100);
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.chnoch.thesis.renderer.BasicRenderer#onSurfaceCreated(javax.microedition.khronos.opengles.GL10, javax.microedition.khronos.egl.EGLConfig)
+	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		glDisable(GL_DITHER);
 		Matrix.setLookAtM(mVMatrix, 0, 0, 0, 0, 0f, 0f, 1f, 0f, 1.0f, 0.0f);
@@ -168,6 +220,14 @@ public class BasicGLES20Renderer extends BasicRenderer {
 		}
 	}
 
+	/**
+	 * Creates the shader.
+	 *
+	 * @param shader the shader
+	 * @param vertexShader the vertex shader
+	 * @param fragmentShader the fragment shader
+	 * @throws Exception the exception
+	 */
 	public void createShader(Shader shader, String vertexShader,
 			String fragmentShader) throws Exception {
 		mShader = shader;
@@ -175,6 +235,9 @@ public class BasicGLES20Renderer extends BasicRenderer {
 		mFragmentShaderFileName = fragmentShader;
 	}
 
+	/**
+	 * Make shader.
+	 */
 	private void makeShader() {
 		mShader = new GLShader();
 		try {
@@ -185,10 +248,20 @@ public class BasicGLES20Renderer extends BasicRenderer {
 		}
 	}
 
+	/**
+	 * Make texture.
+	 *
+	 * @return the texture
+	 */
 	public Texture makeTexture() {
 		return null;
 	}
 
+	/**
+	 * Check gl error.
+	 *
+	 * @param op the op
+	 */
 	private void checkGlError(String op) {
 		int error;
 		while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {

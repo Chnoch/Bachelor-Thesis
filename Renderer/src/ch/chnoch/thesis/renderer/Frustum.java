@@ -3,9 +3,6 @@ package ch.chnoch.thesis.renderer;
 import javax.vecmath.Matrix4f;
 
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.util.Util;
 
 /**
  * Stores the specification of a viewing frustum, or a viewing volume. The
@@ -17,7 +14,10 @@ import ch.chnoch.thesis.renderer.util.Util;
  */
 public class Frustum {
 
+	/** The projection matrix. */
 	private Matrix4f mProjectionMatrix;
+
+	/** The different parameters of the frustum. */
 	private float mNearPlane, mFarPlane, mAspectRatio, mVertFOV;
 
 	/**
@@ -45,42 +45,89 @@ public class Frustum {
 		return mProjectionMatrix;
 	}
 
+	/**
+	 * Gets the near plane.
+	 * 
+	 * @return the near plane
+	 */
 	public float getNearPlane() {
 		return mNearPlane;
 	}
 
+	/**
+	 * Sets the near plane.
+	 * 
+	 * @param nearPlane
+	 *            the new near plane
+	 */
 	public void setNearPlane(float nearPlane) {
 		this.mNearPlane = nearPlane;
 		this.updateFrustum();
 	}
 
+	/**
+	 * Gets the far plane.
+	 * 
+	 * @return the far plane
+	 */
 	public float getFarPlane() {
 		return mFarPlane;
 	}
 
+	/**
+	 * Sets the far plane.
+	 * 
+	 * @param farPlane
+	 *            the new far plane
+	 */
 	public void setFarPlane(float farPlane) {
 		this.mFarPlane = farPlane;
 		this.updateFrustum();
 	}
 
+	/**
+	 * Gets the aspect ratio.
+	 * 
+	 * @return the aspect ratio
+	 */
 	public float getAspectRatio() {
 		return mAspectRatio;
 	}
 
+	/**
+	 * Sets the aspect ratio.
+	 * 
+	 * @param aspectRatio
+	 *            the new aspect ratio
+	 */
 	public void setAspectRatio(float aspectRatio) {
 		this.mAspectRatio = aspectRatio;
 		updateFrustum();
 	}
 
+	/**
+	 * Gets the vertical Field of View.
+	 * 
+	 * @return the vertical Field of View
+	 */
 	public float getVertFOV() {
 		return mVertFOV;
 	}
 
+	/**
+	 * vertical Field of View.
+	 * 
+	 * @param vertFOV
+	 *            the new vertical Field of View
+	 */
 	public void setVertFOV(float vertFOV) {
 		this.mVertFOV = vertFOV;
 		updateFrustum();
 	}
 
+	/**
+	 * Updates the frustum.
+	 */
 	private void updateFrustum() {
 		final float DEG2RAD = 3.14159265f / 180;
 

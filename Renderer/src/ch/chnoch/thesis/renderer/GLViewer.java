@@ -3,12 +3,11 @@ package ch.chnoch.thesis.renderer;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-import ch.chnoch.thesis.renderer.interfaces.Shader;
-import ch.chnoch.thesis.renderer.util.Util;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.util.Util;
 
 public class GLViewer extends GLSurfaceView {
 
@@ -28,7 +27,6 @@ public class GLViewer extends GLSurfaceView {
 		mRenderer = renderer;
 		mRenderer.setViewer(this);
 
-//		setEGLConfigChooser(true);
 		if (openGLES20) {
 			setEGLContextClientVersion(2);
 		}

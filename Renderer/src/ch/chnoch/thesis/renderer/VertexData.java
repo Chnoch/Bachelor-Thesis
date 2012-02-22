@@ -2,6 +2,7 @@ package ch.chnoch.thesis.renderer;
 
 import java.util.LinkedList;
 
+// TODO: Auto-generated Javadoc
 /**
  * Provides functionality to specify 3D geometry in the form
  * of triangle meshes. {@link VertexData} consists of a list of 
@@ -14,7 +15,15 @@ public class VertexData {
 	 */
 	public enum Semantic
 	{
-		POSITION, NORMAL, TEXCOORD, COLOR
+		
+		/** The POSITION. */
+		POSITION, 
+ /** The NORMAL. */
+ NORMAL, 
+ /** The TEXCOORD. */
+ TEXCOORD, 
+ /** The COLOR. */
+ COLOR
 	}
 
 	/**
@@ -26,23 +35,43 @@ public class VertexData {
 	 */
 	public class VertexElement {
 		
+		/**
+		 * Gets the data.
+		 *
+		 * @return the data
+		 */
 		public float[] getData()
 		{
 			return data; 
 		}
 		
+		/**
+		 * Gets the semantic.
+		 *
+		 * @return the semantic
+		 */
 		public Semantic getSemantic()
 		{
 			return semantic;
 		}
 		
+		/**
+		 * Gets the number of components.
+		 *
+		 * @return the number of components
+		 */
 		public int getNumberOfComponents()
 		{
 			return nComponents;
 		}
 		
+		/** The data. */
 		private float[] data;
+		
+		/** The semantic. */
 		private Semantic semantic;
+		
+		/** The n components. */
 		private int nComponents;
 	}
 
@@ -61,11 +90,23 @@ public class VertexData {
 		vertexElements = new LinkedList<VertexElement>();
 	}
 	
+	/**
+	 * Gets the number of vertices.
+	 *
+	 * @return the number of vertices
+	 */
 	public int getNumberOfVertices()
 	{
 		return n;
 	}
 	
+	/**
+	 * Adds the element.
+	 *
+	 * @param f the f
+	 * @param s the s
+	 * @param i the i
+	 */
 	public void addElement(float f[], Semantic s, int i)
 	{
 		if(f.length==n*i) 
@@ -88,22 +129,42 @@ public class VertexData {
 		}	
 	}
 	
+	/**
+	 * Adds the indices.
+	 *
+	 * @param indices the indices
+	 */
 	public void addIndices(int indices[])
 	{
 		this.indices = indices;
 	}
 	
+	/**
+	 * Gets the elements.
+	 *
+	 * @return the elements
+	 */
 	public LinkedList<VertexElement> getElements()
 	{
 		return vertexElements;
 	}
 	
+	/**
+	 * Gets the indices.
+	 *
+	 * @return the indices
+	 */
 	public int[] getIndices()
 	{
 		return indices;
 	}
 	
+	/** The n. */
 	private int n;
+	
+	/** The indices. */
 	private int[] indices;
+	
+	/** The vertex elements. */
 	private LinkedList<VertexElement> vertexElements;
 }

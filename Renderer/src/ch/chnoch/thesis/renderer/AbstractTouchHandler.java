@@ -14,43 +14,109 @@ import android.view.View.OnTouchListener;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
+/**
+ * This class contains many fields and operations that an OnTouchListener can
+ * use. Every implementation of a class that implements OnTouchListener should
+ * extend this class to benefit from these operations.
+ */
 public abstract class AbstractTouchHandler implements OnTouchListener {
 
 	private static final String TAG = "AbstractTouchHandler";
+
+	/** The threshold for a zoom operation. */
 	protected static final float ZOOM_THRESHOLD = 10;
+
+	/** The threshold for a rotation operation. */
 	protected static final float ROTATION_THRESHOLD = 0.15f;
+
+	/** The constant zoom factor that is 1/10th. */
 	protected static final float ZOOM_FACTOR = 0.1f;
 
+	/** The constant touch scale factor (=1). */
+	protected static final float TOUCH_SCALE_FACTOR = 1;
+
+	/** A boolean indicating whether a touch event is on a node. */
 	protected boolean mOnNode = false;
+
+	/** A boolean indicating whether a node has been temporarily upscaled. */
 	protected boolean mUpScaled = false;
+
+	/** A boolean indicating whether a multitouch operation is ongoing. */
 	protected boolean mMultitouch = false;
+
+	/**
+	 * A boolean indicating whether we are currently choosing an object for the
+	 * camera options.
+	 */
 	protected boolean mSetObjectForCameraFlag = false;
 
+	/** The camera mode. */
 	protected CameraMode mCameraMode;
 
+	/**
+	 * The previous x and y values and the previous degree from the multitouch
+	 * gesture.
+	 */
 	protected float mPreviousX, mPreviousY, mPreviousDegree = Float.MIN_VALUE;
+
+	/** The time of the event start and event end. */
 	protected float mEventStart, mEventEnd;
 
+	/** The render context. */
 	protected RenderContext mRenderer;
+
+	/** The scene manager. */
 	protected SceneManagerInterface mSceneManager;
 
+	/** A trackball that is used to rotate a node. */
 	protected Trackball mTrackball;
+
+	/** A trackball that is used to rotate the world. */
 	protected WorldTrackball mWorldTrackball;
+
+	/** A plane that is used to translate a node. */
 	protected Plane mPlane;
+
+	/**
+	 * A intersection of a ray with a shape which is used for picking the right
+	 * nodes.
+	 */
 	protected RayShapeIntersection mIntersection;
 
+	/** The viewer. */
 	protected GLViewer mViewer;
 
+	/** The distance between two fingers. */
 	protected float mTwoFingerDistance;
+
+	/** The scale factor of a node. */
 	protected float mScaleFactor;
+
+	/** The multitouch mode. */
 	protected MultitouchMode mMultitouchMode = MultitouchMode.NONE;
+
+	/** The event count that is used to aggregate several events. */
 	protected int mEventCount;
+
+	/** A boolean indicating whether to update the location. */
 	protected boolean mUpdateLocation = true;
 
+	/** A list of the most recent events. */
 	protected LinkedList<MotionEvent> mEventList;
 
-	protected final float TOUCH_SCALE_FACTOR = 1;
 
+	/**
+	 * Instantiates a new abstract touch handler.
+	 * 
+	 * @param sceneManager
+	 *            the scene manager
+	 * @param renderer
+	 *            the renderer
+	 * @param viewer
+	 *            the viewer
+	 * @param cameraMode
+	 *            the camera mode
+	 */
 	public AbstractTouchHandler(SceneManagerInterface sceneManager,
 			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
 		mSceneManager = sceneManager;
@@ -66,15 +132,30 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		mEventList = new LinkedList<MotionEvent>();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.view.View.OnTouchListener#onTouch(android.view.View,
+	 * android.view.MotionEvent)
+	 */
 	@Override
 	public abstract boolean onTouch(View view, MotionEvent e);
 
+	/**
+	 * Selects an object for camera movement.
+	 */
 	public void selectObjectForCameraMovement() {
 		if (mCameraMode == CameraMode.OBJECT_CENTRIC) {
 			mSetObjectForCameraFlag = true;
 		}
 	}
 
+	/**
+	 * Sets the camera mode.
+	 * 
+	 * @param mode
+	 *            the new camera mode
+	 */
 	public void setCameraMode(CameraMode mode) {
 		mCameraMode = mode;
 		mMultitouchMode = MultitouchMode.NONE;
@@ -85,8 +166,26 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	 * PROTECTED METHODS
 	 * ----------------------------------------------------------------
 	 */
+	/**
+	 * Make a rotation.
+	 * 
+	 * @param e
+	 *            the Motion event
+	 * @param x
+	 *            the x-coordinate
+	 * @param y
+	 *            the y-coordinate
+	 */
 	protected abstract void makeRotation(MotionEvent e, float x, float y);
 
+	/**
+	 * Unproject an x,y value from the screen into a ray in the 3D scene.
+	 * 
+	 * @param x
+	 *            the x-coordinate
+	 * @param y
+	 *            the y-coordinate
+	 */
 	protected void unproject(float x, float y) {
 		Ray ray = mViewer.unproject(x, y);
 
@@ -101,6 +200,16 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
+	/**
+	 * Move the world resp. the camera according to the MultitouchMode.
+	 * 
+	 * @param e
+	 *            the Motion event
+	 * @param x
+	 *            the x-coordinate
+	 * @param y
+	 *            the y-coordinate
+	 */
 	protected void multitouchMove(MotionEvent e, float x, float y) {
 		Log.d("WorldTrackball",
 				"Eventvalues x: " + e.getX() + " y: " + e.getY()
@@ -123,6 +232,13 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
+	/**
+	 * A helper method that should always be called whenever a new pointer (i.e.
+	 * finger) on the screen is detected.
+	 * 
+	 * @param e
+	 *            the Motion event
+	 */
 	protected void actionPointerDown(MotionEvent e) {
 		mOnNode = false;
 		mEventCount = 0;
@@ -131,11 +247,19 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		mMultitouch = true;
 	}
 
+	/**
+	 * A helper method that should always be called whenever a pointer (i.e.
+	 * finger) on the screen is removed.
+	 */
 	protected void actionPointerUp() {
 		mMultitouchMode = MultitouchMode.NONE;
 		mPreviousDegree = Float.MIN_VALUE;
 	}
 
+	/**
+	 * A helper method that should always be called whenever all pointers (i.e.
+	 * finger) on the screen have been removed.
+	 */
 	protected void actionUp() {
 		mOnNode = false;
 		mMultitouch = false;
@@ -152,6 +276,14 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		mEventList.clear();
 	}
 
+	/**
+	 * Finalizes the touch method when no finger is touching the screen anymore.
+	 * 
+	 * @param x
+	 *            the x-coordinate
+	 * @param y
+	 *            the y-coordinate
+	 */
 	protected void finalizeOnTouch(float x, float y) {
 		if (mUpdateLocation) {
 			mPreviousX = x;
@@ -167,6 +299,12 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	}
 
 
+	/**
+	 * Zoom the camera in the direction where it's looking at currently.
+	 * 
+	 * @param e
+	 *            the corresponding Motion event
+	 */
 	protected void zoom(MotionEvent e) {
 		float dist = calculateTwoFingerDistance(e);
 		if (dist > -1) {
@@ -191,6 +329,12 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
+	/**
+	 * Zoom the camera towards the origin.
+	 * 
+	 * @param e
+	 *            the corresponding Motion event
+	 */
 	protected void zoomOrigin(MotionEvent e) {
 		float dist = calculateTwoFingerDistance(e);
 		if (dist > -1) {
@@ -206,6 +350,16 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
+	/**
+	 * Rotate the world around the origin.
+	 * 
+	 * @param e
+	 *            the Motion event
+	 * @param x
+	 *            the x-coordinate
+	 * @param y
+	 *            the y-coordinate
+	 */
 	protected void rotateWorldOriginCentric(MotionEvent e, float x, float y) {
 		Log.d(TAG, "rotateWorldOriginCentric");
 		mWorldTrackball.setNode(mSceneManager.getRoot(),
@@ -214,6 +368,16 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		this.makeRotation(e, x, y);
 	}
 
+	/**
+	 * Rotates the camera around itself.
+	 * 
+	 * @param e
+	 *            the Motion event
+	 * @param x
+	 *            the x-coordinate
+	 * @param y
+	 *            the y-coordinate
+	 */
 	protected void rotateWorldCameraCentric(MotionEvent e, float x, float y) {
 		mWorldTrackball.setNode(mSceneManager.getRoot(),
 				mSceneManager.getCamera(), true);
@@ -222,6 +386,12 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	}
 
 
+	/**
+	 * Rotate the camera around the z-axis.
+	 * 
+	 * @param e
+	 *            the Motion event
+	 */
 	protected void rotateCamera(MotionEvent e) {
 		if (e.getPointerCount() > 1) {
 			float angle1 = calculateAngle(mEventList.getFirst());
@@ -241,6 +411,14 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
+	/**
+	 * Moves the camera around the origin.
+	 * 
+	 * @param x
+	 *            the x-coordinate
+	 * @param y
+	 *            the y-coordinate
+	 */
 	protected void moveCamera(float x, float y) {
 		Ray startRay = mViewer.unproject(mPreviousX, mPreviousY);
 		Ray endRay = mViewer.unproject(x, y);
@@ -265,6 +443,13 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	 * -----------------------------------------------------------------------
 	 */
 
+	/**
+	 * Test for which multitouch mode is most appropriate given the gesture.
+	 * 
+	 * @param e
+	 *            the corresponding Motion event
+	 * @return the correct multitouch mode
+	 */
 	private MultitouchMode testMultitouch(MotionEvent e) {
 
 		// Wait several events until the multitouch decision is made.
@@ -302,6 +487,13 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 
 	}
 
+	/**
+	 * Calculates the distance between two finger.
+	 * 
+	 * @param e
+	 *            the Motion event
+	 * @return the distance
+	 */
 	private float calculateTwoFingerDistance(MotionEvent e) {
 		if (e.getPointerCount() > 1) {
 			float x = e.getX(0) - e.getX(1);
@@ -312,6 +504,13 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
+	/**
+	 * Calculates the angle from the two fingers to a horizontal axis.
+	 * 
+	 * @param e
+	 *            the Motion event
+	 * @return the angle
+	 */
 	private float calculateAngle(MotionEvent e) {
 		if (e.getPointerCount() > 1) {
 			float distX = e.getX(0) - e.getX(1);
@@ -323,12 +522,32 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		}
 	}
 
+	/**
+	 * The different multitouch modes.
+	 */
 	protected enum MultitouchMode {
-		ZOOM_ORIGIN, ROTATE, ROTATE_CAMERA_CENTRIC, NONE
+
+		/** Zoom the camera towards the origin */
+		ZOOM_ORIGIN,
+		/** Rotate the camera around the origin */
+		ROTATE,
+		/** Rotate the camera camera-centric. */
+		ROTATE_CAMERA_CENTRIC,
+		/** No multitouch */
+		NONE
 	}
 
+	/**
+	 * The different camera modes.
+	 */
 	public enum CameraMode {
-		CAMERA_CENTRIC, OBJECT_CENTRIC, ORIGIN_CENTRIC
+
+		/** Camera centric */
+		CAMERA_CENTRIC,
+		/** Object centric */
+		OBJECT_CENTRIC,
+		/** Origin centric */
+		ORIGIN_CENTRIC
 	}
 
 }

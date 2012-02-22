@@ -204,7 +204,7 @@ public class GLViewerActivity extends Activity {
 	}
 
 	private Texture createTexture(int id) {
-		Texture tex = mRenderer.makeTexture();
+		Texture tex = mRenderer.createTexture();
 		try {
 			tex.createTexture(id);
 		} catch (IOException exc) {

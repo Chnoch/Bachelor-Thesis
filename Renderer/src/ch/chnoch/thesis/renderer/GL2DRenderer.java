@@ -52,7 +52,7 @@ public class GL2DRenderer extends AbstractRenderer {
 	}
 
 	@Override
-	public Texture makeTexture() {
+	public Texture createTexture() {
 		return null;
 	}
 

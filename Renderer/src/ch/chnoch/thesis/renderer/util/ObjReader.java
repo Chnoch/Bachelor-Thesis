@@ -7,6 +7,7 @@ import ch.chnoch.thesis.renderer.VertexBuffers;
 import ch.chnoch.thesis.renderer.VertexData;
 import ch.chnoch.thesis.renderer.VertexData.Semantic;
 
+// TODO: Auto-generated Javadoc
 /**
  * Reads on .obj file including normals and texture coordinates.
  */
@@ -14,10 +15,11 @@ public class ObjReader {
 
 	/**
 	 * Read an .obj file and return vertex data.
+	 *
 	 * @param file the file to read.
 	 * @param scale scales the object to fit into a cube of the given size
-	 * @return
-	 * @throws IOException
+	 * @return the vertex buffers
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static VertexBuffers read(InputStream file, float scale) throws IOException
 	{

@@ -8,15 +8,30 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class KeyHandler.
+ */
 public class KeyHandler implements OnKeyListener {
 	
+	/** The m renderer. */
 	private RenderContext mRenderer;
+	
+	/** The viewer. */
 	private GLViewer viewer;
 	
+	/**
+	 * Instantiates a new key handler.
+	 *
+	 * @param renderer the renderer
+	 */
 	public KeyHandler(RenderContext renderer) {
 		mRenderer = renderer;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.View.OnKeyListener#onKey(android.view.View, int, android.view.KeyEvent)
+	 */
 	public boolean onKey(View view, int keyCode, KeyEvent event) {
 		if (view instanceof GLViewer) {
 			viewer = (GLViewer) view;

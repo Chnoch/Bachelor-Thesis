@@ -194,9 +194,6 @@ public class PoolGame extends Activity {
 		try {
 			mRenderer.createShader(shader, vertexShader, fragmentShader);
 			return shader;
-			// if (shader.getProgram() == 0) {
-			// throw new RuntimeException();
-			// }
 		} catch (GLException exc) {
 			Log.e(TAG, exc.getError());
 		} catch (Exception e) {

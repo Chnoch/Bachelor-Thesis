@@ -4,37 +4,70 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import android.util.Log;
-
-import ch.chnoch.thesis.renderer.box2d.*;
+import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.util.Util;
 
+// TODO: Auto-generated Javadoc
+/**
+ * This class contains some common tasks and fields of a scene manager. Specific
+ * implementations of a scene manager should inherit from this class to take
+ * full advantage of what has already been implemented.
+ */
 public abstract class AbstractSceneManager implements SceneManagerInterface {
+
+	/** The camera. */
 	protected Camera mCamera;
+
+	/** The frustum. */
 	protected Frustum mFrustum;
+
+	/** The lights. */
 	protected List<Light> mLights;
+
+	/** The world. */
 	protected Box2DWorld mWorld;
 	
+	/**
+	 * Instantiates a new abstract scene manager.
+	 */
 	public AbstractSceneManager() {
 		mCamera = new Camera();
 		mFrustum = new Frustum();
 		mLights = new LinkedList<Light>();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#iterator()
+	 */
 	@Override
 	public abstract SceneManagerIterator iterator();
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#lightIterator
+	 * ()
+	 */
 	@Override
 	public Iterator<Light> lightIterator() {
 		return mLights.iterator();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#addLight(ch
+	 * .chnoch.thesis.renderer.Light)
+	 */
 	@Override
 	public void addLight(Light light) {
 		if (mLights.size()<=8) {
@@ -43,10 +76,13 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 	}
 
 	/**
-	 * Intersects a ray with all the different shapes attached to 
-	 * this sceneManager
-	 * @param Ray ray, the ray that needs to be intersected
-	 * @return a RayShapeIntersection with the hit point and the hit node, if any.
+	 * Intersects a ray with all the different shapes attached to this
+	 * sceneManager.
+	 * 
+	 * @param ray
+	 *            the ray
+	 * @return a RayShapeIntersection with the hit point and the node that was
+	 *         hit, if any.
 	 */
 	@Override
 	public RayShapeIntersection intersectRayNode(Ray ray) {
@@ -79,16 +115,34 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 		return closestIntersection;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#getCamera()
+	 */
 	@Override
 	public Camera getCamera() {
 		return mCamera;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#getFrustum()
+	 */
 	@Override
 	public Frustum getFrustum() {
 		return mFrustum;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#
+	 * enablePhysicsEngine()
+	 */
 	@Override
 	public void enablePhysicsEngine() {
 		Vector2f low = new Vector2f(-100,-100);
@@ -103,6 +157,13 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#destroyJoints
+	 * ()
+	 */
 	public void destroyJoints() {
 		SceneManagerIterator it = this.iterator();
 		while(it.hasNext()) {
@@ -113,6 +174,12 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 		}
 	}
 		
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#updateScene()
+	 */
 	@Override
 	public void updateScene() {
 		float dt = 1f/60f;
@@ -128,19 +195,42 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#getPhysicsWorld
+	 * ()
+	 */
 	@Override
 	public Box2DWorld getPhysicsWorld() {
 		return mWorld;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#setPhysicsWorld
+	 * (ch.chnoch.thesis.renderer.box2d.Box2DWorld)
+	 */
 	public void setPhysicsWorld(Box2DWorld world) {
 		mWorld = world;
 	}
 	
 	
 	/**
-	 * These methods do nothing except if the scene manager is a graph
+	 * These methods do nothing except if the scene manager is a graph.
+	 * 
+	 * @param root
+	 *            the new root
 	 */
 	public void setRoot(Node root){}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface#getRoot()
+	 */
 	public Node getRoot(){return null;}
 }

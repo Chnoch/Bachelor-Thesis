@@ -22,28 +22,46 @@ import android.util.Log;
 import static android.opengl.GLES10.*;
 import static android.opengl.GLES20.glClearColor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GLES11Renderer.
+ */
 public class GLES11Renderer extends AbstractRenderer {
 
+	/** The m index buffer. */
 	private ShortBuffer mIndexBuffer;
+	
+	/** The m vertex buffer. */
 	private FloatBuffer mVertexBuffer;
+	
+	/** The m tex coords buffer. */
 	private FloatBuffer mTexCoordsBuffer;
+	
+	/** The m color buffer. */
 	private FloatBuffer mColorBuffer;
+	
+	/** The m normal buffer. */
 	private FloatBuffer mNormalBuffer;
+	
+	/** The height. */
 	private int width, height;
 
+	/** The TAG. */
 	private final String TAG = "GLES11Renderer";
 
 	/**
 	 * This constructor is called by {@link GLRenderPanel}.
-	 * 
-	 * @param drawable
-	 *            the OpenGL rendering context. All OpenGL calls are directed to
-	 *            this object.
+	 *
 	 */
 	public GLES11Renderer() {
 		super();
 	}
 
+	/**
+	 * Instantiates a new gLE s11 renderer.
+	 *
+	 * @param sceneManager the scene manager
+	 */
 	public GLES11Renderer(SceneManagerInterface sceneManager) {
 		super(sceneManager);
 	}
@@ -52,13 +70,19 @@ public class GLES11Renderer extends AbstractRenderer {
 	 * Public Methods
 	 */
 
+	/* (non-Javadoc)
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#createShader(ch.chnoch.thesis.renderer.interfaces.Shader, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void createShader(Shader shader, String vertexShader,
 			String fragmentShader) throws Exception {
 		throw new GLException("OpenGL ES 1.1 does not support shaders");
 	}
 
-	public Texture makeTexture() {
+	/* (non-Javadoc)
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#createTexture()
+	 */
+	public Texture createTexture() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -67,6 +91,9 @@ public class GLES11Renderer extends AbstractRenderer {
 	 * Framework Callback Methods
 	 */
 
+	/* (non-Javadoc)
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#onDrawFrame(javax.microedition.khronos.opengles.GL10)
+	 */
 	public void onDrawFrame(GL10 gl) {
 //		calculateFPS();
 //		long oldTime = System.currentTimeMillis();
@@ -97,6 +124,9 @@ public class GLES11Renderer extends AbstractRenderer {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#onSurfaceChanged(javax.microedition.khronos.opengles.GL10, int, int)
+	 */
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
 		Log.d(TAG, "width: " + width + " height: " + height);
@@ -125,6 +155,9 @@ public class GLES11Renderer extends AbstractRenderer {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#onSurfaceCreated(javax.microedition.khronos.opengles.GL10, javax.microedition.khronos.egl.EGLConfig)
+	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		Log.d(TAG, "onsurfacecreated method called");
 
@@ -179,9 +212,9 @@ public class GLES11Renderer extends AbstractRenderer {
 
 	/**
 	 * The main rendering method for one item.
-	 * 
-	 * @param renderItem
-	 *            the object that needs to be drawn
+	 *
+	 * @param renderItem the object that needs to be drawn
+	 * @param gl the gl
 	 */
 	private void draw(RenderItem renderItem, GL10 gl) {
 
@@ -220,6 +253,11 @@ public class GLES11Renderer extends AbstractRenderer {
 		
 	}
 
+	/**
+	 * Sets the lights.
+	 *
+	 * @param gl the new lights
+	 */
 	private void setLights(GL10 gl) {
 		int lightIndex[] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3,
 				GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7 };
@@ -268,6 +306,9 @@ public class GLES11Renderer extends AbstractRenderer {
 
 	/**
 	 * Pass the material properties to OpenGL, including textures and shaders.
+	 *
+	 * @param m the m
+	 * @param gl the gl
 	 */
 	private void setMaterial(Material m, GL10 gl) {
 		if (m != null) {
@@ -285,10 +326,18 @@ public class GLES11Renderer extends AbstractRenderer {
 	}
 
 	// only used to calculate rendering time per frame
+	/** The frame count. */
 	private int frameCount;
+	
+	/** The previous time. */
 	private long currentTime, previousTime = 0;
+	
+	/** The fps. */
 	private float fps;
 
+	/**
+	 * Calculate fps.
+	 */
 	private void calculateFPS() {
 		// Increase frame count
 		frameCount++;

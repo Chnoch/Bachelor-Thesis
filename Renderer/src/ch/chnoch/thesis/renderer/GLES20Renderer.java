@@ -1,5 +1,36 @@
 package ch.chnoch.thesis.renderer;
 
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_CULL_FACE;
+import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
+import static android.opengl.GLES20.GL_DEPTH_TEST;
+import static android.opengl.GLES20.GL_DITHER;
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_LEQUAL;
+import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TRIANGLES;
+import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
+import static android.opengl.GLES20.glActiveTexture;
+import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glClearDepthf;
+import static android.opengl.GLES20.glDepthFunc;
+import static android.opengl.GLES20.glDisable;
+import static android.opengl.GLES20.glDrawElements;
+import static android.opengl.GLES20.glEnable;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glFlush;
+import static android.opengl.GLES20.glGetAttribLocation;
+import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glUniformMatrix4fv;
+import static android.opengl.GLES20.glUseProgram;
+import static android.opengl.GLES20.glVertexAttrib1f;
+import static android.opengl.GLES20.glVertexAttrib3f;
+import static android.opengl.GLES20.glVertexAttribPointer;
+import static android.opengl.GLES20.glViewport;
+
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -10,14 +41,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.interfaces.*;
-import ch.chnoch.thesis.renderer.util.GLUtil;
-import ch.chnoch.thesis.renderer.util.Util;
-
 import android.content.Context;
-import android.opengl.*;
-import static android.opengl.GLES20.*;
+import android.opengl.GLES20;
 import android.util.Log;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+import ch.chnoch.thesis.renderer.util.GLUtil;
 
 public class GLES20Renderer extends AbstractRenderer {
 
@@ -31,7 +60,6 @@ public class GLES20Renderer extends AbstractRenderer {
 	private Context mContext;
 
 	private int mProgram;
-	private int mTextureID;
 	private int muMVPMatrixHandle;
 	private int muNormalMatrixHandle;
 	private int muModelViewMatrixHandle;
@@ -40,8 +68,6 @@ public class GLES20Renderer extends AbstractRenderer {
 	private int maHasTextureHandle;
 	private int maNormalHandle;
 	private int maEyeVectorHandle;
-	private int maLightHandle;
-	private int maMaterialHandle;
 
 	private ShortBuffer mIndexBuffer;
 	private FloatBuffer mVertexBuffer;
@@ -56,8 +82,6 @@ public class GLES20Renderer extends AbstractRenderer {
 
 	private final String TAG = "GLES20Renderer";
 
-	private static final int FLOAT_SIZE_BYTES = 4;
-
 	/**
 	 * This constructor is called by {@link GLRenderPanel}.
 	 * 
@@ -70,105 +94,16 @@ public class GLES20Renderer extends AbstractRenderer {
 		mContext = context;
 	}
 
-	public GLES20Renderer(Context context, SceneManagerInterface sceneManager) {
-		super(sceneManager);
-		mContext = context;
-	}
-
-	private void cleanMaterial(Material m) {
-		if (m != null && m.getTexture() != null) {
-			GLES20.glDisable(GLES20.GL_TEXTURE_2D);
-		}
-		if (m != null && m.getShader() != null) {
-			m.getShader().disable();
-		}
-	}
-
-	public void createShader(Shader shader, String vertexFileName,
-			String fragmentFileName) throws Exception {
-		mEnableShader = true;
-		mShader = shader;
-		mVertexShaderFileName = vertexFileName;
-		mFragmentShaderFileName = fragmentFileName;
-	}
-
-	private void makeShader() {
-		mShader = new GLShader();
-		try {
-			mShader.load(mVertexShaderFileName, mFragmentShaderFileName);
-		} catch (Exception exc) {
-			Log.e(TAG, "Could not load Shaders. Check sources of shaders. "
-					+ exc.getMessage());
-		}
-	}
-
-	public Texture makeTexture() {
-		Texture tex = new GLTexture(mContext);
-
-		if (mTextures == null) {
-			mTextures = new ArrayList<Texture>();
-		}
-		mTextures.add(tex);
-		return tex;
-	}
-
-	private void loadTextures() {
-		if (mTextures != null) {
-			for (Texture tex : mTextures) {
-				tex.load();
-			}
-		}
-	}
-
-	public void onDrawFrame(GL10 gl) {
-		try {
-			beginFrame();
-
-			SceneManagerIterator it = mSceneManager.iterator();
-
-			while (it.hasNext()) {
-				draw(it.next());
-			}
-
-			endFrame();
-
-		} catch (Exception e) {
-			Log.d(TAG, e.toString());
-		}
-	}
-
-	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-		Log.d(TAG, "onsurfacechanged method called");
-		mViewer.surfaceHasChanged(width, height);
-		setViewportMatrix(width, height);
-		glViewport(0, 0, width, height);
-	}
-
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
 		Log.d(TAG, "onsurfacecreated method called");
-//		int[] depthbits = new int[1];
-//		glGetIntegerv(GL_DEPTH_BITS, depthbits, 0);
-//		Log.d(TAG, "Depth Bits: " + depthbits[0]);
-//		
-//		int[] redbits = new int[1];
-//		int[] bluebits = new int[1];
-//		int[] greenbits = new int[1];
-//		glGetIntegerv(GL_RED_BITS, redbits, 0);
-//		glGetIntegerv(GL_BLUE_BITS, bluebits, 0);
-//		glGetIntegerv(GL_GREEN_BITS, greenbits, 0);
-//		Log.d(TAG, "Red Bits: " + redbits[0]);
-//		Log.d(TAG, "Blue Bits: " + bluebits[0]);
-//		Log.d(TAG, "Green Bits: " + greenbits[0]);
 
 		if (mEnableShader) {
 			Log.d(TAG, "Enabling Shader");
-			makeShader();
+			loadShader();
 			mShader.use();
 		}
 
 		glDisable(GL_DITHER);
-
-		// glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
 		glClearColor(0.5f, 0.5f, 0.5f, 1);
 
@@ -231,7 +166,50 @@ public class GLES20Renderer extends AbstractRenderer {
 	}
 
 	/**
-	 * The main rendering method.
+	 * The callback method that is invoked by the Android framework whenever the
+	 * surface changes. Happens mostly during rotation changes.
+	 * 
+	 * @param glUnused
+	 *            The unused OpenGL ES 1.0 pointer
+	 * @param width
+	 *            The new width
+	 * @param height
+	 *            The new height
+	 */
+	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+		Log.d(TAG, "onsurfacechanged method called");
+		mViewer.surfaceHasChanged(width, height);
+		setViewportMatrix(width, height);
+		glViewport(0, 0, width, height);
+	}
+
+	/**
+	 * The callback method that is invoked by the Android framework every time a
+	 * frame is drawn.
+	 * 
+	 * @param glUnused
+	 *            A pointer to the GL10 object. This is no longer used in OpenGL
+	 *            ES 2.0
+	 */
+	public void onDrawFrame(GL10 glUnused) {
+		try {
+			beginFrame();
+
+			SceneManagerIterator it = mSceneManager.iterator();
+
+			while (it.hasNext()) {
+				draw(it.next());
+			}
+
+			endFrame();
+
+		} catch (Exception e) {
+			Log.d(TAG, e.toString());
+		}
+	}
+
+	/**
+	 * The main rendering method for each Node.
 	 * 
 	 * @param renderItem
 	 *            the object that needs to be drawn
@@ -362,6 +340,24 @@ public class GLES20Renderer extends AbstractRenderer {
 		}
 	}
 
+	public void createShader(Shader shader, String vertexFileName,
+			String fragmentFileName) throws Exception {
+		mEnableShader = true;
+		mShader = shader;
+		mVertexShaderFileName = vertexFileName;
+		mFragmentShaderFileName = fragmentFileName;
+	}
+
+	public Texture createTexture() {
+		Texture tex = new GLTexture(mContext);
+
+		if (mTextures == null) {
+			mTextures = new ArrayList<Texture>();
+		}
+		mTextures.add(tex);
+		return tex;
+	}
+
 	/**
 	 * This method is called at the beginning of each frame, i.e., before scene
 	 * drawing starts.
@@ -388,4 +384,30 @@ public class GLES20Renderer extends AbstractRenderer {
 		glFlush();
 	}
 
+	private void loadTextures() {
+		if (mTextures != null) {
+			for (Texture tex : mTextures) {
+				tex.load();
+			}
+		}
+	}
+
+	private void loadShader() {
+		mShader = new GLShader();
+		try {
+			mShader.load(mVertexShaderFileName, mFragmentShaderFileName);
+		} catch (Exception exc) {
+			Log.e(TAG, "Could not load Shaders. Check sources of shaders. "
+					+ exc.getMessage());
+		}
+	}
+
+	private void cleanMaterial(Material m) {
+		if (m != null && m.getTexture() != null) {
+			GLES20.glDisable(GLES20.GL_TEXTURE_2D);
+		}
+		if (m != null && m.getShader() != null) {
+			m.getShader().disable();
+		}
+	}
 }
