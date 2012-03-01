@@ -1,7 +1,5 @@
 package ch.chnoch.thesis.renderer;
 
-import java.util.LinkedList;
-
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -101,10 +99,6 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	/** A boolean indicating whether to update the location. */
 	protected boolean mUpdateLocation = true;
 
-	/** A list of the most recent events. */
-	protected LinkedList<MotionEvent> mEventList;
-
-
 	/**
 	 * Instantiates a new abstract touch handler.
 	 * 
@@ -128,8 +122,6 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		mCameraMode = cameraMode;
 
 		mViewer = viewer;
-
-		mEventList = new LinkedList<MotionEvent>();
 	}
 
 	/*
@@ -269,11 +261,6 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			mIntersection.node.setScale(mIntersection.node.getScale() - 0.1f);
 			mUpScaled = false;
 		}
-
-		// for (int i = 0; i < mEventList.size(); i++) {
-		// onTouch(mViewer, mEventList.getFirst());
-		// }
-		mEventList.clear();
 	}
 
 	/**
@@ -292,9 +279,6 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 			mUpdateLocation = true;
 		}
 
-		if (mEventList.size() > 3) {
-			mEventList.remove();
-		}
 		mViewer.requestRender();
 	}
 
@@ -394,11 +378,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	 */
 	protected void rotateCamera(MotionEvent e) {
 		if (e.getPointerCount() > 1) {
-			float angle1 = calculateAngle(mEventList.getFirst());
-			float angle2 = calculateAngle(mEventList.get(1));
-			float angle3 = calculateAngle(mEventList.get(2));
-
-			float angle = (angle1 + angle2 + angle3) / 3f;
+			float angle = calculateAngle(e);
 			if (!(mPreviousDegree == Float.MIN_VALUE)) {
 				Vector3f upVector = mSceneManager.getCamera().getUpVector();
 				Matrix4f rot = new Matrix4f();

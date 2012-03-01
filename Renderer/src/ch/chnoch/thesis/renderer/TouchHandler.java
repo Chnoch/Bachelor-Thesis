@@ -90,8 +90,6 @@ public class TouchHandler extends AbstractTouchHandler {
 			Log.d(TAG, "ACTION_MOVE");
 			mEventEnd = e.getEventTime();
 
-			mEventList.addLast(MotionEvent.obtain(e));
-
 			if (mMultitouch) {
 				// Multitouch Action
 				multitouchMove(e, x, y);
@@ -126,7 +124,6 @@ public class TouchHandler extends AbstractTouchHandler {
 			actionPointerUp();
 			break;
 		}
-		Log.d(TAG, "EventList count: " + mEventList.size());
 		finalizeOnTouch(x, y);
 		return true;
 	}

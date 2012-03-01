@@ -60,7 +60,6 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 
 			break;
 		case MotionEvent.ACTION_MOVE:
-			mEventList.addLast(e);
 			mEventEnd = e.getEventTime();
 			if (mMultitouch) {
 				// Log.d(TAG, "Multitouch");
