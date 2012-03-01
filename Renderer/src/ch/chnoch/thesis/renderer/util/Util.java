@@ -115,16 +115,19 @@ public class Util {
 				double x = cosPhi * cosTheta;
 				double y = sinTheta;
 				double z = sinPhi * cosTheta;
-				// double x = cosTheta * sinPhi;
-				// double y = sinTheta * sinPhi;
-				// double z = cosPhi;
+				double length = Math.sqrt(x*x + y*y + z*z);
+				Log.d("Util", "Length: " + length);
+				
+				double u = sinTheta * sinPhi;
+				double v = sinTheta * cosPhi;
+//				double u = Math.acos(y / length) / Math.PI;
+//				double v = (Math.atan2(z, x) / Math.PI + 1)*0.5d;
+//				double u = theta / (2* Math.PI);
+//				double v = phi / Math.PI;
 //				double u = 1 - (longNumber / longitudeBands);
 //				double v = latNumber / latitudeBands;
-				// double u = sinPhi * cosTheta;
-				// double v = sinPhi * cosPhi;
-				double u = Math.asin(x) / Math.PI + 0.5;
-				double v = Math.asin(y) / Math.PI + 0.5;
-
+				Log.d("Util", "U: " + u + "V: " + v);
+				
 				vertexNormalsList.add((float) x);
 				vertexNormalsList.add((float) y);
 				vertexNormalsList.add((float) z);
