@@ -9,12 +9,24 @@ import android.util.Log;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.Util;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GLViewer.
+ */
 public class GLViewer extends GLSurfaceView {
 
+	/** The m renderer. */
 	private RenderContext mRenderer;
 
+	/** The m height. */
 	private int mWidth, mHeight;
 
+	/**
+	 * Instantiates a new gL viewer.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public GLViewer(Context context) {
 		super(context);
 		// Turn on error-checking and logging
@@ -22,6 +34,16 @@ public class GLViewer extends GLSurfaceView {
 		// GLSurfaceView.DEBUG_LOG_GL_CALLS);
 	}
 
+	/**
+	 * Instantiates a new gL viewer.
+	 * 
+	 * @param context
+	 *            the context
+	 * @param renderer
+	 *            the renderer
+	 * @param openGLES20
+	 *            the open gle s20
+	 */
 	public GLViewer(Context context, RenderContext renderer, boolean openGLES20) {
 		super(context);
 		mRenderer = renderer;
@@ -35,20 +57,47 @@ public class GLViewer extends GLSurfaceView {
 		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
 
+	/**
+	 * Surface has changed.
+	 * 
+	 * @param width
+	 *            the width
+	 * @param height
+	 *            the height
+	 */
 	public void surfaceHasChanged(int width, int height) {
 		mWidth = width;
 		mHeight = height;
 		mRenderer.getSceneManager().getFrustum().setAspectRatio((float)width/height);
 	}
 
+	/**
+	 * Width.
+	 * 
+	 * @return the int
+	 */
 	public int width() {
 		return mWidth;
 	}
 
+	/**
+	 * Height.
+	 * 
+	 * @return the int
+	 */
 	public int height() {
 		return mHeight;
 	}
 
+	/**
+	 * Unproject.
+	 * 
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 * @return the ray
+	 */
 	public Ray unproject(float x, float y) {
 
 		Matrix4f staticMatrix = createMatrices();
@@ -75,6 +124,11 @@ public class GLViewer extends GLSurfaceView {
 		return new Ray(origin, direction);
 	}
 
+	/**
+	 * Creates the matrices.
+	 * 
+	 * @return the matrix4f
+	 */
 	private Matrix4f createMatrices() {
 
 		Matrix4f staticMatrix = new Matrix4f(mRenderer.getViewportMatrix());

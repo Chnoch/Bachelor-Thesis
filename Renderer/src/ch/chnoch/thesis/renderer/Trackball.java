@@ -7,15 +7,35 @@ import javax.vecmath.Vector3f;
 import android.util.Log;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Trackball.
+ */
 public class Trackball {
 
+	/** The m node. */
 	protected Node mNode;
+
+	/** The m center. */
 	protected Vector3f mCenter;
+
+	/** The m radius. */
 	protected float mRadius;
+
+	/** The m camera. */
 	protected Camera mCamera;
 
+	/**
+	 * Instantiates a new trackball.
+	 */
 	public Trackball() {}
 
+	/**
+	 * Sets the node.
+	 * 
+	 * @param node
+	 *            the new node
+	 */
 	public void setNode(Node node) {
 		mNode = node;
 		BoundingBox box = mNode.getBoundingBox();
@@ -23,10 +43,26 @@ public class Trackball {
 		mRadius = box.getRadius();
 	}
 
+	/**
+	 * Gets the node.
+	 * 
+	 * @return the node
+	 */
 	public Node getNode() {
 		return mNode;
 	}
 
+	/**
+	 * Update.
+	 * 
+	 * @param cur
+	 *            the cur
+	 * @param prev
+	 *            the prev
+	 * @param factor
+	 *            the factor
+	 * @return true, if successful
+	 */
 	public boolean update(Vector3f cur, Vector3f prev, float factor) {
 		if (!cur.epsilonEquals(prev, 0.005f)) {
 			Matrix4f t = mNode.getRotationMatrix();
@@ -44,6 +80,17 @@ public class Trackball {
 		}
 	}
 
+	/**
+	 * Gets the axis angle.
+	 * 
+	 * @param cur
+	 *            the cur
+	 * @param prev
+	 *            the prev
+	 * @param factor
+	 *            the factor
+	 * @return the axis angle
+	 */
 	protected AxisAngle4f getAxisAngle(Vector3f cur, Vector3f prev, float factor) {
 		cur.sub(mCenter);
 		prev.sub(mCenter);
@@ -77,6 +124,13 @@ public class Trackball {
 	 * return intersection; }
 	 */
 
+	/**
+	 * Project on trackball.
+	 * 
+	 * @param ray
+	 *            the ray
+	 * @return the ray shape intersection
+	 */
 	protected RayShapeIntersection projectOnTrackball(Ray ray) {
 
 		Vector3f center = new Vector3f(mCenter);
@@ -104,6 +158,7 @@ public class Trackball {
 	 * specified as the point where the ray hits the trackball.
 	 * 
 	 * @param ray
+	 *            the ray
 	 * @return the RayShapeIntersection object
 	 */
 	public RayShapeIntersection intersect(Ray ray) {
@@ -115,6 +170,13 @@ public class Trackball {
 		return intersection;
 	}
 
+	/**
+	 * Intersect helper.
+	 * 
+	 * @param ray
+	 *            the ray
+	 * @return the ray shape intersection
+	 */
 	private RayShapeIntersection intersectHelper(Ray ray) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
 		intersection.node = mNode;

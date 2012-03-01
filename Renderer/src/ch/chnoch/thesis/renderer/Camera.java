@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 import android.util.Log;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
+// TODO: Auto-generated Javadoc
 /**
  * Stores the specification of a virtual camera. You will extend this class to
  * construct a 4x4 camera matrix, i.e., the world-to- camera transform from
@@ -17,7 +18,10 @@ import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
  */
 public class Camera {
 
+	/** The m camera matrix. */
 	private Matrix4f mCameraMatrix;
+
+	/** The m up vector. */
 	private Vector3f mCenterOfProjection, mLookAtPoint, mUpVector;
 
 	/**
@@ -30,6 +34,9 @@ public class Camera {
 		reset();
 	}
 
+	/**
+	 * Reset.
+	 */
 	public void reset() {
 		mCenterOfProjection = new Vector3f(0, 0, 15);
 		mLookAtPoint = new Vector3f(0, 0, 0);
@@ -48,37 +55,80 @@ public class Camera {
 		return mCameraMatrix;
 	}
 
+	/**
+	 * Gets the center of projection.
+	 * 
+	 * @return the center of projection
+	 */
 	public Vector3f getCenterOfProjection() {
 		return mCenterOfProjection;
 	}
 
+	/**
+	 * Sets the center of projection.
+	 * 
+	 * @param centerOfProjection
+	 *            the new center of projection
+	 */
 	public void setCenterOfProjection(Vector3f centerOfProjection) {
 		this.mCenterOfProjection = centerOfProjection;
 		this.update();
 	}
 
+	/**
+	 * Gets the look at point.
+	 * 
+	 * @return the look at point
+	 */
 	public Vector3f getLookAtPoint() {
 		return mLookAtPoint;
 	}
 
+	/**
+	 * Sets the look at point.
+	 * 
+	 * @param lookAtPoint
+	 *            the new look at point
+	 */
 	public void setLookAtPoint(Vector3f lookAtPoint) {
 		this.mLookAtPoint = lookAtPoint;
 		this.update();
 	}
 
+	/**
+	 * Gets the up vector.
+	 * 
+	 * @return the up vector
+	 */
 	public Vector3f getUpVector() {
 		return mUpVector;
 	}
 
+	/**
+	 * Sets the up vector.
+	 * 
+	 * @param upVector
+	 *            the new up vector
+	 */
 	public void setUpVector(Vector3f upVector) {
 		this.mUpVector = upVector;
 		this.update();
 	}
 
+	/**
+	 * Update.
+	 */
 	public void update() {
 		updateCamera();
 	}
 
+	/**
+	 * Creates the halfway vector.
+	 * 
+	 * @param light
+	 *            the light
+	 * @return the vector3f
+	 */
 	public Vector3f createHalfwayVector(Light light) {
 		Vector3f halfway;
 		Vector3f eyeVec = new Vector3f(mCenterOfProjection);
@@ -92,6 +142,9 @@ public class Camera {
 		return halfway;
 	}
 
+	/**
+	 * Update camera.
+	 */
 	private void updateCamera() {
 		Vector3f x = new Vector3f();
 		Vector3f y = new Vector3f();
@@ -125,6 +178,9 @@ public class Camera {
 		}
 	}
 
+	/**
+	 * Update camera2.
+	 */
 	private void updateCamera2() {
 		float forwardx, forwardy, forwardz, invMag;
 		float upx, upy, upz;

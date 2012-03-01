@@ -1,21 +1,5 @@
 package ch.chnoch.thesis.renderer;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-import javax.vecmath.Matrix4f;
-
-import android.opengl.GLException;
-
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
-import ch.chnoch.thesis.renderer.interfaces.Shader;
-import ch.chnoch.thesis.renderer.interfaces.Texture;
-import ch.chnoch.thesis.renderer.util.GLUtil;
-
 import static android.opengl.GLES10.GL_CCW;
 import static android.opengl.GLES10.GL_FIXED;
 import static android.opengl.GLES10.GL_MODELVIEW;
@@ -23,39 +7,98 @@ import static android.opengl.GLES10.GL_NORMAL_ARRAY;
 import static android.opengl.GLES10.GL_TRIANGLES;
 import static android.opengl.GLES10.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES10.GL_VERTEX_ARRAY;
-import static android.opengl.GLES20.*;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_DEPTH_TEST;
 
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+import android.opengl.GLException;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.interfaces.Texture;
+import ch.chnoch.thesis.renderer.util.GLUtil;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GL2DRenderer.
+ */
 public class GL2DRenderer extends AbstractRenderer {
 
+	/** The COLO r_ attr. */
 	private int COLOR_ATTR = 1;
+
+	/** The VERTE x_ attr. */
 	private int VERTEX_ATTR = 1;
+
+	/** The m index buffer. */
 	private ShortBuffer mIndexBuffer;
+
+	/** The m vertex buffer. */
 	private FloatBuffer mVertexBuffer;
+
+	/** The m tex coords buffer. */
 	private FloatBuffer mTexCoordsBuffer;
+
+	/** The m color buffer. */
 	private FloatBuffer mColorBuffer;
+
+	/** The m normal buffer. */
 	private FloatBuffer mNormalBuffer;
 
+	/** The TAG. */
 	private final String TAG = "GL2DRenderer";
 
+	/**
+	 * Instantiates a new g l2 d renderer.
+	 */
 	public GL2DRenderer() {
 		super();
 	}
 
+	/**
+	 * Instantiates a new g l2 d renderer.
+	 * 
+	 * @param sceneManager
+	 *            the scene manager
+	 */
 	public GL2DRenderer(SceneManagerInterface sceneManager) {
 		super(sceneManager);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.AbstractRenderer#createShader(ch.chnoch.thesis
+	 * .renderer.interfaces.Shader, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void createShader(Shader shader, String vertexShader, String fragmentShader)
 			throws Exception {
 		throw new GLException(0, "OpenGL ES 1.1 does not support shaders");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#createTexture()
+	 */
 	@Override
 	public Texture createTexture() {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.AbstractRenderer#onDrawFrame(javax.microedition
+	 * .khronos.opengles.GL10)
+	 */
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		SceneManagerIterator shapeIterator = mSceneManager.iterator();
@@ -71,6 +114,12 @@ public class GL2DRenderer extends AbstractRenderer {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#onSurfaceChanged(javax.
+	 * microedition.khronos.opengles.GL10, int, int)
+	 */
 	@Override
 	public void onSurfaceChanged(GL10 gl, int x, int y) {
 		gl.glMatrixMode(GL10.GL_PROJECTION);
@@ -84,6 +133,13 @@ public class GL2DRenderer extends AbstractRenderer {
 		// gl.glTranslatex(24576, 24576, 0);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#onSurfaceCreated(javax.
+	 * microedition.khronos.opengles.GL10,
+	 * javax.microedition.khronos.egl.EGLConfig)
+	 */
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		gl.glClearColor(1, 1, 1, 1);
@@ -97,6 +153,8 @@ public class GL2DRenderer extends AbstractRenderer {
 	 * 
 	 * @param renderItem
 	 *            the object that needs to be drawn
+	 * @param gl
+	 *            the gl
 	 */
 	private void draw(RenderItem renderItem, GL10 gl) {
 

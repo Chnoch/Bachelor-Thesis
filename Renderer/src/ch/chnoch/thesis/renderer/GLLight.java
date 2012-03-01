@@ -1,27 +1,48 @@
 package ch.chnoch.thesis.renderer;
 
-import static android.opengl.GLES20.*;
+import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glUniform3f;
+import static android.opengl.GLES20.glUniform4f;
 
-import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
-
-import android.util.Log;
 
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GLLight.
+ */
 public class GLLight {
+
+	/** The m light. */
 	private Light mLight;
+
+	/** The Constant TAG. */
 	private static final String TAG = "GLLight";
 
+	/** The mu specular color handle. */
 	private int muDirectionHandle, muPositionHandle, muAmbientColorHandle,
 			muDiffuseColorHandle, muSpecularColorHandle;
 
+	/**
+	 * Instantiates a new gL light.
+	 * 
+	 * @param light
+	 *            the light
+	 */
 	public GLLight(Light light) {
 		mLight = light;
 	}
 
+	/**
+	 * Gets the handles.
+	 * 
+	 * @param program
+	 *            the program
+	 * @return the handles
+	 */
 	public void getHandles(int program) {
 		muDirectionHandle = glGetUniformLocation(program, "light.direction");
 		muPositionHandle = glGetUniformLocation(program, "light.position");
@@ -30,6 +51,14 @@ public class GLLight {
 		muSpecularColorHandle = glGetUniformLocation(program, "light.specular");
 	}
 
+	/**
+	 * Draw.
+	 * 
+	 * @param transformation
+	 *            the transformation
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void draw(Matrix4f transformation) throws Exception {
 
 		if (muDirectionHandle != -1) {

@@ -1,33 +1,53 @@
 package ch.chnoch.thesis.renderer;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.vecmath.*;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.box2d.*;
+import ch.chnoch.thesis.renderer.box2d.Box2DShape;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a 3D shape. The shape currently just consists of its vertex data.
  * It should later be extended to include material properties, shaders, etc.
  */
 public class Shape {
 
+	/** The m vertex buffers. */
 	private VertexBuffers mVertexBuffers;
+
+	/** The t. */
 	private Matrix4f t;
+
+	/** The m box. */
 	private BoundingBox mBox;
+
+	/** The m zero vector. */
 	private Vector3f mZeroVector;
+
+	/** The m epsilon. */
 	private float mEpsilon;
 
+	/**
+	 * Instantiates a new shape.
+	 * 
+	 * @param vertexBuffers
+	 *            the vertex buffers
+	 */
 	public Shape(VertexBuffers vertexBuffers) {
 		mVertexBuffers = vertexBuffers;
 		init();
 	}
 
+	/**
+	 * Inits the.
+	 */
 	private void init() {
 		mBox = new BoundingBox(mVertexBuffers.getVertexBuffer());
 		t = new Matrix4f();
@@ -36,22 +56,48 @@ public class Shape {
 		mEpsilon = 0.001f;
 	}
 
+	/**
+	 * Gets the vertex buffers.
+	 * 
+	 * @return the vertex buffers
+	 */
 	public VertexBuffers getVertexBuffers() {
 		return mVertexBuffers;
 	}
 
+	/**
+	 * Sets the transformation.
+	 * 
+	 * @param t
+	 *            the new transformation
+	 */
 	public void setTransformation(Matrix4f t) {
 		this.t = t;
 	}
 
+	/**
+	 * Gets the transformation.
+	 * 
+	 * @return the transformation
+	 */
 	public Matrix4f getTransformation() {
 		return t;
 	}
 
+	/**
+	 * Gets the bounding box.
+	 * 
+	 * @return the bounding box
+	 */
 	public BoundingBox getBoundingBox() {
 		return mBox.clone();
 	}
 
+	/**
+	 * Enable box2 d.
+	 * 
+	 * @return the box2 d shape
+	 */
 	Box2DShape enableBox2D() {
 		return new Box2DShape(mVertexBuffers.getVertexBuffer());
 	}
@@ -60,11 +106,10 @@ public class Shape {
 	 * Intersect the given Ray with this shape. Tests for every triangle of the
 	 * shape. Speed depends hence on the complexity of the shape.
 	 * 
-	 * @param Ray
-	 *            ray The Ray to be intersected
-	 * @param Matrix4f
-	 *            transformation The transformation of the Shape into its actual
-	 *            position
+	 * @param ray
+	 *            the ray
+	 * @param transformation
+	 *            the transformation
 	 * @return a RayShapeIntersection with the coordinates of the HitPoint if
 	 *         any.
 	 */
@@ -99,6 +144,11 @@ public class Shape {
 		return intersection;
 	}
 
+	/**
+	 * Gets the triangles.
+	 * 
+	 * @return the triangles
+	 */
 	private List<Triangle> getTriangles() {
 		List<Triangle> triangles = new ArrayList<Triangle>();
 
@@ -153,6 +203,15 @@ public class Shape {
 	 * Private Methods
 	 */
 
+	/**
+	 * Calculate intersection.
+	 * 
+	 * @param ray
+	 *            the ray
+	 * @param triangle
+	 *            the triangle
+	 * @return the ray shape intersection
+	 */
 	private RayShapeIntersection calculateIntersection(Ray ray,
 			Triangle triangle) {
 		RayShapeIntersection intersection = new RayShapeIntersection();
@@ -228,9 +287,20 @@ public class Shape {
 
 	}
 
+	/**
+	 * The Class Triangle.
+	 */
 	private class Triangle {
+
+		/** The m z. */
 		public Point3f mX, mY, mZ;
 
+		/**
+		 * Transform.
+		 * 
+		 * @param t
+		 *            the t
+		 */
 		public void transform(Matrix4f t) {
 			t.transform(mX);
 			t.transform(mY);

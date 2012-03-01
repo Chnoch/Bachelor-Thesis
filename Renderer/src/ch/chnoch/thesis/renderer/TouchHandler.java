@@ -11,22 +11,52 @@ import android.view.View;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TouchHandler.
+ */
 public class TouchHandler extends AbstractTouchHandler {
 
+	/** The m is translation. */
 	private boolean mIsTranslation = false;
+
+	/** The m rotate. */
 	private boolean mRotate = false;
 
+	/** The Constant ROTATION_THRESHOLD. */
 	private static final float ROTATION_THRESHOLD = 0.15f;
+
+	/** The Constant TRANSLATION_DELAY. */
 	private static final float TRANSLATION_DELAY = 300;
 
+	/** The Constant TAG. */
 	private static final String TAG = "TouchHandler";
 
+	/**
+	 * Instantiates a new touch handler.
+	 * 
+	 * @param sceneManager
+	 *            the scene manager
+	 * @param renderer
+	 *            the renderer
+	 * @param viewer
+	 *            the viewer
+	 * @param cameraMode
+	 *            the camera mode
+	 */
 	public TouchHandler(SceneManagerInterface sceneManager,
 			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
 		super(sceneManager, renderer, viewer, cameraMode);
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.AbstractTouchHandler#onTouch(android.view.View,
+	 * android.view.MotionEvent)
+	 */
 	public boolean onTouch(View view, MotionEvent e) {
 		int action = e.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
@@ -101,6 +131,13 @@ public class TouchHandler extends AbstractTouchHandler {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.AbstractTouchHandler#makeRotation(android.view
+	 * .MotionEvent, float, float)
+	 */
 	protected void makeRotation(MotionEvent e, float x, float y) {
 		rotateCamera(e);
 		zoom(e);
@@ -108,6 +145,14 @@ public class TouchHandler extends AbstractTouchHandler {
 
 	}
 
+	/**
+	 * Translate.
+	 * 
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 */
 	private void translate(float x, float y) {
 		try {
 			// Long Press occured: Manipulate object by moving it
@@ -134,6 +179,14 @@ public class TouchHandler extends AbstractTouchHandler {
 		}
 	}
 
+	/**
+	 * Rotate.
+	 * 
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 */
 	private void rotate(float x, float y) {
 		mTrackball.setNode(mIntersection.node);
 
@@ -148,6 +201,15 @@ public class TouchHandler extends AbstractTouchHandler {
 		mRotate = true;
 	}
 
+	/**
+	 * Sets the camera to object.
+	 * 
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 * @return true, if successful
+	 */
 	private boolean setCameraToObject(float x, float y) {
 		if (mSetObjectForCameraFlag) {
 			unproject(x, y);
@@ -164,6 +226,9 @@ public class TouchHandler extends AbstractTouchHandler {
 		}
 	}
 
+	/**
+	 * Start async scaler.
+	 */
 	private void startAsyncScaler() {
 		Log.d(TAG, "startAsyncScaler");
 		Timer timer = new Timer();
@@ -171,7 +236,16 @@ public class TouchHandler extends AbstractTouchHandler {
 		timer.schedule(task, (long) TRANSLATION_DELAY);
 	}
 
+	/**
+	 * The Class ScaleTask.
+	 */
 	private class ScaleTask extends TimerTask {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.TimerTask#run()
+		 */
 		public void run() {
 			Log.d(TAG, "Running ScaleTask");
 			if (!mMultitouch && !mRotate && mOnNode) {

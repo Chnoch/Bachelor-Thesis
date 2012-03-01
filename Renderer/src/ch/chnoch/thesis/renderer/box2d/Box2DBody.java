@@ -10,18 +10,50 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Box2DBody.
+ */
 public class Box2DBody {
+
+	/** The m body. */
 	private Body mBody;
+
+	/** The m body def. */
 	private BodyDef mBodyDef;
+
+	/** The m previous position. */
 	private Vector2f mPreviousPosition;
 
+	/** The m world. */
 	private Box2DWorld mWorld;
+
+	/** The m joint list. */
 	private List<Box2DJoint> mJointList;
+
+	/** The m joint. */
 	private Box2DJoint mJoint;
+
+	/** The m shape. */
 	private Box2DShape mShape;
 
+	/** The m create joint. */
 	private boolean mCreateJoint;
 
+	/**
+	 * Instantiates a new box2 d body.
+	 * 
+	 * @param position
+	 *            the position
+	 * @param world
+	 *            the world
+	 * @param shape
+	 *            the shape
+	 * @param hasMass
+	 *            the has mass
+	 * @param createJoint
+	 *            the create joint
+	 */
 	public Box2DBody(Vector2f position, Box2DWorld world, Box2DShape shape,
 			boolean hasMass, boolean createJoint) {
 		mPreviousPosition = position;
@@ -42,19 +74,43 @@ public class Box2DBody {
 		createShape(shape, hasMass);
 	}
 
+	/**
+	 * Gets the current position.
+	 * 
+	 * @return the current position
+	 */
 	public Vector2f getCurrentPosition() {
 		Vec2 pos = mBody.getPosition();
 		return new Vector2f(pos.x, pos.y);
 	}
 
+	/**
+	 * Gets the previous position.
+	 * 
+	 * @return the previous position
+	 */
 	public Vector2f getPreviousPosition() {
 		return new Vector2f(mPreviousPosition);
 	}
 
+	/**
+	 * Sets the previous position.
+	 * 
+	 * @param pos
+	 *            the new previous position
+	 */
 	public void setPreviousPosition(Vector2f pos) {
 		mPreviousPosition.set(pos);
 	}
 
+	/**
+	 * Move.
+	 * 
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 */
 	public void move(float x, float y) {
 		if (mCreateJoint) {
 			if (mJoint == null) {
@@ -69,6 +125,9 @@ public class Box2DBody {
 		}
 	}
 
+	/**
+	 * Removes the joint.
+	 */
 	public void removeJoint() {
 		for (Box2DJoint joint : mJointList) {
 			joint.remove();
@@ -77,6 +136,12 @@ public class Box2DBody {
 		mJoint = null;
 	}
 
+	/**
+	 * Sets the type.
+	 * 
+	 * @param type
+	 *            the new type
+	 */
 	public void setType(TType type) {
 		BodyType typeInt;
 		switch (type) {
@@ -93,6 +158,11 @@ public class Box2DBody {
 		mBody.m_type = typeInt;
 	}
 
+	/**
+	 * Gets the type.
+	 * 
+	 * @return the type
+	 */
 	public TType getType() {
 		switch (mBody.m_type) {
 		case DYNAMIC:
@@ -104,14 +174,35 @@ public class Box2DBody {
 		}
 	}
 
+	/**
+	 * Sets the linear velocity.
+	 * 
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 */
 	public void setLinearVelocity(float x, float y) {
 		mBody.setLinearVelocity(new Vec2(x, y));
 	}
 
+	/**
+	 * Gets the angle.
+	 * 
+	 * @return the angle
+	 */
 	public float getAngle() {
 		return mBody.getAngle();
 	}
 
+	/**
+	 * Creates the shape.
+	 * 
+	 * @param shape
+	 *            the shape
+	 * @param hasMass
+	 *            the has mass
+	 */
 	public void createShape(Box2DShape shape, boolean hasMass) {
 		if (hasMass) {
 			mBody.createFixture(shape.getFixtureDef());
@@ -120,6 +211,11 @@ public class Box2DBody {
 		}
 	}
 	
+	/**
+	 * Gets the shape.
+	 * 
+	 * @return the shape
+	 */
 	public Box2DShape getShape() {
 		return mShape;
 	}
@@ -128,15 +224,32 @@ public class Box2DBody {
 	 * Package Scope
 	 */
 
+	/**
+	 * Gets the definition.
+	 * 
+	 * @return the definition
+	 */
 	BodyDef getDefinition() {
 		return mBodyDef;
 	}
 
+	/**
+	 * Gets the body.
+	 * 
+	 * @return the body
+	 */
 	Body getBody() {
 		return mBody;
 	}
 
+	/**
+	 * The Enum TType.
+	 */
 	public enum TType {
-		STATIC, DYNAMIC
+
+		/** The STATIC. */
+		STATIC,
+		/** The DYNAMIC. */
+		DYNAMIC
 	}
 }

@@ -14,13 +14,21 @@ import android.util.Log;
 import ch.chnoch.thesis.renderer.Shape;
 import ch.chnoch.thesis.renderer.VertexBuffers;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Util.
+ */
 public class Util {
+
+	/** The one. */
 	public static int one = 1;
+
+	/** The one normal. */
 	public static int oneNormal = 1;
 
 	/**
 	 * Creates a primitive type float array from a List of reference Float type
-	 * values
+	 * values.
 	 * 
 	 * @param list
 	 *            The List with the Float values
@@ -37,7 +45,7 @@ public class Util {
 
 	/**
 	 * Creates a primitive type float array from a List of reference Float type
-	 * values
+	 * values.
 	 * 
 	 * @param list
 	 *            The List with the Float values
@@ -61,6 +69,15 @@ public class Util {
 		return new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	}
 	
+	/**
+	 * Read raw text.
+	 * 
+	 * @param app
+	 *            the app
+	 * @param id
+	 *            the id
+	 * @return the string
+	 */
 	public static String readRawText(Application app, int id) {
 		InputStream raw = app.getResources().openRawResource(id);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -80,10 +97,28 @@ public class Util {
 		return byteArrayOutputStream.toString();
 	}
 
+	/**
+	 * Load cube.
+	 * 
+	 * @param scale
+	 *            the scale
+	 * @return the shape
+	 */
 	public static Shape loadCube(float scale) {
 		return loadCuboid(scale, scale, scale);
 	}
 	
+	/**
+	 * Load cuboid.
+	 * 
+	 * @param width
+	 *            the width
+	 * @param height
+	 *            the height
+	 * @param depth
+	 *            the depth
+	 * @return the shape
+	 */
 	public static Shape loadCuboid(float width, float height, float depth) {
 		VertexBuffers vertexBuffer = new VertexBuffers();
 		vertexBuffer.setColorBuffer(colors);
@@ -95,6 +130,17 @@ public class Util {
 		return new Shape(vertexBuffer);
 	}
 
+	/**
+	 * Load sphere.
+	 * 
+	 * @param latitudeBands
+	 *            the latitude bands
+	 * @param longitudeBands
+	 *            the longitude bands
+	 * @param radius
+	 *            the radius
+	 * @return the shape
+	 */
 	public static Shape loadSphere(int latitudeBands, int longitudeBands,
 			float radius) {
 		List<Float> vertexNormalsList = new ArrayList<Float>();
@@ -167,6 +213,17 @@ public class Util {
 	}
 
 	
+	/**
+	 * Generate cuboid vertices.
+	 * 
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 * @param z
+	 *            the z
+	 * @return the float[]
+	 */
 	private static float[] generateCuboidVertices(float x, float y, float z) {
 		
 		float vertices[] = { 
@@ -205,6 +262,11 @@ public class Util {
 		return vertices;
 	}
 
+	/**
+	 * Generate cuboid texture coordinates.
+	 * 
+	 * @return the float[]
+	 */
 	private static float[] generateCuboidTextureCoordinates() {
 		float texCoords[] = {
  1, 1, 1, 1, 0, 1,
@@ -217,15 +279,19 @@ public class Util {
  0, 0, 1, 0, 0, 0 };
 		return texCoords;
 	}
+
+	/** The colors. */
 	static float colors[] = { 0, 0, 0, one, one, 0, 0, one, one, one, 0, one,
 			0, one, 0, one, 0, 0, one, one, one, 0, one, one, one, one, one,
 			one, 0, one, one, one, };
 
+	/** The indices. */
 	static int indices[] = { 0, 12, 15, 0, 15, 3, 4, 17, 19, 4, 19, 8, 6, 18,
 			21, 6, 21, 9, 10, 22, 13, 10, 13, 2, 14, 23, 20, 14, 20, 16, 11, 1,
 			5, 11, 5, 7 };
 
 	
+	/** The new normals. */
 	static float newNormals[] = {
 		one, 0, 0,
 		0, -one, 0,
@@ -260,6 +326,14 @@ public class Util {
 		0, one, 0
 	};
 
+	/**
+	 * Transform.
+	 * 
+	 * @param m
+	 *            the m
+	 * @param point
+	 *            the point
+	 */
 	public static void transform(Matrix4f m, Vector3f point) {
 		float x, y, z, w;
 		x = m.m00 * point.x + m.m01 * point.y + m.m02 * point.z + m.m03;

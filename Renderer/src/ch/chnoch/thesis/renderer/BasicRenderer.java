@@ -9,8 +9,6 @@ import static android.opengl.GLES10.GL_SHININESS;
 import static android.opengl.GLES10.GL_SPECULAR;
 import static android.opengl.GLES10.GL_VERSION;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -21,14 +19,34 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.util.Log;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BasicRenderer.
+ */
 public class BasicRenderer implements GLSurfaceView.Renderer {
 
+	/** The m vertex buffer. */
 	protected FloatBuffer mVertexBuffer;
+
+	/** The m normal buffer. */
 	protected FloatBuffer mNormalBuffer;
+
+	/** The m index buffer. */
 	protected ShortBuffer mIndexBuffer;
+
+	/** The m light. */
 	protected Light mLight;
+
+	/** The m material. */
 	protected Material mMaterial;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.opengl.GLSurfaceView.Renderer#onDrawFrame(javax.microedition.
+	 * khronos.opengles.GL10)
+	 */
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		gl.glDisable(GL10.GL_DITHER);
@@ -57,6 +75,13 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 */
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.opengl.GLSurfaceView.Renderer#onSurfaceChanged(javax.microedition
+	 * .khronos.opengles.GL10, int, int)
+	 */
 	@Override
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
 		gl.glViewport(0, 0, w, h);
@@ -73,6 +98,13 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		gl.glFrustumf(-1, 1, -1f/ratio, 1f/ratio, 1, 100);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.opengl.GLSurfaceView.Renderer#onSurfaceCreated(javax.microedition
+	 * .khronos.opengles.GL10, javax.microedition.khronos.egl.EGLConfig)
+	 */
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		int[] depthbits = new int[1];
@@ -99,6 +131,12 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		drawLights(gl);
 	}
 
+	/**
+	 * Draw lights.
+	 * 
+	 * @param gl
+	 *            the gl
+	 */
 	private void drawLights(GL10 gl) {
 
 //		gl.glLightModeli(GL10.GL_LIGHT_MODEL, GL10.GL_TRUE);
@@ -121,10 +159,22 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		gl.glLightfv(GL10.GL_LIGHT0, GL_SPECULAR, mLight.createSpecularArray(), 0);
 	}
 
+	/**
+	 * Sets the camera.
+	 * 
+	 * @param gl
+	 *            the new camera
+	 */
 	private void setCamera(GL10 gl) {
 		GLU.gluLookAt(gl, 0, 0, 0, 0f, 0f, -1f, 0f, 1.0f, 0.0f);
 	}
 
+	/**
+	 * Draw material.
+	 * 
+	 * @param gl
+	 *            the gl
+	 */
 	private void drawMaterial(GL10 gl) {
 
 		gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mMaterial.createDiffuseArray(), 0);
@@ -136,6 +186,12 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mMaterial.shininess);
 	}
 
+	/**
+	 * Draw.
+	 * 
+	 * @param gl
+	 *            the gl
+	 */
 	public void draw(GL10 gl) {
 		drawMaterial(gl);
 		gl.glEnable(GL10.GL_NORMALIZE);
@@ -161,34 +217,79 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 
+	/**
+	 * Gets the vertex buffer.
+	 * 
+	 * @return the vertex buffer
+	 */
 	public FloatBuffer getVertexBuffer() {
 		return mVertexBuffer;
 	}
 
+	/**
+	 * Sets the vertex buffer.
+	 * 
+	 * @param mVertexBuffer
+	 *            the new vertex buffer
+	 */
 	public void setVertexBuffer(FloatBuffer mVertexBuffer) {
 		this.mVertexBuffer = mVertexBuffer;
 	}
 
+	/**
+	 * Gets the normal buffer.
+	 * 
+	 * @return the normal buffer
+	 */
 	public FloatBuffer getNormalBuffer() {
 		return mNormalBuffer;
 	}
 
+	/**
+	 * Sets the normal buffer.
+	 * 
+	 * @param mNormalBuffer
+	 *            the new normal buffer
+	 */
 	public void setNormalBuffer(FloatBuffer mNormalBuffer) {
 		this.mNormalBuffer = mNormalBuffer;
 	}
 
+	/**
+	 * Gets the index buffer.
+	 * 
+	 * @return the index buffer
+	 */
 	public ShortBuffer getIndexBuffer() {
 		return mIndexBuffer;
 	}
 
+	/**
+	 * Sets the index buffer.
+	 * 
+	 * @param mIndexBuffer
+	 *            the new index buffer
+	 */
 	public void setIndexBuffer(ShortBuffer mIndexBuffer) {
 		this.mIndexBuffer = mIndexBuffer;
 	}
 	
+	/**
+	 * Sets the light.
+	 * 
+	 * @param light
+	 *            the new light
+	 */
 	public void setLight(Light light) {
 		mLight = light;
 	}
 	
+	/**
+	 * Sets the material.
+	 * 
+	 * @param mat
+	 *            the new material
+	 */
 	public void setMaterial(Material mat) {
 		mMaterial = mat;
 	}

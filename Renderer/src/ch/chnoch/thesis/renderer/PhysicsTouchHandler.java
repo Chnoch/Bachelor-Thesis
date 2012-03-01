@@ -6,17 +6,41 @@ import android.view.View;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PhysicsTouchHandler.
+ */
 public class PhysicsTouchHandler extends AbstractTouchHandler {
 
+	/** The Constant TAG. */
 	private static final String TAG = "PhysicsTouchHandler";
 
 
+	/**
+	 * Instantiates a new physics touch handler.
+	 * 
+	 * @param sceneManager
+	 *            the scene manager
+	 * @param renderer
+	 *            the renderer
+	 * @param viewer
+	 *            the viewer
+	 * @param cameraMode
+	 *            the camera mode
+	 */
 	public PhysicsTouchHandler(SceneManagerInterface sceneManager,
 			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
 		super(sceneManager, renderer, viewer, cameraMode);
 		mPlane.set2DMode(true);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.AbstractTouchHandler#onTouch(android.view.View,
+	 * android.view.MotionEvent)
+	 */
 	@Override
 	public boolean onTouch(View view, MotionEvent e) {
 
@@ -73,17 +97,25 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.AbstractTouchHandler#makeRotation(android.view
+	 * .MotionEvent, float, float)
+	 */
 	protected void makeRotation(MotionEvent e, float x, float y) {
 		rotateCamera(e);
 		moveCamera(x, y);
 	}
 
 	/**
+	 * Move node.
 	 * 
 	 * @param x
+	 *            the x
 	 * @param y
-	 * @param mode
-	 *            1: start, 2: end, 0: common
+	 *            the y
 	 */
 	private void moveNode(float x, float y) {
 		Ray curRay = mViewer.unproject(x, y);
@@ -95,6 +127,14 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 		mPlane.update(endIntersection.hitPoint, startIntersection.hitPoint);
 	}
 
+	/**
+	 * Find node.
+	 * 
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 */
 	private void findNode(float x, float y) {
 		if (mOnNode) {
 			mPlane.setPointOnPlane(mIntersection.hitPoint);
@@ -102,6 +142,9 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 		}
 	}
 
+	/**
+	 * End translation.
+	 */
 	private void endTranslation() {
 		mSceneManager.destroyJoints();
 	}

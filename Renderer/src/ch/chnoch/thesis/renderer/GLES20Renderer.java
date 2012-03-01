@@ -48,52 +48,99 @@ import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GLES20Renderer.
+ */
 public class GLES20Renderer extends AbstractRenderer {
 
+	/** The m shader. */
 	private Shader mShader;
+
+	/** The m fragment shader file name. */
 	private String mVertexShaderFileName, mFragmentShaderFileName;
 
+	/** The m textures. */
 	private List<Texture> mTextures;
 
+	/** The m light. */
 	private GLLight mLight;
 
+	/** The m context. */
 	private Context mContext;
 
+	/** The m program. */
 	private int mProgram;
+
+	/** The mu mvp matrix handle. */
 	private int muMVPMatrixHandle;
+
+	/** The mu normal matrix handle. */
 	private int muNormalMatrixHandle;
+
+	/** The mu model view matrix handle. */
 	private int muModelViewMatrixHandle;
+
+	/** The ma vertex handle. */
 	private int maVertexHandle;
+
+	/** The ma texture handle. */
 	private int maTextureHandle;
+
+	/** The ma has texture handle. */
 	private int maHasTextureHandle;
+
+	/** The ma normal handle. */
 	private int maNormalHandle;
+
+	/** The ma eye vector handle. */
 	private int maEyeVectorHandle;
 
+	/** The m index buffer. */
 	private ShortBuffer mIndexBuffer;
+
+	/** The m vertex buffer. */
 	private FloatBuffer mVertexBuffer;
+
+	/** The m tex coords buffer. */
 	private FloatBuffer mTexCoordsBuffer;
+
+	/** The m color buffer. */
 	private FloatBuffer mColorBuffer;
+
+	/** The m normal buffer. */
 	private FloatBuffer mNormalBuffer;
 
+	/** The m enable shader. */
 	private boolean mEnableShader;
 
+	/** The m texture changed. */
 	private boolean mTextureChanged = false;
+
+	/** The m texture bound. */
 	private boolean mTextureBound = false;
 
+	/** The TAG. */
 	private final String TAG = "GLES20Renderer";
 
 	/**
 	 * This constructor is called by {@link GLRenderPanel}.
 	 * 
-	 * @param drawable
-	 *            the OpenGL rendering context. All OpenGL calls are directed to
-	 *            this object.
+	 * @param context
+	 *            the context
 	 */
 	public GLES20Renderer(Context context) {
 		super();
 		mContext = context;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#onSurfaceCreated(javax.
+	 * microedition.khronos.opengles.GL10,
+	 * javax.microedition.khronos.egl.EGLConfig)
+	 */
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
 		Log.d(TAG, "onsurfacecreated method called");
 
@@ -340,6 +387,13 @@ public class GLES20Renderer extends AbstractRenderer {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.AbstractRenderer#createShader(ch.chnoch.thesis
+	 * .renderer.interfaces.Shader, java.lang.String, java.lang.String)
+	 */
 	public void createShader(Shader shader, String vertexFileName,
 			String fragmentFileName) throws Exception {
 		mEnableShader = true;
@@ -348,6 +402,11 @@ public class GLES20Renderer extends AbstractRenderer {
 		mFragmentShaderFileName = fragmentFileName;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#createTexture()
+	 */
 	public Texture createTexture() {
 		Texture tex = new GLTexture(mContext);
 
@@ -363,6 +422,7 @@ public class GLES20Renderer extends AbstractRenderer {
 	 * drawing starts.
 	 * 
 	 * @throws Exception
+	 *             the exception
 	 */
 	private void beginFrame() throws Exception {
 		// setLights();
@@ -384,6 +444,9 @@ public class GLES20Renderer extends AbstractRenderer {
 		glFlush();
 	}
 
+	/**
+	 * Load textures.
+	 */
 	private void loadTextures() {
 		if (mTextures != null) {
 			for (Texture tex : mTextures) {
@@ -392,6 +455,9 @@ public class GLES20Renderer extends AbstractRenderer {
 		}
 	}
 
+	/**
+	 * Load shader.
+	 */
 	private void loadShader() {
 		mShader = new GLShader();
 		try {
@@ -402,6 +468,12 @@ public class GLES20Renderer extends AbstractRenderer {
 		}
 	}
 
+	/**
+	 * Clean material.
+	 * 
+	 * @param m
+	 *            the m
+	 */
 	private void cleanMaterial(Material m) {
 		if (m != null && m.getTexture() != null) {
 			GLES20.glDisable(GLES20.GL_TEXTURE_2D);

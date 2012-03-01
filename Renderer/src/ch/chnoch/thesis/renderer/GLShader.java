@@ -1,26 +1,35 @@
 package ch.chnoch.thesis.renderer;
 
-import javax.microedition.khronos.egl.EGLContext;
-
-import ch.chnoch.thesis.renderer.interfaces.Shader;
-import ch.chnoch.thesis.renderer.interfaces.Shader;
-import ch.chnoch.thesis.renderer.interfaces.Shader;
-import ch.chnoch.thesis.renderer.util.GLUtil;
 import android.opengl.GLES20;
 import android.util.Log;
+import ch.chnoch.thesis.renderer.interfaces.Shader;
+import ch.chnoch.thesis.renderer.util.GLUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manages OpenGL shaders. This class will be used in the "Textures and Shading"
  * project.
  */
 public class GLShader implements Shader {
 
+	/** The m program. */
 	private int mProgram = 0; // The shader identifier
+
+	/** The Constant TAG. */
 	private static final String TAG = "GLShader";
 
+	/**
+	 * Instantiates a new gL shader.
+	 */
 	public GLShader() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.interfaces.Shader#load(java.lang.String,
+	 * java.lang.String)
+	 */
 	public int load(String vertexSource, String fragmentSource)
 			throws Exception {
 		int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
@@ -53,6 +62,15 @@ public class GLShader implements Shader {
 		return mProgram;
 	}
 
+	/**
+	 * Load shader.
+	 * 
+	 * @param shaderType
+	 *            the shader type
+	 * @param source
+	 *            the source
+	 * @return the int
+	 */
 	private int loadShader(int shaderType, String source) {
 		int shader = GLES20.glCreateShader(shaderType);
 		if (shader != 0) {
@@ -97,6 +115,11 @@ public class GLShader implements Shader {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.chnoch.thesis.renderer.interfaces.Shader#getProgram()
+	 */
 	public int getProgram() {
 		return mProgram;
 	}

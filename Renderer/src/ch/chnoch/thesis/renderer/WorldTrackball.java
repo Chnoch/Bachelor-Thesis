@@ -7,12 +7,28 @@ import javax.vecmath.Vector3f;
 import android.util.Log;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WorldTrackball.
+ */
 public class WorldTrackball extends Trackball {
 
+	/** The Constant TAG. */
 	private static final String TAG = "WorldTrackball";
 
+	/** The m camera centric. */
 	private boolean mCameraCentric;
 
+	/**
+	 * Sets the node.
+	 * 
+	 * @param root
+	 *            the root
+	 * @param camera
+	 *            the camera
+	 * @param cameraCentric
+	 *            the camera centric
+	 */
 	public void setNode(Node root, Camera camera, boolean cameraCentric) {
 		mNode = root;
 		mCamera = camera;
@@ -20,6 +36,9 @@ public class WorldTrackball extends Trackball {
 		initNode();
 	}
 
+	/**
+	 * Inits the node.
+	 */
 	private void initNode() {
 		if (mCameraCentric) {
 			mCenter = new Vector3f(mCamera.getCenterOfProjection());
@@ -33,6 +52,15 @@ public class WorldTrackball extends Trackball {
 		}
 	}
 
+	/**
+	 * Update.
+	 * 
+	 * @param cur
+	 *            the cur
+	 * @param prev
+	 *            the prev
+	 * @return true, if successful
+	 */
 	public boolean update(Vector3f cur, Vector3f prev) {
 		if (cur.equals(prev)) {
 			Log.d(TAG, "Cur und Prev too similar; no update");

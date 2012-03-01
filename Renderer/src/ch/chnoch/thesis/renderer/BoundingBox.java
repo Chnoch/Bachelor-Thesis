@@ -1,23 +1,31 @@
 package ch.chnoch.thesis.renderer;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.util.Util;
-
 import android.util.Log;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BoundingBox.
+ */
 public class BoundingBox {
 
+	/** The m high updated. */
 	private Point3f mLow, mHigh, mLowUpdated, mHighUpdated;
+
+	/** The updated. */
 	private boolean updated;
 
+	/**
+	 * Instantiates a new bounding box.
+	 * 
+	 * @param vertices
+	 *            the vertices
+	 */
 	public BoundingBox(FloatBuffer vertices) {
 		updated = true;
 		init(vertices);
@@ -25,6 +33,14 @@ public class BoundingBox {
 		mHighUpdated = new Point3f(mHigh);
 	}
 
+	/**
+	 * Instantiates a new bounding box.
+	 * 
+	 * @param low
+	 *            the low
+	 * @param high
+	 *            the high
+	 */
 	public BoundingBox(Point3f low, Point3f high) {
 		mLow = new Point3f(low);
 		mHigh = new Point3f(high);
@@ -35,6 +51,12 @@ public class BoundingBox {
 		mHighUpdated = new Point3f(mHigh);
 	}
 
+	/**
+	 * Inits the.
+	 * 
+	 * @param vertices
+	 *            the vertices
+	 */
 	private void init(FloatBuffer vertices) {
 		float x, y, z;
 		float lowX, lowY, lowZ, highX, highY, highZ;
@@ -75,19 +97,39 @@ public class BoundingBox {
 		mHigh = new Point3f(highX, highY, highZ);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
 	public BoundingBox clone() {
 		return new BoundingBox(new Point3f(mLow), new Point3f(mHigh));
 	}
 
+	/**
+	 * Gets the low.
+	 * 
+	 * @return the low
+	 */
 	public Point3f getLow() {
 		return mLow;
 	}
 
+	/**
+	 * Gets the high.
+	 * 
+	 * @return the high
+	 */
 	public Point3f getHigh() {
 		return mHigh;
 	}
 
 
+	/**
+	 * Gets the center.
+	 * 
+	 * @return the center
+	 */
 	public Vector3f getCenter() {
 		float xa = (mHigh.x - mLow.x) / 2f;
 		float x = mLow.x + xa;
@@ -101,15 +143,36 @@ public class BoundingBox {
 		return new Vector3f(x, y, z);
 	}
 
+	/**
+	 * Gets the radius.
+	 * 
+	 * @return the radius
+	 */
 	public float getRadius() {
 		// simple calculation based on half of width / height / depth
 		return (mHigh.x - mLow.x) / 2f;
 	}
 
+	/**
+	 * The Enum Quadrant.
+	 */
 	public enum Quadrant {
-		LEFT, RIGHT, MIDDLE
+
+		/** The LEFT. */
+		LEFT,
+		/** The RIGHT. */
+		RIGHT,
+		/** The MIDDLE. */
+		MIDDLE
 	}
 
+	/**
+	 * Hit point.
+	 * 
+	 * @param ray
+	 *            the ray
+	 * @return the ray shape intersection
+	 */
 	public RayShapeIntersection hitPoint(Ray ray) {
 		boolean inside = true;
 		Quadrant[] quadrant = new Quadrant[3];
@@ -204,6 +267,7 @@ public class BoundingBox {
 	 * If you want the exact coordinates use BoundingBox.hitPoint(ray) instead.
 	 * 
 	 * @param ray
+	 *            the ray
 	 * @return RayShapeIntersection
 	 */
 	public RayShapeIntersection intersect(Ray ray) {
@@ -252,9 +316,10 @@ public class BoundingBox {
 
 	/**
 	 * This method is to be used to transform the bounding box together with the
-	 * shape
+	 * shape.
 	 * 
 	 * @param trans
+	 *            the trans
 	 */
 	@Deprecated
 	public void transform(Matrix4f trans) {
@@ -309,6 +374,13 @@ public class BoundingBox {
 				+ mHigh.toString());
 	}
 
+	/**
+	 * Update.
+	 * 
+	 * @param rot
+	 *            the rot
+	 * @return the bounding box
+	 */
 	public BoundingBox update(Matrix4f rot) {
 		if (updated) {
 //			Log.d("Bounding Box", "Pre Low: " + mLow.toString() + " High: "
@@ -362,10 +434,18 @@ public class BoundingBox {
 		return new BoundingBox(mLowUpdated, mHighUpdated);
 	}
 
+	/**
+	 * Sets the updated.
+	 */
 	public void setUpdated() {
 		updated = true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object obj) {
 		if (obj instanceof BoundingBox) {
 			BoundingBox box = (BoundingBox) obj;
@@ -377,6 +457,11 @@ public class BoundingBox {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return "Low: " + this.mLow.toString() + " High: "
 				+ this.mHigh.toString();
