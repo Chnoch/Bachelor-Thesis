@@ -11,11 +11,10 @@ import ch.chnoch.thesis.renderer.box2d.Box2DWorld;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
-// TODO: Auto-generated Javadoc
 /**
- * This class contains some common tasks and fields of a scene manager. Specific
- * implementations of a scene manager should inherit from this class to take
- * full advantage of what has already been implemented.
+ * The AbstractSceneManager contains some common tasks and fields of a scene
+ * manager. Specific implementations of a scene manager should inherit from this
+ * class to take full advantage of what has already been implemented.
  */
 public abstract class AbstractSceneManager implements SceneManagerInterface {
 

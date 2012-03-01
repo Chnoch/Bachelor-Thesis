@@ -7,21 +7,20 @@ import javax.vecmath.Vector3f;
 import android.util.Log;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
-// TODO: Auto-generated Javadoc
 /**
- * Stores the specification of a virtual camera. You will extend this class to
- * construct a 4x4 camera matrix, i.e., the world-to- camera transform from
- * intuitive parameters.
+ * Stores the specification of a virtual camera. Holds a 4x4 camera matrix,
+ * i.e., the world-to-camera transformation from intuitive parameters. The
+ * transformation is specified by the center of projection (i.e. the where the
+ * camera is located), a look at point (i.e. the direction where the camera is
+ * looking at and an up vector (i.e. which direction of the 3D space points
+ * upwards).
  * 
- * A scene manager (see {@link SceneManagerInterface},
- * {@link SimpleSceneManager}) stores a camera.
+ * A scene manager (see {@link SceneManagerInterface}) usually stores a camera.
  */
 public class Camera {
 
-	/** The m camera matrix. */
 	private Matrix4f mCameraMatrix;
 
-	/** The m up vector. */
 	private Vector3f mCenterOfProjection, mLookAtPoint, mUpVector;
 
 	/**
@@ -35,7 +34,7 @@ public class Camera {
 	}
 
 	/**
-	 * Reset.
+	 * Resets the camera properties.
 	 */
 	public void reset() {
 		mCenterOfProjection = new Vector3f(0, 0, 15);
@@ -116,34 +115,19 @@ public class Camera {
 	}
 
 	/**
-	 * Update.
+	 * Updates the camera to reflect any changes in the parameters.
 	 */
 	public void update() {
 		updateCamera();
 	}
 
-	/**
-	 * Creates the halfway vector.
-	 * 
-	 * @param light
-	 *            the light
-	 * @return the vector3f
+
+	/*
+	 * PRIVATE METHODS
 	 */
-	public Vector3f createHalfwayVector(Light light) {
-		Vector3f halfway;
-		Vector3f eyeVec = new Vector3f(mCenterOfProjection);
-		// eyeVec.sub(mLookAtPoint);
-		Vector3f lightSource = light.getDirection();
-		// lightSource.negate();
-		// lightSource.sub(light.getDirection());
-		halfway = new Vector3f(eyeVec);
-		halfway.sub(lightSource);
-		// halfway.normalize();
-		return halfway;
-	}
 
 	/**
-	 * Update camera.
+	 * A helper method to update the camera.
 	 */
 	private void updateCamera() {
 		Vector3f x = new Vector3f();
@@ -176,72 +160,5 @@ public class Camera {
 					"SingularMatrixException on Matrix: "
 							+ newMatrix.toString());
 		}
-	}
-
-	/**
-	 * Update camera2.
-	 */
-	private void updateCamera2() {
-		float forwardx, forwardy, forwardz, invMag;
-		float upx, upy, upz;
-		float sidex, sidey, sidez;
-
-		forwardx = mCenterOfProjection.x - mLookAtPoint.x;
-		forwardy = mCenterOfProjection.y - mLookAtPoint.y;
-		forwardz = mCenterOfProjection.z - mLookAtPoint.z;
-
-		invMag = (float) (1.0 / Math.sqrt(forwardx * forwardx + forwardy
-				* forwardy + forwardz * forwardz));
-		forwardx = forwardx * invMag;
-		forwardy = forwardy * invMag;
-		forwardz = forwardz * invMag;
-
-		invMag = (float) (1.0 / Math.sqrt(mUpVector.x * mUpVector.x
-				+ mUpVector.y * mUpVector.y + mUpVector.z * mUpVector.z));
-		upx = mUpVector.x * invMag;
-		upy = mUpVector.y * invMag;
-		upz = mUpVector.z * invMag;
-
-		// side = up cross forward
-		sidex = upy * forwardz - forwardy * upz;
-		sidey = upz * forwardx - upx * forwardz;
-		sidez = upx * forwardy - upy * forwardx;
-
-		invMag = (float) (1.0 / Math.sqrt(sidex * sidex + sidey * sidey + sidez
-				* sidez));
-		sidex *= invMag;
-		sidey *= invMag;
-		sidez *= invMag;
-
-		// recompute up = forward cross side
-
-		upx = forwardy * sidez - sidey * forwardz;
-		upy = forwardz * sidex - forwardx * sidez;
-		upz = forwardx * sidey - forwardy * sidex;
-
-		float[] mat = new float[16];
-		mat[0] = sidex;
-		mat[1] = sidey;
-		mat[2] = sidez;
-
-		mat[4] = upx;
-		mat[5] = upy;
-		mat[6] = upz;
-
-		mat[8] = forwardx;
-		mat[9] = forwardy;
-		mat[10] = forwardz;
-
-		mat[3] = -mCenterOfProjection.x * mat[0] + -mCenterOfProjection.y
-				* mat[1] + -mCenterOfProjection.z * mat[2];
-		mat[7] = -mCenterOfProjection.x * mat[4] + -mCenterOfProjection.y
-				* mat[5] + -mCenterOfProjection.z * mat[6];
-		mat[11] = -mCenterOfProjection.x * mat[8] + -mCenterOfProjection.y
-				* mat[9] + -mCenterOfProjection.z * mat[10];
-
-		mat[12] = mat[13] = mat[14] = 0;
-		mat[15] = 1;
-
-		mCameraMatrix.set(mat);
 	}
 }

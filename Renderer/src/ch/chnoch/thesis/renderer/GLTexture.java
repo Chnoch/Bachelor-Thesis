@@ -23,9 +23,12 @@ import android.opengl.GLUtils;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
 
 
-// TODO: Auto-generated Javadoc
 /**
- * An OpenGL texture.
+ * This class handles an OpenGL texture. It creates the texture from a specified
+ * image, passes it to OpenGL, and stores a reference to this texture that will
+ * be used for drawing.
+ * <p>
+ * Only works with OpenGL ES 2.0
  */
 public class GLTexture implements Texture {
 	
@@ -63,7 +66,7 @@ public class GLTexture implements Texture {
 	} 
 	
 	/**
-	 * This needs to be called from the renderer only, therefor it's package
+	 * This needs to be called from the renderer only, therefore it's package
 	 * scope.
 	 */
 	public void load() {

@@ -160,5 +160,5 @@ public abstract class AbstractRenderer implements RenderContext {
 	 * 
 	 * @see ch.chnoch.thesis.renderer.interfaces.RenderContext#createTexture()
 	 */
-	public abstract Texture createTexture();
+	public abstract Texture createTexture() throws Exception;
 }

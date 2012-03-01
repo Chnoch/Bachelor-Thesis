@@ -1,17 +1,25 @@
 package ch.chnoch.thesis.renderer;
 
+import static android.opengl.GLES20.GL_DITHER;
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_TRIANGLES;
+import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
+import static android.opengl.GLES20.glDisable;
+import static android.opengl.GLES20.glDrawElements;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glGetAttribLocation;
+import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glUniformMatrix4fv;
+import static android.opengl.GLES20.glVertexAttribPointer;
+import static android.opengl.GLES20.glViewport;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import javax.vecmath.AxisAngle4f;
-import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
 
-import android.opengl.*;
-import android.os.SystemClock;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
 import android.util.Log;
-import static android.opengl.GLES20.*;
-
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;

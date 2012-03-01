@@ -10,38 +10,35 @@ import javax.vecmath.Vector3f;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 import ch.chnoch.thesis.renderer.util.Util;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GLLight.
+ * Represents a Light that will be drawn with OpenGL ES 2.0. This class will
+ * find the correct handles in the shader and put the appropriate attributes of
+ * the light that is specified in the scene manager into OpenGL. These values
+ * will be used by the shader to generate a light source.
  */
 public class GLLight {
 
-	/** The m light. */
 	private Light mLight;
-
-	/** The Constant TAG. */
-	private static final String TAG = "GLLight";
-
-	/** The mu specular color handle. */
 	private int muDirectionHandle, muPositionHandle, muAmbientColorHandle,
 			muDiffuseColorHandle, muSpecularColorHandle;
 
+	private static final String TAG = "GLLight";
+
 	/**
-	 * Instantiates a new gL light.
+	 * Instantiates a new OpenGL light.
 	 * 
 	 * @param light
-	 *            the light
+	 *            the light that will be drawn.
 	 */
 	public GLLight(Light light) {
 		mLight = light;
 	}
 
 	/**
-	 * Gets the handles.
+	 * Gets the handles in the shader.
 	 * 
 	 * @param program
-	 *            the program
-	 * @return the handles
+	 *            the program that represents the shader
 	 */
 	public void getHandles(int program) {
 		muDirectionHandle = glGetUniformLocation(program, "light.direction");
@@ -52,10 +49,10 @@ public class GLLight {
 	}
 
 	/**
-	 * Draw.
+	 * Draws the light into OpenGL.
 	 * 
 	 * @param transformation
-	 *            the transformation
+	 *            the transformation that is needed for the position
 	 * @throws Exception
 	 *             the exception
 	 */
@@ -71,7 +68,6 @@ public class GLLight {
 		if (muPositionHandle != -1) {
 			Vector3f pos = new Vector3f(mLight.getPosition());
 			Util.transform(transformation, pos);
-//			transformation.transform(pos);
 			
 			glUniform3f(muPositionHandle, pos.x, pos.y, pos.z);
 			GLUtil.checkGlError("glUniform3f muPositionHandle", TAG);

@@ -6,25 +6,23 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import android.util.Log;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Class BoundingBox.
+ * A BoundingBox is used for every node that has a shape associated with it. It
+ * is defined by its lowest and highest point (in 3D). A bounding box completely
+ * surrounds its associated object and can therefore be used for a fast test
+ * whether two shapes or a ray and a shape overlap, respectively intersect.
  */
 public class BoundingBox {
 
-	/** The m high updated. */
 	private Point3f mLow, mHigh, mLowUpdated, mHighUpdated;
 
-	/** The updated. */
 	private boolean updated;
 
 	/**
 	 * Instantiates a new bounding box.
 	 * 
 	 * @param vertices
-	 *            the vertices
+	 *            the vertices of the shape
 	 */
 	public BoundingBox(FloatBuffer vertices) {
 		updated = true;
@@ -37,9 +35,9 @@ public class BoundingBox {
 	 * Instantiates a new bounding box.
 	 * 
 	 * @param low
-	 *            the low
+	 *            the lowest point
 	 * @param high
-	 *            the high
+	 *            the highest point
 	 */
 	public BoundingBox(Point3f low, Point3f high) {
 		mLow = new Point3f(low);
@@ -52,10 +50,10 @@ public class BoundingBox {
 	}
 
 	/**
-	 * Inits the.
+	 * Initializes the bounding box.
 	 * 
 	 * @param vertices
-	 *            the vertices
+	 *            the vertices of the shape
 	 */
 	private void init(FloatBuffer vertices) {
 		float x, y, z;
@@ -97,28 +95,28 @@ public class BoundingBox {
 		mHigh = new Point3f(highX, highY, highZ);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Creates a deep copy of this bounding box.
 	 * 
-	 * @see java.lang.Object#clone()
+	 * @return a copy of the bounding box
 	 */
 	public BoundingBox clone() {
 		return new BoundingBox(new Point3f(mLow), new Point3f(mHigh));
 	}
 
 	/**
-	 * Gets the low.
+	 * Gets the lowest point.
 	 * 
-	 * @return the low
+	 * @return the lowest point
 	 */
 	public Point3f getLow() {
 		return mLow;
 	}
 
 	/**
-	 * Gets the high.
+	 * Gets the highest point.
 	 * 
-	 * @return the high
+	 * @return the highest point
 	 */
 	public Point3f getHigh() {
 		return mHigh;
@@ -126,9 +124,9 @@ public class BoundingBox {
 
 
 	/**
-	 * Gets the center.
+	 * Gets the center of the bounding box.
 	 * 
-	 * @return the center
+	 * @return the center of the bounding box
 	 */
 	public Vector3f getCenter() {
 		float xa = (mHigh.x - mLow.x) / 2f;
@@ -144,34 +142,26 @@ public class BoundingBox {
 	}
 
 	/**
-	 * Gets the radius.
+	 * Gets the radius of the bounding box.
 	 * 
-	 * @return the radius
+	 * @return the radius of the bounding box
 	 */
 	public float getRadius() {
 		// simple calculation based on half of width / height / depth
 		return (mHigh.x - mLow.x) / 2f;
 	}
 
-	/**
-	 * The Enum Quadrant.
-	 */
-	public enum Quadrant {
-
-		/** The LEFT. */
-		LEFT,
-		/** The RIGHT. */
-		RIGHT,
-		/** The MIDDLE. */
-		MIDDLE
-	}
 
 	/**
-	 * Hit point.
+	 * Calculates the hit point between this bounding Box and the ray that is
+	 * passed. The method will return a {@link RayShapeIntersection} that
+	 * contains a boolean whether this box was hit, which node the box belongs
+	 * to and the closest hit point.
 	 * 
 	 * @param ray
-	 *            the ray
-	 * @return the ray shape intersection
+	 *            the ray, containing of a point in the 3D space and a direction
+	 * @return the ray-shape-intersection, containing of a boolean whether a hit
+	 *         occured, which node got hit and the coordinates of the hitpoint.
 	 */
 	public RayShapeIntersection hitPoint(Ray ray) {
 		boolean inside = true;
@@ -260,131 +250,17 @@ public class BoundingBox {
 	}
 
 	/**
-	 * A simple algorithm to determine whether the specified Ray hit this box.
-	 * It will return a RayShapeIntersection, but only RayShapeIntersection.hit
-	 * will be set. Possibly also RayShapeIntersection.node, but .hitPoint won't
-	 * reveal anything. This method is mostly used to check if the box is hit.
-	 * If you want the exact coordinates use BoundingBox.hitPoint(ray) instead.
+	 * Applies the transformations that are stored in the matrix to this
+	 * bounding box and returns a new instance with the updated lowest and
+	 * highest point. This updated version can be used for further checking.
 	 * 
-	 * @param ray
-	 *            the ray
-	 * @return RayShapeIntersection
+	 * @param transformation
+	 *            the transformation matrix where all the transformations are
+	 *            stored
+	 * @return the transformed bounding box
 	 */
-	public RayShapeIntersection intersect(Ray ray) {
-		float tXmin, tXmax, tYmin, tYmax, tZmin, tZmax;
-		Point3f low = mLow;
-		Point3f high = mHigh;
-		RayShapeIntersection intersect = new RayShapeIntersection();
-
-		if (ray.getDirection().x >= 0) {
-			tXmin = (low.x - ray.getOrigin().x) / ray.getDirection().x;
-			tXmax = (high.x - ray.getOrigin().x) / ray.getDirection().x;
-		} else {
-			tXmin = (high.x - ray.getOrigin().x) / ray.getDirection().x;
-			tXmax = (low.x - ray.getOrigin().x) / ray.getDirection().x;
-		}
-
-		if (ray.getDirection().y >= 0) {
-			tYmin = (low.y - ray.getOrigin().y) / ray.getDirection().y;
-			tYmax = (high.y - ray.getOrigin().y) / ray.getDirection().y;
-		} else {
-			tYmin = (high.y - ray.getOrigin().y) / ray.getDirection().y;
-			tYmax = (low.y - ray.getOrigin().y) / ray.getDirection().y;
-		}
-
-		if ((tXmin > tYmax) || (tYmin > tXmax))
-			return intersect;
-		if (tYmin > tXmin)
-			tXmin = tYmin;
-		if (tYmax < tXmax)
-			tXmax = tYmax;
-
-		if (ray.getDirection().z >= 0) {
-			tZmin = (low.z - ray.getOrigin().z) / ray.getDirection().z;
-			tZmax = (high.z - ray.getOrigin().z) / ray.getDirection().z;
-		} else {
-			tZmin = (high.z - ray.getOrigin().z) / ray.getDirection().z;
-			tZmax = (low.z - ray.getOrigin().z) / ray.getDirection().z;
-		}
-
-		if ((tXmin > tZmax) || (tZmin > tXmax))
-			return intersect;
-
-		intersect.hit = true;
-		return intersect;
-	}
-
-	/**
-	 * This method is to be used to transform the bounding box together with the
-	 * shape.
-	 * 
-	 * @param trans
-	 *            the trans
-	 */
-	@Deprecated
-	public void transform(Matrix4f trans) {
-		mLow.sub(getCenter());
-		mHigh.sub(getCenter());
-
-		Log.d("Bounding Box",
-				"Pre Low: " + mLow.toString() + " High: " + mHigh.toString());
-		// create all possible points
-		Point3f[] box = new Point3f[8];
-		box[0] = new Point3f(mLow);
-		box[1] = new Point3f(mLow.x, mHigh.y, mLow.z);
-		box[2] = new Point3f(mLow.x, mLow.y, mHigh.z);
-		box[3] = new Point3f(mLow.x, mHigh.y, mHigh.z);
-		box[4] = new Point3f(mHigh.x, mLow.y, mLow.z);
-		box[5] = new Point3f(mHigh.x, mHigh.y, mLow.z);
-		box[6] = new Point3f(mHigh.x, mLow.y, mHigh.z);
-		box[7] = new Point3f(mHigh);
-
-		for (int i = 0; i < box.length; i++) {
-			trans.transform(box[i]);
-		}
-
-		Point3f low = new Point3f(box[0]);
-		Point3f high = new Point3f(box[7]);
-
-		for (int i = 0; i < box.length; i++) {
-			if (box[i].x < low.x) {
-				low.x = box[i].x;
-			}
-			if (box[i].y < low.y) {
-				low.y = box[i].y;
-			}
-			if (box[i].z < low.z) {
-				low.z = box[i].z;
-			}
-			if (box[i].x > high.x) {
-				high.x = box[i].x;
-			}
-			if (box[i].y > high.y) {
-				high.y = box[i].y;
-			}
-			if (box[i].z > high.z) {
-				high.z = box[i].z;
-			}
-		}
-
-		mLow = new Point3f(low);
-		mHigh = new Point3f(high);
-
-		Log.d("Bounding Box", "Past Low: " + mLow.toString() + " High: "
-				+ mHigh.toString());
-	}
-
-	/**
-	 * Update.
-	 * 
-	 * @param rot
-	 *            the rot
-	 * @return the bounding box
-	 */
-	public BoundingBox update(Matrix4f rot) {
+	public BoundingBox update(Matrix4f transformation) {
 		if (updated) {
-//			Log.d("Bounding Box", "Pre Low: " + mLow.toString() + " High: "
-//					+ mHigh.toString());
 			// create all possible points
 			Point3f[] box = new Point3f[8];
 			box[0] = new Point3f(mLow);
@@ -397,7 +273,7 @@ public class BoundingBox {
 			box[7] = new Point3f(mHigh);
 
 			for (int i = 0; i < box.length; i++) {
-				rot.transform(box[i]);
+				transformation.transform(box[i]);
 			}
 
 			Point3f low = new Point3f(box[0]);
@@ -425,8 +301,6 @@ public class BoundingBox {
 			}
 
 			updated = false;
-//			Log.d("Bounding Box", "Past Low: " + low.toString() + " High: "
-//					+ high.toString());
 
 			mLowUpdated = low;
 			mHighUpdated = high;
@@ -435,7 +309,8 @@ public class BoundingBox {
 	}
 
 	/**
-	 * Sets the updated.
+	 * Sets the updated flag, to know whether this bounding box needs an update
+	 * or not.
 	 */
 	public void setUpdated() {
 		updated = true;
@@ -465,5 +340,9 @@ public class BoundingBox {
 	public String toString() {
 		return "Low: " + this.mLow.toString() + " High: "
 				+ this.mHigh.toString();
+	}
+
+	private enum Quadrant {
+		LEFT, RIGHT, MIDDLE
 	}
 }

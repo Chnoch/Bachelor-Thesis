@@ -39,8 +39,9 @@ public interface RenderContext extends GLSurfaceView.Renderer {
 	 * Make a texture.
 	 * 
 	 * @return the texture
+	 * @throws Exception
 	 */
-	public Texture createTexture();
+	public Texture createTexture() throws Exception;
 	
 	/**
 	 * Gets the viewport matrix.

@@ -1,13 +1,13 @@
 package ch.chnoch.thesis.renderer;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GLException.
+ * The Class represents an exception that occurred during any interaction with
+ * OpenGL
  */
 public class GLException extends Exception {
 	
-	/** The m error. */
-	String mError;
+	private static final long serialVersionUID = 4146023685623820925L;
+	private String mError;
 	
 	/**
 	 * Instantiates a new gL exception.
@@ -18,10 +18,10 @@ public class GLException extends Exception {
 	}
 	
 	/**
-	 * Instantiates a new gL exception.
+	 * Instantiates a new exception.
 	 * 
 	 * @param error
-	 *            the error
+	 *            the error that occurred
 	 */
 	public GLException(String error) {
 		super();

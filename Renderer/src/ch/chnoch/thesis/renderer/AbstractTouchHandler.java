@@ -13,9 +13,9 @@ import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 /**
- * This class contains many fields and operations that an OnTouchListener can
- * use. Every implementation of a class that implements OnTouchListener should
- * extend this class to benefit from these operations.
+ * The AbstractTouchHandler contains many fields and operations that an
+ * OnTouchListener can use. Every implementation of a class that implements
+ * OnTouchListener should extend this class to benefit from these operations.
  */
 public abstract class AbstractTouchHandler implements OnTouchListener {
 

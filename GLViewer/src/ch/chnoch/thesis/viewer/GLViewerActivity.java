@@ -1,6 +1,5 @@
 package ch.chnoch.thesis.viewer;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.vecmath.Vector3f;
@@ -204,10 +203,11 @@ public class GLViewerActivity extends Activity {
 	}
 
 	private Texture createTexture(int id) {
-		Texture tex = mRenderer.createTexture();
+		Texture tex = null;
 		try {
+			tex = mRenderer.createTexture();
 			tex.createTexture(id);
-		} catch (IOException exc) {
+		} catch (Exception exc) {
 			Log.e(TAG, exc.getMessage());
 		}
 		return tex;

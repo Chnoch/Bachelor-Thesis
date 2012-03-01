@@ -6,23 +6,33 @@ import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 /**
  * Stores the specification of a viewing frustum, or a viewing volume. The
- * viewing frustum is represented by a 4x4 projection matrix. You will extend
- * this class to construct the projection matrix from intuitive parameters.
+ * viewing frustum is represented by a 4x4 projection matrix. The viewing
+ * frustum consists of four parameters, the aspect ratio, the vertical field of
+ * view, a near plane and a far plane. The frustum is automatically generated
+ * out of these properties. Everything in your 3D space that lies outside of
+ * this viewing volume will not be displayed on the screen.
  * <p>
- * A scene manager (see {@link SceneManagerInterface},
- * {@link SimpleSceneManager}) stores a frustum.
+ * A scene manager (see {@link SceneManagerInterface}) stores a frustum.
  */
 public class Frustum {
 
-	/** The projection matrix. */
 	private Matrix4f mProjectionMatrix;
 
-	/** The different parameters of the frustum. */
 	private float mNearPlane, mFarPlane, mAspectRatio, mVertFOV;
 
 	/**
 	 * Construct a default viewing frustum. The frustum is given by a default
 	 * 4x4 projection matrix.
+	 * <p>
+	 * Default values:
+	 * <p>
+	 * - Aspect ratio: 1
+	 * <p>
+	 * - Vertical field of view: 60
+	 * <p>
+	 * - Near plane: 2
+	 * <p>
+	 * - Far plane: 100
 	 */
 	public Frustum() {
 		mProjectionMatrix = new Matrix4f();
@@ -36,7 +46,7 @@ public class Frustum {
 	}
 
 	/**
-	 * Return the 4x4 projection matrix, which is used for example by the
+	 * Returns the 4x4 projection matrix, which is used for example by the
 	 * renderer.
 	 * 
 	 * @return the 4x4 projection matrix
@@ -125,8 +135,12 @@ public class Frustum {
 		updateFrustum();
 	}
 
+	/*
+	 * PRIVATE METHODS
+	 */
+
 	/**
-	 * Updates the frustum.
+	 * Updates the frustum to reflect any changes in the parameters.
 	 */
 	private void updateFrustum() {
 		final float DEG2RAD = 3.14159265f / 180;

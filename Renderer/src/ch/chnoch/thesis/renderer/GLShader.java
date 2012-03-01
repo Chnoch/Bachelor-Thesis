@@ -5,21 +5,22 @@ import android.util.Log;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
-// TODO: Auto-generated Javadoc
 /**
- * Manages OpenGL shaders. This class will be used in the "Textures and Shading"
- * project.
+ * This class manages an OpenGL shader. It will load the shader source code into
+ * OpenGL, store a reference to the shader and make that available as well as
+ * providing the service of enabling or disabling a shader.
+ * <p>
+ * Only works with OpenGL ES 2.0
  */
 public class GLShader implements Shader {
 
-	/** The m program. */
 	private int mProgram = 0; // The shader identifier
 
 	/** The Constant TAG. */
 	private static final String TAG = "GLShader";
 
 	/**
-	 * Instantiates a new gL shader.
+	 * Instantiates a new OpenGL shader.
 	 */
 	public GLShader() {
 	}
@@ -63,13 +64,13 @@ public class GLShader implements Shader {
 	}
 
 	/**
-	 * Load shader.
+	 * Loads either a vertex or fragment shader into OpenGL.
 	 * 
 	 * @param shaderType
 	 *            the shader type
 	 * @param source
-	 *            the source
-	 * @return the int
+	 *            the shader source
+	 * @return the shader reference
 	 */
 	private int loadShader(int shaderType, String source) {
 		int shader = GLES20.glCreateShader(shaderType);
@@ -103,8 +104,8 @@ public class GLShader implements Shader {
 	}
 
 	/**
-	 * Disable the shader and go back to using OpenGL standard functionality to
-	 * process vertices and fragments/pixels.
+	 * Disables the shader and goes back to using OpenGL standard functionality
+	 * to process vertices and fragments/pixels.
 	 */
 	public void disable() {
 		try {

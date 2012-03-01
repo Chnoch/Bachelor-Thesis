@@ -5,30 +5,29 @@ import static android.opengl.GLES20.glUniform1f;
 import static android.opengl.GLES20.glUniform4f;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GLMaterial.
+ * Represents a material that will be drawn with OpenGL ES 2.0. This class will
+ * find the correct handles in the shader and put the appropriate attributes of
+ * the material that is specified stored with a node into OpenGL. These values
+ * will be used by the shader to draw the material.
  */
 public class GLMaterial extends Material {
 
 	/** The Constant TAG. */
 	private static final String TAG = "GLMaterial";
-	
-	/** The mu specular exponent handle. */
 	private int muAmbientColorHandle, muDiffuseColorHandle, muSpecularColorHandle, muSpecularExponentHandle;
 	
 	/**
-	 * Instantiates a new gL material.
+	 * Instantiates a new OpenGL material.
 	 */
 	public GLMaterial() {
 	}
 	
 	/**
-	 * Gets the handles.
+	 * Gets the handles in the shader.
 	 * 
 	 * @param program
-	 *            the program
-	 * @return the handles
+	 *            the program that represents the current shader
 	 */
 	public void getHandles(int program) {
 		muAmbientColorHandle = glGetUniformLocation(program, "material.ambient");
@@ -38,10 +37,10 @@ public class GLMaterial extends Material {
 	}
 	
 	/**
-	 * Draw.
+	 * Draws the material to OpenGL.
 	 * 
 	 * @throws Exception
-	 *             the exception
+	 *             An exception that can occur with OpenGl
 	 */
 	public void draw() throws Exception {
 		float[] amb = new float[4];
