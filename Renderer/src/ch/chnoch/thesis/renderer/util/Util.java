@@ -147,25 +147,59 @@ public class Util {
 		List<Float> texCoordsList = new ArrayList<Float>();
 		List<Float> verticesList = new ArrayList<Float>();
 
+		double maxSinTheta = Double.MIN_VALUE, maxSinPhi = Double.MIN_VALUE, minSinTheta = Double.MAX_VALUE, minSinPhi = Double.MAX_VALUE;
+		double maxCosTheta = Double.MIN_VALUE, maxCosPhi = Double.MIN_VALUE, minCosTheta = Double.MAX_VALUE, minCosPhi = Double.MAX_VALUE;
+		double minTheta = Double.MAX_VALUE, maxTheta = Double.MIN_VALUE, minPhi = Double.MAX_VALUE, maxPhi = Double.MIN_VALUE;
+
 		for (int latNumber = 0; latNumber < latitudeBands+1; latNumber++) {
 			double theta = latNumber * Math.PI / latitudeBands- Math.PI/2;
 			Log.d("Util", "Theta: " + theta);
 			double sinTheta = Math.sin(theta);
 			double cosTheta = Math.cos(theta);
 
+			if (theta > maxTheta) maxTheta = theta;
+			if (theta < minTheta) minTheta = theta;
+			
+			if (sinTheta > maxSinTheta)
+				maxSinTheta = sinTheta;
+			if (sinTheta < minSinTheta)
+				minSinTheta = sinTheta;
+			if (cosTheta > maxCosTheta)
+				maxCosTheta = cosTheta;
+			if (cosTheta < minCosTheta)
+				minCosTheta = cosTheta;
+
 			for (int longNumber = 0; longNumber < longitudeBands+1; longNumber++) {
 				double phi = longNumber * 2 * Math.PI / longitudeBands;
+				
+				if (phi > maxPhi) maxPhi= phi;
+				if (phi < minPhi) minPhi= phi;
 				double sinPhi = Math.sin(phi);
 				double cosPhi = Math.cos(phi);
+				if (sinPhi > maxSinPhi)
+					maxSinPhi = sinPhi;
+				if (sinPhi < minSinPhi)
+					minSinPhi = sinPhi;
+				if (cosPhi > maxCosPhi)
+					maxCosPhi = cosPhi;
+				if (cosPhi < minCosPhi)
+					minCosPhi = cosPhi;
 
 				double x = cosPhi * cosTheta;
 				double y = sinTheta;
 				double z = sinPhi * cosTheta;
 				double length = Math.sqrt(x*x + y*y + z*z);
 				Log.d("Util", "Length: " + length);
-				
-				double u = sinTheta * sinPhi;
-				double v = sinTheta * cosPhi;
+				Log.d("Util", "x: " + x + " y: " + y + " z: " + z);
+				Log.d("Util", "sinTheta: " + sinTheta + " sinPhi: " + sinPhi
+						+ " cosTheta: " + cosTheta + " cosPhi: " + cosPhi);
+
+				double v = 1 - (theta + Math.PI / 2) / Math.PI;
+				double u = 1 - phi / (2 * Math.PI);
+				// double u = sinTheta * sinPhi / 2 + 0.5;
+				// double v = sinTheta * cosPhi / 2 + 0.5;
+				// double v = Math.acos(z) / Math.PI;
+				// double u = Math.acos(x) / (2 * Math.PI);
 //				double u = Math.acos(y / length) / Math.PI;
 //				double v = (Math.atan2(z, x) / Math.PI + 1)*0.5d;
 //				double u = theta / (2* Math.PI);
@@ -184,6 +218,15 @@ public class Util {
 				verticesList.add((float) (radius * z));
 			}
 		}
+
+		Log.d("Util", "Maxima: sinTheta " + maxSinTheta + " cosTheta: "
+				+ maxCosTheta + " sinPhi: " + maxSinPhi + " cosPhi: "
+				+ maxCosPhi);
+		Log.d("Util", "Minima: sinTheta " + minSinTheta + " cosTheta: "
+				+ minCosTheta + " sinPhi: " + minSinPhi + " cosPhi: "
+				+ minCosPhi);
+		Log.d("Util", "Max: Theta: " + maxTheta + " Phi: " + maxPhi);
+		Log.d("Util", "Min: Theta: " + minTheta + " Phi: " + minPhi);
 
 		List<Integer> indicesList = new ArrayList<Integer>();
 		for (int latNumber = 0; latNumber < latitudeBands; latNumber++) {
