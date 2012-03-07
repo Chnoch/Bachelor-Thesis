@@ -32,20 +32,18 @@ import ch.chnoch.thesis.renderer.interfaces.Texture;
  */
 public class GLTexture implements Texture {
 	
-	/** The m texture id. */
-	private int mTextureID;	// Stores the OpenGL texture identifier
-
-	/** The m context. */
 	private Context mContext;
 
-	/** The m resource. */
+	// Stores the OpenGL texture identifier
+	private int mTextureID;
+
 	private int mResource;
 	
 	/**
-	 * Instantiates a new gL texture.
+	 * Instantiates a new texture for OpenGL ES 2.0.
 	 * 
 	 * @param context
-	 *            the context
+	 *            the context that the application is running in.
 	 */
 	public GLTexture(Context context) 
 	{
@@ -66,8 +64,8 @@ public class GLTexture implements Texture {
 	} 
 	
 	/**
-	 * This needs to be called from the renderer only, therefore it's package
-	 * scope.
+	 * This needs to be called from the renderer only. It loads the textures
+	 * into OpenGL.
 	 */
 	public void load() {
 		int[] textures = new int[1];

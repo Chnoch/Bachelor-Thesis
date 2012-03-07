@@ -9,40 +9,31 @@ import android.util.Log;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.util.Util;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GLViewer.
+ * This class extends GLSurfaceView, an important class from the Android
+ * framework. GLSurfaceView represents the view that is actually drawn on the
+ * screen. OpenGL is used for drawing to the screen. This class holds a
+ * reference to the actual renderer that will be used to render the content on
+ * the screen. It also provides support for a basic translation of screen
+ * coordinates to object-space coordinates.
  */
 public class GLViewer extends GLSurfaceView {
 
-	/** The m renderer. */
 	private RenderContext mRenderer;
 
-	/** The m height. */
 	private int mWidth, mHeight;
 
 	/**
-	 * Instantiates a new gL viewer.
+	 * Instantiates a new GLViewer. Needs a reference to the RenderContext,
+	 * which renders everything to the screen.
 	 * 
 	 * @param context
-	 *            the context
-	 */
-	public GLViewer(Context context) {
-		super(context);
-		// Turn on error-checking and logging
-		// setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR |
-		// GLSurfaceView.DEBUG_LOG_GL_CALLS);
-	}
-
-	/**
-	 * Instantiates a new gL viewer.
-	 * 
-	 * @param context
-	 *            the context
+	 *            The context that the application is running in.
 	 * @param renderer
-	 *            the renderer
+	 *            The RenderContext that is used for rendering.
 	 * @param openGLES20
-	 *            the open gle s20
+	 *            A flag that makes sure that all the OpenGL settings are set
+	 *            appropriately if you use version 1.1 or 2.0
 	 */
 	public GLViewer(Context context, RenderContext renderer, boolean openGLES20) {
 		super(context);
@@ -58,12 +49,13 @@ public class GLViewer extends GLSurfaceView {
 	}
 
 	/**
-	 * Surface has changed.
+	 * Callback method from the framework if the surface has changed. This
+	 * usually happens when you rotate the screen.
 	 * 
 	 * @param width
-	 *            the width
+	 *            The new width of the view
 	 * @param height
-	 *            the height
+	 *            The new height of the view
 	 */
 	public void surfaceHasChanged(int width, int height) {
 		mWidth = width;
@@ -72,31 +64,34 @@ public class GLViewer extends GLSurfaceView {
 	}
 
 	/**
-	 * Width.
+	 * Returns the current width of the view.
 	 * 
-	 * @return the int
+	 * @return the width
 	 */
 	public int width() {
 		return mWidth;
 	}
 
 	/**
-	 * Height.
+	 * Returns the current height of the view.
 	 * 
-	 * @return the int
+	 * @return the height
 	 */
 	public int height() {
 		return mHeight;
 	}
 
 	/**
-	 * Unproject.
+	 * Unprojects the screen coordinates into a ray in the 3D space. It creates
+	 * a point and a direction in the object space where the ray will pass
+	 * through. This can be used if the user should be able to interact with the
+	 * 3D space.
 	 * 
 	 * @param x
-	 *            the x
+	 *            the x-coordinate
 	 * @param y
-	 *            the y
-	 * @return the ray
+	 *            the y-coordinate
+	 * @return the ray in the object space
 	 */
 	public Ray unproject(float x, float y) {
 
@@ -125,9 +120,10 @@ public class GLViewer extends GLSurfaceView {
 	}
 
 	/**
-	 * Creates the matrices.
+	 * Creates the matrices that are used for the projection from the 3D-space
+	 * onto a 2D-screen. (Result=ViewMatrix*ProjectionMatrix*ViewportMatrix)
 	 * 
-	 * @return the matrix4f
+	 * @return the complete matrix
 	 */
 	private Matrix4f createMatrices() {
 

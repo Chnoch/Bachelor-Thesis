@@ -8,23 +8,23 @@ import javax.vecmath.Vector3f;
 import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.util.Util;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Leaf.
+ * This is the abstract super class of all the nodes in a graph scene manager
+ * that contain an element that needs to be drawn. It can be rotated, translated
+ * and scaled. All the transformations are applied to the element that will be
+ * drawn. <br>
+ * A node can also be set to be inactive. An inactive node doesn't respond to
+ * user interaction.
  */
 public abstract class Leaf implements Node {
 
-	/** The parent. */
 	protected Node parent;
 
-	/** The m transformation matrix. */
 	protected Matrix4f mTranslationMatrix, mRotationMatrix,
 			mTransformationMatrix;
 
-	/** The m scale. */
 	protected float mScale;
 
-	/** The m is active. */
 	protected boolean mIsActive = true;
 
 	/**
@@ -128,7 +128,8 @@ public abstract class Leaf implements Node {
 	}
 
 	/**
-	 * Sets the transformation matrix.
+	 * Updates the transformation matrix to reflect any changes in the
+	 * translation, rotation or scale component.
 	 */
 	protected void setTransformationMatrix() {
 		Matrix4f trans = new Matrix4f(mRotationMatrix);

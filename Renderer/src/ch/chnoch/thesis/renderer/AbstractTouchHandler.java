@@ -380,10 +380,13 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 		if (e.getPointerCount() > 1) {
 			float angle = calculateAngle(e);
 			if (!(mPreviousDegree == Float.MIN_VALUE)) {
-				Vector3f upVector = mSceneManager.getCamera().getUpVector();
+				Camera camera = mSceneManager.getCamera();
+				Vector3f upVector = camera.getUpVector();
 				Matrix4f rot = new Matrix4f();
-				rot.set(new AxisAngle4f(mSceneManager.getCamera()
-						.getCenterOfProjection(), angle - mPreviousDegree));
+				Vector3f cameraDirection = new Vector3f(camera.getLookAtPoint());
+				cameraDirection.sub(camera.getCenterOfProjection());
+				rot.set(new AxisAngle4f(cameraDirection, mPreviousDegree
+						- angle));
 				rot.transform(upVector);
 				mSceneManager.getCamera().setUpVector(upVector);
 			}

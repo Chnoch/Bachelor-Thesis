@@ -5,105 +5,66 @@ import javax.vecmath.Vector3f;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
 
-// TODO: Auto-generated Javadoc
 /**
- * Stores the properties of a material.
+ * This class stores the general properties of a material. The properties stored
+ * in this class will be used by an OpenGL renderer or a software renderer to
+ * create the material.
  */
 public abstract class Material {
 
-	/** The m diffuse. */
 	public Vector3f mDiffuse;
-
-	/** The m specular. */
 	public Vector3f mSpecular;
-
-	/** The m ambient. */
 	public Vector3f mAmbient;
 
-	/** The shininess. */
 	public float shininess;
 
-	/** The texture. */
 	private Texture texture;
 
-	/** The m texture changed. */
 	private boolean mTextureChanged;
 
-	/** The shader. */
 	private Shader shader;
 
 	/**
-	 * Instantiates a new material.
+	 * Instantiates a new material with standard properties. <br>
+	 * The diffuse, specular and ambient component are all set to (1,1,1), and
+	 * the shininess parameter is set to 40.
 	 */
 	public Material() {
 		mDiffuse = new Vector3f(1.f, 1.f, 1.f);
 		mSpecular = new Vector3f(1.f, 1.f, 1.f);
 		mAmbient = new Vector3f(1.f, 1.f, 1.f);
-		shininess = 1.f;
+		shininess = 40f;
 	}
 
-	/**
-	 * Sets the texture.
-	 * 
-	 * @param tex
-	 *            the new texture
-	 */
 	public void setTexture(Texture tex) {
 		texture = tex;
 		setTextureChanged(true);
 	}
 
-	/**
-	 * Gets the texture.
-	 * 
-	 * @return the texture
-	 */
 	public Texture getTexture() {
 		return texture;
 	}
 	
-	/**
-	 * Checks for texture changed.
-	 * 
-	 * @return true, if successful
-	 */
 	public boolean hasTextureChanged() {
 		return mTextureChanged;
 	}
 	
-	/**
-	 * Sets the texture changed.
-	 * 
-	 * @param value
-	 *            the new texture changed
-	 */
 	public void setTextureChanged(boolean value) {
 		mTextureChanged = value;
 	}
 
-	/**
-	 * Sets the shader.
-	 * 
-	 * @param shader
-	 *            the new shader
-	 */
 	public void setShader(Shader shader) {
 		this.shader = shader;
 	}
 
-	/**
-	 * Gets the shader.
-	 * 
-	 * @return the shader
-	 */
 	public Shader getShader() {
 		return shader;
 	}
 
 	/**
-	 * Creates the diffuse array.
+	 * Creates an array for the diffuse material component.
 	 * 
-	 * @return the float[]
+	 * @return the diffuse component
 	 */
 	public float[] createDiffuseArray() {
 		float[] diff = new float[4];
@@ -115,9 +76,9 @@ public abstract class Material {
 	}
 
 	/**
-	 * Creates the specular array.
+	 * Creates an array for the specular material component.
 	 * 
-	 * @return the float[]
+	 * @return the specular component
 	 */
 	public float[] createSpecularArray() {
 		float[] spec = new float[4];
@@ -129,9 +90,9 @@ public abstract class Material {
 	}
 
 	/**
-	 * Creates the ambient array.
+	 * Creates an array for the ambient material component.
 	 * 
-	 * @return the float[]
+	 * @return the ambient component
 	 */
 	public float[] createAmbientArray() {
 		float[] amb = new float[4];

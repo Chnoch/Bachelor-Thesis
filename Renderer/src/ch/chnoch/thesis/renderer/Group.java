@@ -8,30 +8,28 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
-
 import ch.chnoch.thesis.renderer.util.Util;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Group.
+ * A group is an abstract superclass for all the nodes in a GraphSceneManager
+ * that do not contain an actual shape but rather a collection of child nodes.
+ * It can contain several children, which can be groups or leaves. It can be
+ * rotated and translated. All of the transformations are applied to all of the
+ * children before rendering.
  */
 public abstract class Group implements Node {
 
-	/** The m parent. */
 	protected Node mParent;
 	
-	/** The m children. */
 	protected List<Node> mChildren;
 	
-	/** The m is active. */
 	protected boolean mIsActive = true;
 
-	/** The m transformation matrix. */
 	protected Matrix4f mTranslationMatrix, mRotationMatrix,
 			mTransformationMatrix;
 
 	/**
-	 * Instantiates a new group.
+	 * Instantiates a new group node.
 	 */
 	public Group() {
 		super();
@@ -105,9 +103,10 @@ public abstract class Group implements Node {
 	}
 
 	/**
-	 * Removes the child.
-	 *
-	 * @param child the child
+	 * Removes a child from the group.
+	 * 
+	 * @param child
+	 *            the child that needs to be removed
 	 */
 	public void removeChild(Node child) {
 		this.mChildren.remove(child);
@@ -166,7 +165,8 @@ public abstract class Group implements Node {
 	}
 
 	/**
-	 * Sets the transformation matrix.
+	 * Updates the transformation matrix to reflect changes in the translation
+	 * or rotation component of the node.
 	 */
 	protected void setTransformationMatrix() {
 		if (mRotationMatrix != null && mTranslationMatrix != null) {
@@ -183,19 +183,21 @@ public abstract class Group implements Node {
 	}
 
 	/**
-	 * Inits the translation matrix.
-	 *
-	 * @param t the t
+	 * Initializes the translation matrix.
+	 * 
+	 * @param t
+	 *            the initial translation matrix
 	 */
 	public void initTranslationMatrix(Matrix4f t) {
 		setTranslationMatrix(t);
 	}
 
 	/**
-	 * Inits the rotation matrix.
-	 *
-	 * @param t the t
-	 */
+	 * Initializes the rotation matrix.
+	 * 
+	 * @param t
+	 *            the initial rotation matrix
+	 * */
 	public void initRotationMatrix(Matrix4f t) {
 		setRotationMatrix(t);
 	}

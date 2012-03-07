@@ -7,13 +7,13 @@ import javax.vecmath.Matrix4f;
 
 import ch.chnoch.thesis.renderer.interfaces.Node;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GraphSceneManager.
+ * This is a possible implementation of how to manage a 3D-scene. A Graph is
+ * used to store all the objects. It can contain group nodes and leaf nodes with
+ * different properties as children to build up a graph.
  */
 public class GraphSceneManager extends AbstractSceneManager {
 
-	/** The m root. */
 	private Node mRoot;
 	
 	/**
@@ -54,26 +54,23 @@ public class GraphSceneManager extends AbstractSceneManager {
 		return this.mRoot;
 	}
 	
-	/*
-	 * The Iterator for the scene.
-	 */
-
 	/**
-	 * The Class GraphSceneIterator.
+	 * This class implements an iterator over a GraphSceneManager. It transforms
+	 * every Node that needs to be drawn to the correct place in the object
+	 * space and then returns all the nodes that are to be drawn, so the
+	 * renderer can easily iterate over all of them.
 	 */
 	private class GraphSceneIterator implements SceneManagerIterator {
 
-		/** The root. */
 		private Node root;
 
-		/** The stack. */
 		private Stack<RenderItem> stack;
 
 		/**
-		 * Instantiates a new graph scene iterator.
+		 * Instantiates a new iterator.
 		 * 
 		 * @param manager
-		 *            the manager
+		 *            the scene manager where the scene is stored
 		 */
 		public GraphSceneIterator(GraphSceneManager manager) {
 			root = manager.getRoot();
@@ -82,12 +79,14 @@ public class GraphSceneManager extends AbstractSceneManager {
 		}
 
 		/**
-		 * Inits the.
+		 * Initializes a node with the correct transformation matrix. This
+		 * method is used recursively to correctly apply the transformation of
+		 * parent nodes to its children.
 		 * 
 		 * @param node
-		 *            the node
+		 *            the node that is currently transformed
 		 * @param t
-		 *            the t
+		 *            the transformation matrix of the current node
 		 */
 		private void init(Node node, Matrix4f t) {
 			if (node.getShape() != null) {

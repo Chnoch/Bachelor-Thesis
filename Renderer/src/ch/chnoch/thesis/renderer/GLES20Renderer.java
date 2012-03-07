@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package ch.chnoch.thesis.renderer;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
@@ -48,91 +51,74 @@ import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
 import ch.chnoch.thesis.renderer.util.GLUtil;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GLES20Renderer.
+ * This class handles all of the aspect of drawing a shape to the screen. It
+ * uses OpenGL ES 2.0 to do so. It contains everything that is necessary to
+ * convert all the object and properties of our library into the appropriate
+ * OpenGL objects and pass them to the Android framework where the rendering
+ * will occur via OpenGL.
+ * 
+ * OpenGL ES 2.0 has a programmable rendering pipeline. In contrast to Desktop
+ * OpenGL it doesn't have any built in support for fixed rendering. Therefore
+ * you always need vertex (triangle) and fragment (pixel) shaders for anything
+ * to appear on the screen. There are several basic shaders for rendering
+ * meshes, drawing textures and lights included with this library. If you have
+ * higher needs it is advised to create your own shaders. You can find plenty of
+ * information on the Internet.
+ * 
+ * Since about 90% of the Android devices support OpenGL ES 2.0 (as of March
+ * 2012) it is advised to use this version of OpenGL ES. The older devices
+ * generally also have very limited computation capabilities and are missing
+ * other integrated components, like e.g. a FPU et. al.
  */
 public class GLES20Renderer extends AbstractRenderer {
 
-	/** The m shader. */
 	private Shader mShader;
-
-	/** The m fragment shader file name. */
+	private int mProgram;
 	private String mVertexShaderFileName, mFragmentShaderFileName;
 
-	/** The m textures. */
 	private List<Texture> mTextures;
 
-	/** The m light. */
 	private GLLight mLight;
 
-	/** The m context. */
 	private Context mContext;
 
-	/** The m program. */
-	private int mProgram;
 
-	/** The mu mvp matrix handle. */
 	private int muMVPMatrixHandle;
-
-	/** The mu normal matrix handle. */
 	private int muNormalMatrixHandle;
-
-	/** The mu model view matrix handle. */
 	private int muModelViewMatrixHandle;
-
-	/** The ma vertex handle. */
 	private int maVertexHandle;
-
-	/** The ma texture handle. */
 	private int maTextureHandle;
-
-	/** The ma has texture handle. */
 	private int maHasTextureHandle;
-
-	/** The ma normal handle. */
 	private int maNormalHandle;
-
-	/** The ma eye vector handle. */
 	private int maEyeVectorHandle;
 
-	/** The m index buffer. */
 	private ShortBuffer mIndexBuffer;
-
-	/** The m vertex buffer. */
 	private FloatBuffer mVertexBuffer;
-
-	/** The m tex coords buffer. */
 	private FloatBuffer mTexCoordsBuffer;
-
-	/** The m color buffer. */
 	private FloatBuffer mColorBuffer;
-
-	/** The m normal buffer. */
 	private FloatBuffer mNormalBuffer;
 
-	/** The m enable shader. */
 	private boolean mEnableShader;
-
-	/** The m texture changed. */
 	private boolean mTextureChanged = false;
-
-	/** The m texture bound. */
 	private boolean mTextureBound = false;
 
-	/** The TAG. */
 	private final String TAG = "GLES20Renderer";
 
 	/**
-	 * This constructor is called by {@link GLRenderPanel}.
+	 * The constructor for an OpenGL ES 2.0 device.
 	 * 
 	 * @param context
-	 *            the context
+	 *            The context in which the Android application is running.
 	 */
 	public GLES20Renderer(Context context) {
 		super();
 		mContext = context;
 	}
+
+	/*
+	 * FRAMEWORK CALLBACK METHODS
+	 */
 
 	/*
 	 * (non-Javadoc)
@@ -212,16 +198,11 @@ public class GLES20Renderer extends AbstractRenderer {
 		}
 	}
 
-	/**
-	 * The callback method that is invoked by the Android framework whenever the
-	 * surface changes. Happens mostly during rotation changes.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param glUnused
-	 *            The unused OpenGL ES 1.0 pointer
-	 * @param width
-	 *            The new width
-	 * @param height
-	 *            The new height
+	 * @see ch.chnoch.thesis.renderer.AbstractRenderer#onSurfaceChanged(javax.
+	 * microedition.khronos.opengles.GL10, int, int)
 	 */
 	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
 		Log.d(TAG, "onsurfacechanged method called");
@@ -230,13 +211,12 @@ public class GLES20Renderer extends AbstractRenderer {
 		glViewport(0, 0, width, height);
 	}
 
-	/**
-	 * The callback method that is invoked by the Android framework every time a
-	 * frame is drawn.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param glUnused
-	 *            A pointer to the GL10 object. This is no longer used in OpenGL
-	 *            ES 2.0
+	 * @see
+	 * ch.chnoch.thesis.renderer.AbstractRenderer#onDrawFrame(javax.microedition
+	 * .khronos.opengles.GL10)
 	 */
 	public void onDrawFrame(GL10 glUnused) {
 		try {
@@ -445,7 +425,9 @@ public class GLES20Renderer extends AbstractRenderer {
 	}
 
 	/**
-	 * Load textures.
+	 * Loads all the textures. Reads the bitmap or the image from the resources
+	 * of the application and passes it to OpenGL ES 2.0 so that the textures
+	 * can be used in a shader.
 	 */
 	private void loadTextures() {
 		if (mTextures != null) {
@@ -456,7 +438,9 @@ public class GLES20Renderer extends AbstractRenderer {
 	}
 
 	/**
-	 * Load shader.
+	 * Loads the shader. Reads the shader source code for the vertex and
+	 * fragment shader from the resource file and passes them to OpenGL ES to be
+	 * used in the pipeline.
 	 */
 	private void loadShader() {
 		mShader = new GLShader();
@@ -469,10 +453,10 @@ public class GLES20Renderer extends AbstractRenderer {
 	}
 
 	/**
-	 * Clean material.
+	 * Cleans up material. Disables the textures and the shader.
 	 * 
-	 * @param m
-	 *            the m
+	 * @param material
+	 *            the material
 	 */
 	private void cleanMaterial(Material m) {
 		if (m != null && m.getTexture() != null) {
