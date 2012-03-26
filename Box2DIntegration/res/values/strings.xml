@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Box2DIntegration!</string>
+    <string name="app_name">Box2DIntegration</string>
+    <string name="newSimulation">New Simulation</string>
+    <string name="pyramid">Pyramid</string>
+    <string name="tower">Tower</string>
+</resources>

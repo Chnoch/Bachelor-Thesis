@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GLViewer</string>
+    <string name="wood">Holz</string>
+    <string name="aluminium">Aluminium</string>
+    <string name="wall">Ziegelsteine</string>
+    <string name="cube">Add Cube</string>
+    <string name="teapot">Add Teapot</string>
+    <string name="sphere">Add Sphere</string>
+    <string name="selectObject">Select Object</string>
+    <string name="addShape">Add Shape</string>
+    <string name="changeTexture">Change Texture</string>
+    <string name="cameraOptions">Camera Options</string>
+    <string name="changeCameraMode">Change Camera Mode</string>
+    <string name="reset">Reset</string>
+</resources>
