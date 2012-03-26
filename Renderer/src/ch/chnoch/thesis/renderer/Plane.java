@@ -73,7 +73,7 @@ public class Plane {
 	 * @param ray
 	 *            the ray that is to be shot through the scene.
 	 * @return a RayShapeIntersecion, a data structure that holds information
-	 *         about where a hit between a ray and an object occured.
+	 *         about where a hit between a ray and an object occurred.
 	 */
 	public RayShapeIntersection intersect(Ray ray) {
 		if (!m2DMode) {

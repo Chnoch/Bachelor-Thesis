@@ -159,8 +159,6 @@ public interface Node {
     public void setMaterial(Material material);
     
 
-
-
 	/**
 	 * Gets all the children of a node. This is only used in classes extending
 	 * {@link Group}.

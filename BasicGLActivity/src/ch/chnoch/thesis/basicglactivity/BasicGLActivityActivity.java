@@ -10,18 +10,16 @@ import java.nio.ShortBuffer;
 
 import javax.vecmath.Vector3f;
 
+import android.app.Activity;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.util.Log;
 import ch.chnoch.thesis.renderer.BasicGLES20Renderer;
-import ch.chnoch.thesis.renderer.BasicRenderer;
-import ch.chnoch.thesis.renderer.GLES20Renderer;
 import ch.chnoch.thesis.renderer.GLException;
 import ch.chnoch.thesis.renderer.GLMaterial;
 import ch.chnoch.thesis.renderer.Light;
 import ch.chnoch.thesis.renderer.Material;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
-import android.app.Activity;
-import android.opengl.GLSurfaceView;
-import android.os.Bundle;
-import android.util.Log;
 
 
 public class BasicGLActivityActivity extends Activity {
@@ -83,7 +81,7 @@ public class BasicGLActivityActivity extends Activity {
 		float[] specular = { 1, 1, 1, 1 };
 		float[] ambient = { 0.2f, 0.2f, .2f, 1 };
 		
-		Light light = new Light(null);
+		Light light = new Light();
 		light.setAmbient( 0.2f, 0.2f, .2f);
 		light.setDiffuse(0.6f,.6f,.6f);
 		light.setPosition(0,0,0);
