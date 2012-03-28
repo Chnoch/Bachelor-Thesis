@@ -75,8 +75,6 @@ public class GLES11Renderer extends AbstractRenderer {
 	private FloatBuffer mColorBuffer;
 	private FloatBuffer mNormalBuffer;
 	
-	private float width, height;
-
 	/**
 	 * Instantiates a new renderer using the OpenGL ES 1.1 platform
 	 * 
@@ -146,8 +144,6 @@ public class GLES11Renderer extends AbstractRenderer {
 		mViewer.surfaceHasChanged(width, height);
 		setViewportMatrix(width, height);
 
-		this.width = width;
-		this.height = height;
 		/*
 		 * Set our projection matrix. This doesn't have to be done each time we
 		 * draw, but usually a new projection needs to be set when the viewport
@@ -296,8 +292,7 @@ public class GLES11Renderer extends AbstractRenderer {
 	}
 
 	/**
-	 * Pass the material properties to OpenGL, including textures. TODO:
-	 * Implement textures
+	 * Pass the material properties to OpenGL, including textures.
 	 * 
 	 * @param m
 	 *            the material that needs to be drawn
@@ -319,30 +314,23 @@ public class GLES11Renderer extends AbstractRenderer {
 		}
 	}
 
-	// only used to calculate rendering time per frame
-	private int frameCount;
-	private long currentTime, previousTime = 0;
-	private float fps;
-
 	/**
-	 * Calculates the frames per second.
+	 * // only used to calculate rendering time per frame private int
+	 * frameCount; private long currentTime, previousTime = 0; private float
+	 * fps;
+	 * 
+	 * /** Calculates the frames per second. / private void calculateFPS() { //
+	 * Increase frame count frameCount++;
+	 * 
+	 * currentTime = System.currentTimeMillis();
+	 * 
+	 * // Calculate time passed long timeInterval = currentTime - previousTime;
+	 * 
+	 * if (timeInterval > 1000) { fps = timeInterval / frameCount;
+	 * 
+	 * previousTime = currentTime;
+	 * 
+	 * frameCount = 0; } }
 	 */
-	private void calculateFPS() {
-		// Increase frame count
-		frameCount++;
-
-		currentTime = System.currentTimeMillis();
-
-		// Calculate time passed
-		long timeInterval = currentTime - previousTime;
-
-		if (timeInterval > 1000) {
-			fps = timeInterval / frameCount;
-
-			previousTime = currentTime;
-
-			frameCount = 0;
-		}
-	}
 
 }

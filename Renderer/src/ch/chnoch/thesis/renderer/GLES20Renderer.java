@@ -97,7 +97,6 @@ public class GLES20Renderer extends AbstractRenderer {
 	private ShortBuffer mIndexBuffer;
 	private FloatBuffer mVertexBuffer;
 	private FloatBuffer mTexCoordsBuffer;
-	private FloatBuffer mColorBuffer;
 	private FloatBuffer mNormalBuffer;
 
 	private boolean mEnableShader;
@@ -248,7 +247,6 @@ public class GLES20Renderer extends AbstractRenderer {
 		VertexBuffers buffers = renderItem.getNode().getShape()
 				.getVertexBuffers();
 		mVertexBuffer = buffers.getVertexBuffer();
-		mColorBuffer = buffers.getColorBuffer();
 		mIndexBuffer = buffers.getIndexBuffer();
 		mTexCoordsBuffer = buffers.getTexCoordsBuffer();
 		mNormalBuffer = buffers.getNormalBuffer();
