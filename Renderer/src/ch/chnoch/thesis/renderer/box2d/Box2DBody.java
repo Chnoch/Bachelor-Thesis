@@ -10,49 +10,49 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 
-// TODO: Auto-generated Javadoc
+import ch.chnoch.thesis.renderer.ShapeNode;
+
 /**
- * The Class Box2DBody.
+ * This class represents a body in the Box2D physics world. It contains a
+ * {@link Body} object, which is a rigid body as well as a {@link BodyDef}
+ * object, that holds all the information necessary to create a rigid body. This
+ * is the physical equivalent of a {@link ShapeNode} in the library. If the
+ * physics simulation is used, every ShapeNode has an associated Box2DBody.
  */
 public class Box2DBody {
 
-	/** The m body. */
 	private Body mBody;
-
-	/** The m body def. */
 	private BodyDef mBodyDef;
 
-	/** The m previous position. */
 	private Vector2f mPreviousPosition;
 
-	/** The m world. */
 	private Box2DWorld mWorld;
 
-	/** The m joint list. */
+	/** A list of all the non-destroyed joints. */
 	private List<Box2DJoint> mJointList;
 
-	/** The m joint. */
+	/** The currently active joint */
 	private Box2DJoint mJoint;
 
-	/** The m shape. */
 	private Box2DShape mShape;
 
-	/** The m create joint. */
 	private boolean mCreateJoint;
 
 	/**
 	 * Instantiates a new box2 d body.
 	 * 
 	 * @param position
-	 *            the position
+	 *            the position of the object
 	 * @param world
-	 *            the world
+	 *            a reference to the {@link Box2DWorld}
 	 * @param shape
-	 *            the shape
+	 *            the corresponding {@link Box2DShape} of this body
 	 * @param hasMass
-	 *            the has mass
+	 *            a boolean indicating whether this body has a mass, i.e.
+	 *            whether it is affected by gravity
 	 * @param createJoint
-	 *            the create joint
+	 *            Joints are used for user interactions. Disable if a body
+	 *            shouldn't be moved.
 	 */
 	public Box2DBody(Vector2f position, Box2DWorld world, Box2DShape shape,
 			boolean hasMass, boolean createJoint) {
@@ -104,12 +104,13 @@ public class Box2DBody {
 	}
 
 	/**
-	 * Move.
+	 * Moves the joint to a new position. This is updated when the user moves a
+	 * finger on the screen.
 	 * 
 	 * @param x
-	 *            the x
+	 *            the x-coordinate
 	 * @param y
-	 *            the y
+	 *            the y-coordinate
 	 */
 	public void move(float x, float y) {
 		if (mCreateJoint) {
