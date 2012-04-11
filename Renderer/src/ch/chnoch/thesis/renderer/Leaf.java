@@ -60,6 +60,17 @@ public abstract class Leaf implements Node {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.Node#removeChild(ch.chnoch.thesis
+	 * .renderer .interfaces.Node)
+	 */
+	public boolean removeChild(Node child) {
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ch.chnoch.thesis.renderer.interfaces.Node#getTransformationMatrix()
 	 */
 	public Matrix4f getTransformationMatrix() {

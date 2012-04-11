@@ -177,6 +177,18 @@ public interface Node {
     public void addChild(Node child);
 
 	/**
+	 * Removes a child to the node. This is only used in classes extending
+	 * {@link Group}.
+	 * 
+	 * @param child
+	 *            the child to be removed
+	 * 
+	 * @return returns true if the child could be removed successfully and false
+	 *         if not
+	 */
+	public boolean removeChild(Node child);
+
+	/**
 	 * Gets the parent of the node.
 	 * 
 	 * @return the parent node

@@ -1,5 +1,8 @@
 package ch.chnoch.thesis.box2dintegration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
@@ -17,6 +20,7 @@ import ch.chnoch.thesis.renderer.Material;
 import ch.chnoch.thesis.renderer.PhysicsGroup;
 import ch.chnoch.thesis.renderer.PhysicsTouchHandler;
 import ch.chnoch.thesis.renderer.ShapeNode;
+import ch.chnoch.thesis.renderer.interfaces.Node;
 import ch.chnoch.thesis.renderer.interfaces.RenderContext;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.util.Util;
@@ -32,6 +36,8 @@ public class PoolGame extends Activity {
 	private Shader mShader;
 
 	private boolean mSimulationRunning;
+
+	private List<Node> mBalls;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,7 @@ public class PoolGame extends Activity {
 					for (int i = 0; i < 1; i++) {
 						// Log.d("Simulation", "Updating scene");
 						mSceneManager.updateScene();
+						testBoundaries();
 						mViewer.requestRender();
 					}
 					try {
@@ -85,16 +92,14 @@ public class PoolGame extends Activity {
 
 	private void init() {
 		mSceneManager = new GraphSceneManager();
-		mSceneManager.getCamera()
-.setCenterOfProjection(
-				new Vector3f(-10, -15, -15));
+		mSceneManager.getCamera().setCenterOfProjection(
+				new Vector3f(0, -15, -15));
 		mSceneManager.getFrustum().setVertFOV(60);
 
 		mRenderer = new GLES20Renderer(getApplicationContext());
 		mRenderer.setSceneManager(mSceneManager);
 
 		mViewer = new GLViewer(this, mRenderer, true);
-
 		mViewer.setOnTouchListener(new PhysicsTouchHandler(mSceneManager,
 				mRenderer, mViewer, CameraMode.ORIGIN_CENTRIC));
 		setContentView(mViewer);
@@ -102,6 +107,8 @@ public class PoolGame extends Activity {
 		mViewer.setFocusableInTouchMode(true);
 
 		mShader = createShaders();
+
+		mBalls = new ArrayList<Node>();
 	}
 
 	private void createLights() {
@@ -123,8 +130,7 @@ public class PoolGame extends Activity {
 		// new Vector2f(0, 0));
 		// groundBody.setActiveState(false);
 		ShapeNode groundBody = mPhysicsNode.addGroundBody(0.0001f, 0.0001f,
-				0.005f,
-				new Vector2f(-20, -20));
+				0.005f, new Vector2f(-20, -20));
 		groundBody.setActiveState(false);
 
 		ShapeNode ground = new ShapeNode(Util.loadCuboid(10, 5, 0.005f));
@@ -173,8 +179,10 @@ public class PoolGame extends Activity {
 		for (int i = 0; i < 5; i++) {
 			for (int j = i - 3; j < 3.5f - i; j++) {
 				Vector2f position = new Vector2f(i - 4, j);
-				mPhysicsNode.addCircle(0.5f, position).setMaterial(
-						createMaterial(1, 0, 0, 40));
+				ShapeNode node = mPhysicsNode.addCircle(0.5f, position);
+				node.setMaterial(createMaterial(1, 0, 0, 40));
+				node.setActiveState(false);
+				mBalls.add(node);
 			}
 		}
 
@@ -211,6 +219,22 @@ public class PoolGame extends Activity {
 		mat.mSpecular.set(r, g, b);
 		mat.setShader(mShader);
 		return mat;
+	}
+
+	private void testBoundaries() {
+		List<Node> tempBalls = new ArrayList<Node>();
+		for (Node ball : mBalls) {
+			Vector3f center = ball.getCenter();
+			if (center.x < -10 || center.x > 10 || center.y < -5
+					|| center.y > 5) {
+				tempBalls.add(ball);
+			}
+		}
+
+		for (Node removeBall : tempBalls) {
+			mBalls.remove(removeBall);
+			removeBall.getParent().removeChild(removeBall);
+		}
 	}
 
 }

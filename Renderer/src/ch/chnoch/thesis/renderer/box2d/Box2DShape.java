@@ -104,6 +104,7 @@ public class Box2DShape {
 		// Some random default values
 		mFixtureDef.density = 10;
 		mFixtureDef.friction = 0.3f;
+		mFixtureDef.restitution = 0.5f;
 		
 		switch (mType) {
 		case CIRCLE:

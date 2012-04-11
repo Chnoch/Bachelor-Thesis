@@ -102,15 +102,16 @@ public abstract class Group implements Node {
 		child.setParent(this);
 	}
 
-	/**
-	 * Removes a child from the group.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param child
-	 *            the child that needs to be removed
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.Node#removeChild(ch.chnoch.thesis
+	 * .renderer .interfaces.Node)
 	 */
-	public void removeChild(Node child) {
-		this.mChildren.remove(child);
+	public boolean removeChild(Node child) {
 		child.setParent(null);
+		return this.mChildren.remove(child);
 	}
 
 	/* (non-Javadoc)
