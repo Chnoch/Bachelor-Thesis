@@ -13,47 +13,46 @@ import org.jbox2d.collision.shapes.ShapeType;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.FixtureDef;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Box2DShape.
+ * The Class Box2DShape is an abstraction for a Box2D
+ * {@link org.jbox2d.collision.shapes.Shape}. This is the physical equivalent of
+ * a {@link ch.chnoch.thesis.renderer.Shape} in the graphical domain. It
+ * contains information about the friction, the density and obviously the shape
+ * of the physical object.
  */
 public class Box2DShape {
 
-	/** The m fixture def. */
 	private FixtureDef mFixtureDef;
-
-	/** The m shape. */
 	private Shape mShape;
 
-	/** The m type. */
 	private Box2DShapeType mType;
 
 	/**
-	 * Instantiates a new box2 d shape.
+	 * Instantiates a new box2d shape.
 	 */
 	public Box2DShape() {
 		init();
 	}
-	
+
 	/**
-	 * Instantiates a new box2 d shape.
+	 * Instantiates a new box2d shape that has the form of a box.
 	 * 
 	 * @param width
-	 *            the width
+	 *            the width of the box
 	 * @param height
-	 *            the height
+	 *            the height of the box
 	 */
 	public Box2DShape(float width, float height){
 		mType = Box2DShapeType.BOX;
 		init();
 		setAsBox(width, height);
 	}
-	
+
 	/**
-	 * Instantiates a new box2 d shape.
+	 * Instantiates a new box2d shape that has the form of a circle.
 	 * 
 	 * @param radius
-	 *            the radius
+	 *            the radius of the circle
 	 */
 	public Box2DShape(float radius) {
 		mType = Box2DShapeType.CIRCLE;
@@ -62,10 +61,12 @@ public class Box2DShape {
 	}
 
 	/**
-	 * Instantiates a new box2 d shape.
+	 * Instantiates a new box2d shape from an arbitrary shape. This will just
+	 * assume that the object is a box and basically create a bounding box as a
+	 * physical representation. It is therefore not very practical for usage.
 	 * 
 	 * @param vertices
-	 *            the vertices
+	 *            the vertices of the object
 	 */
 	public Box2DShape(FloatBuffer vertices) {
 		init();
@@ -97,11 +98,11 @@ public class Box2DShape {
 	}
 
 	/**
-	 * Inits the.
+	 * Inits the Box2D shape with default or passed values.
 	 */
 	private void init() {
 		mFixtureDef = new FixtureDef();
-		// Some random default values
+		// default values
 		mFixtureDef.density = 10;
 		mFixtureDef.friction = 0.3f;
 		mFixtureDef.restitution = 0.5f;
@@ -113,12 +114,10 @@ public class Box2DShape {
 		default:
 			mShape = new PolygonShape();
 		}
-		
-		
 	}
 
 	/**
-	 * Sets the density.
+	 * Sets the density of the shape.
 	 * 
 	 * @param dens
 	 *            the new density
@@ -136,9 +135,9 @@ public class Box2DShape {
 	public void setFriction(float friction) {
 		mFixtureDef.friction = friction;
 	}
-	
+
 	/**
-	 * Gets the coordinates.
+	 * Gets the coordinates of the shape.
 	 * 
 	 * @return the coordinates
 	 */
@@ -150,18 +149,18 @@ public class Box2DShape {
 		}
 		return vectorList;
 	}
-	
+
 	/**
-	 * Gets the radius.
+	 * Gets the radius of the shape if it is a circle.
 	 * 
 	 * @return the radius
 	 */
 	public float getRadius() {
 		return mShape.m_radius;
 	}
-	
+
 	/**
-	 * Gets the type.
+	 * Gets the {@link Box2DShapeType} of the shape.
 	 * 
 	 * @return the type
 	 */
@@ -175,24 +174,24 @@ public class Box2DShape {
 	 */
 
 	/**
-	 * Sets the as box.
+	 * Sets the shape as a box.
 	 * 
 	 * @param x
-	 *            the x
+	 *            the half-width
 	 * @param y
-	 *            the y
+	 *            the half-height
 	 */
 	void setAsBox(float x, float y) {
 		mShape.m_type = ShapeType.POLYGON;
 		mType = Box2DShapeType.BOX;
 		((PolygonShape)mShape).setAsBox(x, y);
 	}
-	
+
 	/**
-	 * Sets the as circle.
+	 * Sets the shape as a circle.
 	 * 
 	 * @param radius
-	 *            the new as circle
+	 *            the radius
 	 */
 	void setAsCircle(float radius) {
 		mShape.m_type = ShapeType.CIRCLE;
@@ -202,9 +201,9 @@ public class Box2DShape {
 	}
 
 	/**
-	 * Gets the fixture def.
+	 * Gets the definition of the shape.
 	 * 
-	 * @return the fixture def
+	 * @return the fixture definition
 	 */
 	FixtureDef getFixtureDef() {
 		mFixtureDef.shape = mShape;
@@ -224,12 +223,9 @@ public class Box2DShape {
 	 * Private Methods
 	 */
 
-	/*
+	/**
 	 * Gets all x,y coordinates, that have the lowest z-value, therefore making
 	 * an appropriate measure for a 3D->2D conversion
-	 */
-	/**
-	 * Gets the coordinates.
 	 * 
 	 * @param verticesBuffer
 	 *            the vertices buffer
@@ -243,12 +239,6 @@ public class Box2DShape {
 		for (int i = 0; i < verticesBuffer.capacity(); i++) {
 			vertices[i] = verticesBuffer.get(i);
 		}
-		// Fixed Point Conversion
-		// float[] vertices = new float[verticesInt.length];
-		// for (int i = 0; i < verticesInt.length; i++) {
-		// vertices[i] = (float) verticesInt[i] / 65536;
-		// }
-
 		// read closest points based on their z-value
 
 		// find smallest z-value
@@ -273,17 +263,14 @@ public class Box2DShape {
 
 		return finalList;
 	}
-	
+
 	/**
-	 * The Enum Box2DShapeType.
+	 * The different possibly types of shapes.
 	 */
 	public enum Box2DShapeType {
 
-		/** The BOX. */
 		BOX,
-		/** The CIRCLE. */
 		CIRCLE,
-		/** The POLYGON. */
 		POLYGON
 	}
 }
