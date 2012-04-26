@@ -182,7 +182,7 @@ public abstract class AbstractSceneManager implements SceneManagerInterface {
 	 */
 	@Override
 	public void updateScene() {
-		float dt = 1f/60f;
+		float dt = 1f / 100f;
 		int velocityIterations = 8;
 		int positionIterations = 3;
 		// update the world
