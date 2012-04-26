@@ -4,7 +4,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Matrix4f;
 
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RendererInterface;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
@@ -13,7 +13,7 @@ import ch.chnoch.thesis.renderer.interfaces.Texture;
  * This class implements some, but not all of the common tasks of a renderer.
  * Other renderers (software / hardware) should inherit from this class.
  */
-public abstract class AbstractRenderer implements RenderContext {
+public abstract class AbstractRenderer implements RendererInterface {
 	
 	/** The scene manager. */
 	protected SceneManagerInterface mSceneManager;
@@ -55,7 +55,7 @@ public abstract class AbstractRenderer implements RenderContext {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * ch.chnoch.thesis.renderer.interfaces.RenderContext#setSceneManager(ch
+	 * ch.chnoch.thesis.renderer.interfaces.RendererInterface#setSceneManager(ch
 	 * .chnoch.thesis.renderer.interfaces.SceneManagerInterface)
 	 */
 	@Override
@@ -69,7 +69,8 @@ public abstract class AbstractRenderer implements RenderContext {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * ch.chnoch.thesis.renderer.interfaces.RenderContext#getViewportMatrix()
+	 * ch.chnoch.thesis.renderer.interfaces.RendererInterface#getViewportMatrix
+	 * ()
 	 */
 	@Override
 	public Matrix4f getViewportMatrix() {
@@ -79,7 +80,8 @@ public abstract class AbstractRenderer implements RenderContext {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.chnoch.thesis.renderer.interfaces.RenderContext#getSceneManager()
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.RendererInterface#getSceneManager()
 	 */
 	@Override
 	public SceneManagerInterface getSceneManager() {
@@ -90,7 +92,7 @@ public abstract class AbstractRenderer implements RenderContext {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * ch.chnoch.thesis.renderer.interfaces.RenderContext#setViewer(ch.chnoch
+	 * ch.chnoch.thesis.renderer.interfaces.RendererInterface#setViewer(ch.chnoch
 	 * .thesis.renderer.GLViewer)
 	 */
 	@Override
@@ -144,21 +146,23 @@ public abstract class AbstractRenderer implements RenderContext {
 	 * .khronos.opengles.GL10, javax.microedition.khronos.egl.EGLConfig)
 	 */
 	public abstract void onSurfaceCreated(GL10 gl, EGLConfig config);
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * ch.chnoch.thesis.renderer.interfaces.RenderContext#createShader(ch.chnoch
-	 * .thesis.renderer.interfaces.Shader, java.lang.String, java.lang.String)
+	 * ch.chnoch.thesis.renderer.interfaces.RendererInterface#createShader(ch
+	 * .chnoch .thesis.renderer.interfaces.Shader, java.lang.String,
+	 * java.lang.String)
 	 */
 	public abstract void createShader(Shader shader, String vertexShader, String fragmentShader)
 	throws Exception;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.chnoch.thesis.renderer.interfaces.RenderContext#createTexture()
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.RendererInterface#createTexture()
 	 */
 	public abstract Texture createTexture() throws Exception;
 }

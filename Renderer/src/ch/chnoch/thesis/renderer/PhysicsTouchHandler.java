@@ -3,7 +3,7 @@ package ch.chnoch.thesis.renderer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RendererInterface;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 /**
@@ -33,7 +33,7 @@ public class PhysicsTouchHandler extends AbstractTouchHandler {
 	 *            the camera mode that is set
 	 */
 	public PhysicsTouchHandler(SceneManagerInterface sceneManager,
-			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
+			RendererInterface renderer, GLViewer viewer, CameraMode cameraMode) {
 		super(sceneManager, renderer, viewer, cameraMode);
 		mPlane.set2DMode(true);
 	}

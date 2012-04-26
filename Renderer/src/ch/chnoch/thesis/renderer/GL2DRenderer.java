@@ -186,4 +186,9 @@ public class GL2DRenderer extends AbstractRenderer {
 		gl.glDisableClientState(GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL_VERTEX_ARRAY);
 	}
+
+	@Override
+	public boolean supportsOpenGLES20() {
+		return false;
+	}
 }

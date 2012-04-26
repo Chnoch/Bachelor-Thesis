@@ -314,6 +314,11 @@ public class GLES11Renderer extends AbstractRenderer {
 		}
 	}
 
+	@Override
+	public boolean supportsOpenGLES20() {
+		return false;
+	}
+
 	/**
 	 * // only used to calculate rendering time per frame private int
 	 * frameCount; private long currentTime, previousTime = 0; private float

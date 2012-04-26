@@ -31,7 +31,7 @@ import ch.chnoch.thesis.renderer.TouchHandler;
 import ch.chnoch.thesis.renderer.TransformGroup;
 import ch.chnoch.thesis.renderer.VertexBuffers;
 import ch.chnoch.thesis.renderer.interfaces.Node;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RendererInterface;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.interfaces.Texture;
@@ -44,7 +44,7 @@ public class GLViewerActivity extends Activity {
 
 	private GLViewer mViewer;
 	private SceneManagerInterface mSceneManager;
-	private RenderContext mRenderer;
+	private RendererInterface mRenderer;
 
 	private TouchHandler mTouchHandler;
 
@@ -64,14 +64,9 @@ public class GLViewerActivity extends Activity {
 
 		mSceneManager = new GraphSceneManager();
 
-		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 25));
-		mSceneManager.getFrustum().setVertFOV(45);
-		mSceneManager.getFrustum().setFarPlane(500);
-		mSceneManager.getFrustum().setNearPlane(1f);
-
+		changeSceneManagerValues();
 
 		boolean openGlES20 = detectOpenGLES20();
-
 		if (openGlES20) {
 			Log.d(TAG, "Using OpenGL ES 2.0");
 			mRenderer = new GLES20Renderer(getApplicationContext());
@@ -79,7 +74,7 @@ public class GLViewerActivity extends Activity {
 			Log.d(TAG, "Using OpenGL ES 1.1");
 			mRenderer = new GLES11Renderer();
 		}
-		mViewer = new GLViewer(this, mRenderer, openGlES20);
+		mViewer = new GLViewer(this, mRenderer);
 		mRenderer.setSceneManager(mSceneManager);
 
 		createShapes();
@@ -151,6 +146,13 @@ public class GLViewerActivity extends Activity {
 	 * 
 	 * Private Instantiation Methods
 	 */
+	private void changeSceneManagerValues() {
+		mSceneManager.getCamera().setCenterOfProjection(new Vector3f(0, 0, 25));
+		mSceneManager.getFrustum().setVertFOV(45);
+		mSceneManager.getFrustum().setFarPlane(500);
+		mSceneManager.getFrustum().setNearPlane(1f);
+	}
+
 	private void addCube() {
 		Shape shape = Util.loadCuboid(1, 1, 1);
 		ShapeNode node = new ShapeNode(shape);

@@ -17,7 +17,7 @@ import ch.chnoch.thesis.renderer.Material;
 import ch.chnoch.thesis.renderer.PhysicsGroup;
 import ch.chnoch.thesis.renderer.PhysicsTouchHandler;
 import ch.chnoch.thesis.renderer.ShapeNode;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RendererInterface;
 import ch.chnoch.thesis.renderer.interfaces.Shader;
 import ch.chnoch.thesis.renderer.util.Util;
 
@@ -27,7 +27,7 @@ public class PoolGame extends Activity {
 
 	private GraphSceneManager mSceneManager;
 	private PhysicsGroup mPhysicsNode;
-	private RenderContext mRenderer;
+	private RendererInterface mRenderer;
 	private GLViewer mViewer;
 	private Shader mShader;
 
@@ -93,7 +93,7 @@ public class PoolGame extends Activity {
 		mRenderer = new GLES20Renderer(getApplicationContext());
 		mRenderer.setSceneManager(mSceneManager);
 
-		mViewer = new GLViewer(this, mRenderer, true);
+		mViewer = new GLViewer(this, mRenderer);
 
 		mViewer.setOnTouchListener(new PhysicsTouchHandler(mSceneManager,
 				mRenderer, mViewer, CameraMode.ORIGIN_CENTRIC));

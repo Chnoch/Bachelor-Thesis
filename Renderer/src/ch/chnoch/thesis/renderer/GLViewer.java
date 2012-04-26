@@ -6,7 +6,7 @@ import javax.vecmath.Vector3f;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RendererInterface;
 import ch.chnoch.thesis.renderer.util.Util;
 
 /**
@@ -19,7 +19,7 @@ import ch.chnoch.thesis.renderer.util.Util;
  */
 public class GLViewer extends GLSurfaceView {
 
-	private RenderContext mRenderer;
+	private RendererInterface mRenderer;
 
 	private int mWidth, mHeight;
 
@@ -35,12 +35,12 @@ public class GLViewer extends GLSurfaceView {
 	 *            A flag that makes sure that all the OpenGL settings are set
 	 *            appropriately if you use version 1.1 or 2.0
 	 */
-	public GLViewer(Context context, RenderContext renderer, boolean openGLES20) {
+	public GLViewer(Context context, RendererInterface renderer) {
 		super(context);
 		mRenderer = renderer;
 		mRenderer.setViewer(this);
 
-		if (openGLES20) {
+		if (renderer.supportsOpenGLES20()) {
 			setEGLContextClientVersion(2);
 		}
 

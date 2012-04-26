@@ -8,7 +8,7 @@ import javax.vecmath.Vector3f;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RendererInterface;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 /**
@@ -51,7 +51,7 @@ public class TouchHandler extends AbstractTouchHandler {
 	 *            the camera mode that is used for camera interaction
 	 */
 	public TouchHandler(SceneManagerInterface sceneManager,
-			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
+			RendererInterface renderer, GLViewer viewer, CameraMode cameraMode) {
 		super(sceneManager, renderer, viewer, cameraMode);
 
 	}

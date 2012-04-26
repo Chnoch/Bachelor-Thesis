@@ -1,26 +1,31 @@
 package ch.chnoch.thesis.rendererperformance;
 
-import android.app.Activity;
-import android.os.Bundle;
-
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import ch.chnoch.thesis.renderer.*;
-import ch.chnoch.thesis.renderer.interfaces.Node;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
-import ch.chnoch.thesis.renderer.interfaces.SceneManagerIterator;
-import ch.chnoch.thesis.renderer.util.*;
+import android.app.Activity;
 import android.opengl.GLSurfaceView;
+import android.os.Bundle;
 import android.util.Log;
+import ch.chnoch.thesis.renderer.GLES11Renderer;
+import ch.chnoch.thesis.renderer.GLViewer;
+import ch.chnoch.thesis.renderer.GraphSceneManager;
+import ch.chnoch.thesis.renderer.RenderItem;
+import ch.chnoch.thesis.renderer.Shape;
+import ch.chnoch.thesis.renderer.ShapeNode;
+import ch.chnoch.thesis.renderer.TransformGroup;
+import ch.chnoch.thesis.renderer.interfaces.Node;
+import ch.chnoch.thesis.renderer.interfaces.RendererInterface;
+import ch.chnoch.thesis.renderer.interfaces.SceneManagerIterator;
+import ch.chnoch.thesis.renderer.util.Util;
 
 public class RendererPerformanceActivity extends Activity {
 
 	private GraphSceneManager mSceneManager;
 	private Shape mShape;
 	private Node mNode, mRoot;
-	private RenderContext mRenderer;
+	private RendererInterface mRenderer;
 	private GLSurfaceView mViewer;
 	private Matrix4f mRotation, mTranslation;
 	private AxisAngle4f mAxisAngle;
@@ -42,7 +47,7 @@ public class RendererPerformanceActivity extends Activity {
 
 		mRenderer = new GLES11Renderer();
 		mRenderer.setSceneManager(mSceneManager);
-		mViewer = new GLViewer(this, mRenderer, false);
+		mViewer = new GLViewer(this, mRenderer);
 
 		mRotation = Util.getIdentityMatrix();
 		mAxisAngle = new AxisAngle4f(new Vector3f(1,1,1), 0.01f);

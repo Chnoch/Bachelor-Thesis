@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import ch.chnoch.thesis.renderer.interfaces.RenderContext;
+import ch.chnoch.thesis.renderer.interfaces.RendererInterface;
 import ch.chnoch.thesis.renderer.interfaces.SceneManagerInterface;
 
 /**
@@ -58,7 +58,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	protected float mEventStart, mEventEnd;
 
 	/** The render context. */
-	protected RenderContext mRenderer;
+	protected RendererInterface mRenderer;
 
 	/** The scene manager. */
 	protected SceneManagerInterface mSceneManager;
@@ -109,7 +109,7 @@ public abstract class AbstractTouchHandler implements OnTouchListener {
 	 *            the camera mode
 	 */
 	public AbstractTouchHandler(SceneManagerInterface sceneManager,
-			RenderContext renderer, GLViewer viewer, CameraMode cameraMode) {
+			RendererInterface renderer, GLViewer viewer, CameraMode cameraMode) {
 		mSceneManager = sceneManager;
 		mRenderer = renderer;
 		mTrackball = new Trackball();

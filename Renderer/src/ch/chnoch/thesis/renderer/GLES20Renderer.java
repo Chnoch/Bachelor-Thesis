@@ -396,6 +396,18 @@ public class GLES20Renderer extends AbstractRenderer {
 		return tex;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.chnoch.thesis.renderer.interfaces.RendererInterface#supportsOpenGLES20
+	 * ()
+	 */
+	@Override
+	public boolean supportsOpenGLES20() {
+		return true;
+	}
+
 	/**
 	 * This method is called at the beginning of each frame, i.e., before scene
 	 * drawing starts.
@@ -465,4 +477,5 @@ public class GLES20Renderer extends AbstractRenderer {
 			m.getShader().disable();
 		}
 	}
+
 }
