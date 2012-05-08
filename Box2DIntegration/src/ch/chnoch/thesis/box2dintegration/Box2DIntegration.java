@@ -186,11 +186,14 @@ public class Box2DIntegration extends Activity {
 		for (int i = 0; i < 5; i++) {
 			for (int j = i-3; j < 3.5f-i; j++) {
 				Vector2f position = new Vector2f(4*j, 4*i);
-				root.addRectangle(2, 2, 0.4f, position, true, true).setMaterial(mat);
+				root.addRectangle(2, 2, 2, position, true, true).setMaterial(
+						mat);
 			}
 		}
 		mPhysicsNode.addCircle(2, new Vector2f(-15, 8)).setMaterial(mat);
-		mPhysicsNode.addCircle(2, new Vector2f(15, 8)).setMaterial(mat);
+		ShapeNode node = mPhysicsNode.addCircle(1.5f, new Vector2f(15, 8));
+		node.setMaterial(mat);
+		node.setShape(loadStructure(R.raw.teapot_alt, 2));
 	}
 
 	private void createTowerShapes() {

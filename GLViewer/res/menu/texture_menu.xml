@@ -2,14 +2,12 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:id="@+id/addShape" android:title="@string/addShape" android:showAsAction="ifRoom|withText">
-      <menu><item android:title="@string/cube" android:id="@+id/cube" android:showAsAction="ifRoom|withText"></item><item android:title="@string/teapot" android:id="@+id/teapot" android:showAsAction="ifRoom|withText"></item><item android:title="@string/sphere" android:id="@+id/sphere" android:showAsAction="ifRoom|withText"></item></menu>
-  </item>
-  <item android:id="@+id/changeTexture" android:showAsAction="ifRoom|withText" android:title="@string/changeTexture">
-      <menu><item android:id="@+id/aluminium" android:showAsAction="ifRoom|withText" android:title="@string/aluminium" /><item android:id="@+id/wall" android:title="@string/wall" android:showAsAction="ifRoom|withText" /></menu>
+      <menu><item android:title="@string/cube" android:id="@+id/cube" android:showAsAction="ifRoom|withText"></item><item android:title="@string/teapot" android:id="@+id/teapot" android:showAsAction="ifRoom|withText"></item><item android:title="@string/sphere" android:id="@+id/sphere" android:showAsAction="ifRoom|withText"></item>
+      <item android:id="@+id/helicopter" android:title="@string/helicopter" android:showAsAction="ifRoom|withText"/>
+</menu>
   </item>
   <item android:id="@+id/cameraOptions" android:showAsAction="ifRoom|withText" android:title="@string/cameraOptions">
-      <menu><item android:id="@+id/selectObject" android:showAsAction="ifRoom|withText" android:title="@string/selectObject"></item>
-      <item android:id="@+id/changeCameraMode" android:title="@string/changeCameraMode" android:showAsAction="ifRoom|withText"/>
+      <menu>
       <item android:id="@+id/reset" android:title="@string/reset" android:showAsAction="ifRoom|withText"/>
 </menu>
   </item>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Renderer"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Java3D/1.5.1/lib/ext/vecmath.jar" sourcepath="C:/Program Files/Java/Java3D/1.5.2/vecmath-1_5_2-src.zip"/>
+	<classpathentry kind="lib" path="/Renderer/bin" sourcepath="/Renderer/src"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/JBox2D/jbox2d-library/target/jbox2d-library-2.1.2.1-SNAPSHOT.jar" sourcepath="C:/Program Files/Java/JBox2D/JBox2D 2.1.2.1/jbox2d-library/target/jbox2d-library-2.1.2.1-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/JBox2D/jbox2d-library/target/slf4j-api-1.6.3.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>

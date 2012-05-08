@@ -116,20 +116,16 @@ public class GLViewerActivity extends Activity {
 //		Material mat = mShapeNodeBig.getMaterial();
 		// Handle item selection
 		int id = item.getItemId();
-		if (id == R.id.aluminium) {
-//			mat.setTexture(createTexture(R.raw.aluminium));
-		} else if (id == R.id.wall) {
-//			mat.setTexture(createTexture(R.raw.wall));
-		} else if (id == R.id.cube) {
+		if (id == R.id.cube) {
 			addCube();
 		} else if (id == R.id.teapot) {
 			addTeapot();
 		} else if (id == R.id.sphere) {
 			addSphere();
-		} else if (id == R.id.selectObject) {
-			selectObject();
-		} else if (id == R.id.changeCameraMode) {
-			showCameraOptions();
+			// } else if (id == R.id.selectObject) {
+			// selectObject();
+			// } else if (id == R.id.changeCameraMode) {
+			// showCameraOptions();
 		} else if (id == R.id.reset) {
 			resetCamera();
 		} else {
@@ -188,6 +184,19 @@ public class GLViewerActivity extends Activity {
 		mRoot.addChild(node);
 	}
 
+	private void addHelicopter() {
+		Vector3f ambient = new Vector3f(0.3f, 0.3f, 0.3f);
+		Vector3f diffuse = new Vector3f(0.7f, 0.7f, 0.7f);
+		Vector3f specular = new Vector3f(1, 1, 1);
+
+		Shape shape = loadStructure(R.raw.optimus);
+		ShapeNode node = new ShapeNode(shape);
+
+		node.setMaterial(createMaterial(ambient, diffuse, specular, 100,
+				R.raw.wall));
+		mRoot.addChild(node);
+	}
+
 	
 	private Shader createShaders(int vertexShaderRef, int fragmentShaderRef) {
 		String vertexShader = Util.readRawText(getApplication(), vertexShaderRef);
@@ -236,7 +245,7 @@ public class GLViewerActivity extends Activity {
 		Vector3f transTeapot = new Vector3f(0, 0, 0);
 		Vector3f transLeft = new Vector3f(-5, 0, 0);
 		Vector3f transRight = new Vector3f(5, 0, 0);
-		Vector3f transGround = new Vector3f(-100, -4, -100);
+		Vector3f transGround = new Vector3f(-100, -20, -100);
 
 
 		mRoot = new TransformGroup();

@@ -86,34 +86,6 @@ public class ShapeNode extends Leaf {
 		setTransformationMatrix();
 	}
 
-	/**
-	 * A helper method that loads a box from a given {@link Box2DShape} with a
-	 * certain depth.
-	 * 
-	 * @param shape
-	 *            the corresponding physics shape
-	 * @param depth
-	 *            the depth
-	 * @return the 3D shape
-	 */
-	private Shape loadBox(Box2DShape shape, float depth) {
-		List<Vector2f> coord =  shape.getCoordinates();
-		// As found in PolygonShape.class
-		Vector2f topRight = coord.get(2);
-		return Util.loadCuboid(topRight.x, topRight.y, depth);
-	}
-
-	/**
-	 * A helper method that loads a circle from a given {@link Box2DShape}
-	 * 
-	 * @param shape
-	 *            the corresponding physics shape
-	 * @return the 3D shape
-	 */
-	private Shape loadCircle(Box2DShape shape) {
-		float radius = shape.getRadius();
-		return Util.loadSphere(20, 20, radius);
-	}
 	
 	/*
 	 * (non-Javadoc)
@@ -361,4 +333,32 @@ public class ShapeNode extends Leaf {
 		setRotationMatrix(rot);
 	}
 
+	/**
+	 * A helper method that loads a box from a given {@link Box2DShape} with a
+	 * certain depth.
+	 * 
+	 * @param shape
+	 *            the corresponding physics shape
+	 * @param depth
+	 *            the depth
+	 * @return the 3D shape
+	 */
+	private Shape loadBox(Box2DShape shape, float depth) {
+		List<Vector2f> coord = shape.getCoordinates();
+		// As found in PolygonShape.class
+		Vector2f topRight = coord.get(2);
+		return Util.loadCuboid(topRight.x, topRight.y, depth);
+	}
+
+	/**
+	 * A helper method that loads a circle from a given {@link Box2DShape}
+	 * 
+	 * @param shape
+	 *            the corresponding physics shape
+	 * @return the 3D shape
+	 */
+	private Shape loadCircle(Box2DShape shape) {
+		float radius = shape.getRadius();
+		return Util.loadSphere(20, 20, radius);
+	}
 }

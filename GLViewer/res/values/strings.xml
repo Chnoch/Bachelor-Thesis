@@ -13,4 +13,5 @@
     <string name="cameraOptions">Camera Options</string>
     <string name="changeCameraMode">Change Camera Mode</string>
     <string name="reset">Reset</string>
+    <string name="helicopter">Add Helicopter</string>
 </resources>

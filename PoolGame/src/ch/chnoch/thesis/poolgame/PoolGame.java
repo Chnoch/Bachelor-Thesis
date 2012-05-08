@@ -1,4 +1,4 @@
-package ch.chnoch.thesis.box2dintegration;
+package ch.chnoch.thesis.poolgame;
 
 import java.util.ArrayList;
 import java.util.List;

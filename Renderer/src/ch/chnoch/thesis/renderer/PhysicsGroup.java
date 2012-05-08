@@ -1,5 +1,7 @@
 package ch.chnoch.thesis.renderer;
 
+import java.nio.FloatBuffer;
+
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
@@ -134,6 +136,26 @@ public class PhysicsGroup extends Group {
 		Box2DShape shape = new Box2DShape(radius);
 		Box2DBody body = new Box2DBody(position, mWorld, shape, true, true);
 		ShapeNode node = new ShapeNode(body,1);
+		addChild(node);
+		return node;
+	}
+
+	/**
+	 * Adds an arbitrary body to the physics world and returns a graphical
+	 * representation. Be careful to submit the vertices in the correct order as
+	 * it wouldn't parse correctly otherwise.
+	 * 
+	 * @param The
+	 *            vertices
+	 * @param The
+	 *            2D position of the object
+	 * @return a ShapeNode with all the associated attributes
+	 */
+
+	public ShapeNode addArbitraryBody(FloatBuffer vertices, Vector2f position) {
+		Box2DShape shape = new Box2DShape(vertices);
+		Box2DBody body = new Box2DBody(position, mWorld, shape, true, true);
+		ShapeNode node = new ShapeNode(body, 1);
 		addChild(node);
 		return node;
 	}
