@@ -51,6 +51,10 @@ public class GLViewerActivity extends Activity {
 	private Node mRoot;
 	
 	private Shader mShader;
+	
+	private Material cubeMaterial;
+	
+	private Shape teapot;
 
 	/*
 	 * 
@@ -113,11 +117,14 @@ public class GLViewerActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-//		Material mat = mShapeNodeBig.getMaterial();
 		// Handle item selection
 		int id = item.getItemId();
 		if (id == R.id.cube) {
 			addCube();
+		} else if (id == R.id.aluminium) {
+			cubeMaterial.setTexture(createTexture(R.raw.aluminium));
+		} else if (id == R.id.wall) {
+			cubeMaterial.setTexture(createTexture(R.raw.wall));
 		} else if (id == R.id.teapot) {
 			addTeapot();
 		} else if (id == R.id.sphere) {
@@ -163,12 +170,12 @@ public class GLViewerActivity extends Activity {
 	
 
 	private void addTeapot() {
-		Shape shape = loadStructure(R.raw.teapot_alt);
-		ShapeNode node = new ShapeNode(shape);
+		ShapeNode node = new ShapeNode(teapot);
 		Vector3f ambient = new Vector3f(0.3f,0.3f,0.3f);
 		Vector3f diffuse= new Vector3f(0.7f,0.7f,0.7f);
 		Vector3f specular= new Vector3f(1,1,1);
-		node.setMaterial(createMaterial(ambient, diffuse, specular, 100, R.raw.wall));
+		node.setMaterial(createMaterial(ambient, diffuse, specular, 100,
+				R.raw.teapot_texture));
 		mRoot.addChild(node);
 	}
 
@@ -184,20 +191,6 @@ public class GLViewerActivity extends Activity {
 		mRoot.addChild(node);
 	}
 
-	private void addHelicopter() {
-		Vector3f ambient = new Vector3f(0.3f, 0.3f, 0.3f);
-		Vector3f diffuse = new Vector3f(0.7f, 0.7f, 0.7f);
-		Vector3f specular = new Vector3f(1, 1, 1);
-
-		Shape shape = loadStructure(R.raw.optimus);
-		ShapeNode node = new ShapeNode(shape);
-
-		node.setMaterial(createMaterial(ambient, diffuse, specular, 100,
-				R.raw.wall));
-		mRoot.addChild(node);
-	}
-
-	
 	private Shader createShaders(int vertexShaderRef, int fragmentShaderRef) {
 		String vertexShader = Util.readRawText(getApplication(), vertexShaderRef);
 		String fragmentShader = Util.readRawText(getApplication(), fragmentShaderRef);
@@ -232,11 +225,11 @@ public class GLViewerActivity extends Activity {
 		Material sphereMaterial = createMaterial(1, 1, 1, 120, R.raw.earth);
 		Material teapotMaterial = createMaterial(1, 1, 1, 120,
 				R.raw.teapot_texture);
-		Material cubeMaterial = createMaterial(1, 1, 1, 120, R.raw.cube_texture);
+		cubeMaterial = createMaterial(1, 1, 1, 120, R.raw.cube_texture);
 		Material groundMaterial = createMaterial(1, 1, 1, 100, R.raw.ground);
 		
 		Shape sphere = Util.loadSphere(20, 20, 1);
-		Shape teapot = loadStructure(R.raw.teapot_alt);
+		teapot = loadStructure(R.raw.teapot_alt);
 		Shape cube = Util.loadCuboid(3, 1, 2);
 		Shape groundShape = Util.loadCuboid(200, 0.1f, 200);
 

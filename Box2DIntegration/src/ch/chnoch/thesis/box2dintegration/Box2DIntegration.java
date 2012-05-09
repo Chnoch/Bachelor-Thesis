@@ -145,7 +145,7 @@ public class Box2DIntegration extends Activity {
 						mViewer.requestRender();
 					}
 					try {
-						Thread.sleep(10);
+						Thread.sleep(5);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
