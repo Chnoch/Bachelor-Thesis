@@ -3,5 +3,7 @@
 
     <string name="hello">Hello World!</string>
     <string name="app_name">PoolGame</string>
+    <string name="file">Options</string>
+    <string name="newgame">New Game</string>
 
 </resources>

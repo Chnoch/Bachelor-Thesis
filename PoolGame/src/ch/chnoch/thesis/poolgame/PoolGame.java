@@ -7,8 +7,15 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 import ch.chnoch.thesis.renderer.AbstractTouchHandler.CameraMode;
 import ch.chnoch.thesis.renderer.GLES20Renderer;
 import ch.chnoch.thesis.renderer.GLException;
@@ -39,6 +46,17 @@ public class PoolGame extends Activity {
 
 	private List<Node> mBalls;
 
+	private ShapeNode mainBall;
+
+	private int mBallsDoneCount;
+	private boolean mMessageNotSent;
+
+	private long startTime;
+	
+	private Handler mHandler;
+
+	private Thread mSimulationThread;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,6 +76,34 @@ public class PoolGame extends Activity {
 		mViewer.onResume();
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.texture_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		// Handle item selection
+		int id = item.getItemId();
+		if (id == R.id.newgame) {
+			mSimulationRunning = false;
+			try {
+				mSimulationThread.join();
+			} catch (InterruptedException exc) {
+				// TODO Auto-generated catch block
+				exc.printStackTrace();
+			}
+			createGame();
+		} else {
+			return super.onOptionsItemSelected(item);
+		}
+		mViewer.requestRender();
+		return true;
+	}
+
 	private void createGame() {
 		init();
 		createLights();
@@ -70,13 +116,31 @@ public class PoolGame extends Activity {
 		// mSimulation = new Simulation();
 		// mSimulation.start();
 		mSimulationRunning = true;
-		new Thread(new Runnable() {
+		
+		mHandler = new Handler() {
+			public void handleMessage(Message m) {
+				Context context = getApplicationContext();
+				CharSequence text = "Time to finish: "
+						+ ((System.currentTimeMillis() - startTime) / 1000)
+						+ " seconds";
+				int duration = Toast.LENGTH_SHORT;
+
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.show();
+			}
+		};
+
+		mSimulationThread = new Thread(new Runnable() {
 			public void run() {
 				while (mSimulationRunning) {
 					for (int i = 0; i < 1; i++) {
 						// Log.d("Simulation", "Updating scene");
 						mSceneManager.updateScene();
 						testBoundaries();
+						if (mBallsDoneCount > 3 && mMessageNotSent) {
+							mHandler.sendEmptyMessage(0);
+							mMessageNotSent = false;
+						}
 						mViewer.requestRender();
 					}
 					try {
@@ -87,7 +151,9 @@ public class PoolGame extends Activity {
 				}
 
 			}
-		}).start();
+		});
+		mSimulationThread.start();
+
 	}
 
 	private void init() {
@@ -109,6 +175,11 @@ public class PoolGame extends Activity {
 		mShader = createShaders();
 
 		mBalls = new ArrayList<Node>();
+
+		mBallsDoneCount = 0;
+		mMessageNotSent = true;
+
+		startTime = System.currentTimeMillis();
 	}
 
 	private void createLights() {
@@ -186,7 +257,7 @@ public class PoolGame extends Activity {
 			}
 		}
 
-		ShapeNode mainBall = mPhysicsNode.addCircle(0.5f, new Vector2f(4, 0));
+		mainBall = mPhysicsNode.addCircle(0.5f, new Vector2f(4, 0));
 
 		mainBall.setMaterial(createMaterial(0.8f, 0.8f, 0.8f, 40));
 	}
@@ -225,9 +296,9 @@ public class PoolGame extends Activity {
 		List<Node> tempBalls = new ArrayList<Node>();
 		for (Node ball : mBalls) {
 			Vector3f center = ball.getCenter();
-			if (center.x < -10 || center.x > 10 || center.y < -5
-					|| center.y > 5) {
+			if (testCenter(center)) {
 				tempBalls.add(ball);
+				mBallsDoneCount++;
 			}
 		}
 
@@ -235,6 +306,22 @@ public class PoolGame extends Activity {
 			mBalls.remove(removeBall);
 			removeBall.getParent().removeChild(removeBall);
 		}
+
+		if (testCenter(mainBall.getCenter())) {
+			// Matrix4f trans = new Matrix4f();
+			// trans.setTranslation(new Vector3f(4,0,0));
+			// mainBall.setTranslationMatrix(trans);
+			// mainBall.destroyJoint();
+			mainBall.getParent().removeChild(mainBall);
+			mainBall = mPhysicsNode.addCircle(0.5f, new Vector2f(4, 0));
+			mainBall.setMaterial(createMaterial(0.8f, 0.8f, 0.8f, 40));
+		}
+
+
+	}
+
+	private boolean testCenter(Vector3f center) {
+		return center.x < -10 || center.x > 10 || center.y < -5 || center.y > 5;
 	}
 
 }
