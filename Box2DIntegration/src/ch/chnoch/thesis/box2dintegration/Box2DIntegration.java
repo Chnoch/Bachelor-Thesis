@@ -130,7 +130,6 @@ public class Box2DIntegration extends Activity {
 		mViewer.setFocusableInTouchMode(true);
 
 	}
-	
 
 	private void runSimulation() {
 		// mSimulation = new Simulation();
